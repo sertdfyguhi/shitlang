@@ -1,0 +1,1 @@
+set('True', True)print(not(get('True')))

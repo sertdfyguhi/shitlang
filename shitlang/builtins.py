@@ -1,0 +1,94 @@
+from .error import Error
+from math import sqrt
+
+class Builtins:
+    def __init__(self, vars) -> None:
+        self.vars = vars
+
+    def print(self, *args):
+        print(*args)
+
+    def set(self, key, value):
+        if type(key) != str: 
+            return Error('TypeError', "argument 'key' must be a string")
+        self.vars.set(key, value)
+
+    def get(self, key):
+        if type(key) != str: 
+            return Error('TypeError', "argument 'key' must be a string")
+        return self.vars.get(key)
+
+    def input(self, prompt):
+        if type(prompt) != str: 
+            return Error('TypeError', "argument 'prompt' must be a string")
+        return input(prompt)
+
+    def not_(self, a):
+        if type(a) != bool:
+            return Error('TypeError', "argument 'a' must be a boolean")
+        return not a
+
+    def and_(self, a, b):
+        if type(a) != bool or type(b) != bool:
+            return Error('TypeError', "argument 'a' and 'b' must be a boolean")
+        return a and b
+
+    def or_(self, a, b):
+        return a or b
+
+    def equals(self, a, b):
+        return a == b
+
+    def not_equals(self, a, b):
+        return a != b
+
+    def greater(self, a, b):
+        if type(a) not in [int, float] or type(b) not in [int, float]: 
+            return Error('TypeError', "argument 'a' and 'b' must be a number")
+        return a > b
+
+    def greater_or_equal(self, a, b):
+        if type(a) not in [int, float] or type(b) not in [int, float]: 
+            return Error('TypeError', "argument 'a' and 'b' must be a number")
+        return a >= b
+
+    def less(self, a, b):
+        if type(a) not in [int, float] or type(b) not in [int, float]: 
+            return Error('TypeError', "argument 'a' and 'b' must be a number")
+        return a < b
+
+    def less_or_equal(self, a, b):
+        if type(a) not in [int, float] or type(b) not in [int, float]: 
+            return Error('TypeError', "argument 'a' and 'b' must be a number")
+        return a <= b
+
+    def add(self, a, b):
+        return a + b
+
+    def subtract(self, a, b):
+        if type(a) not in [int, float] or type(b) not in [int, float]: 
+            return Error('TypeError', "argument 'a' and 'b' must be a number")
+        return a - b
+
+    def multiply(self, a, b):
+        return a * b
+
+    def divide(self, a, b):
+        if type(a) not in [int, float] or type(b) not in [int, float]: 
+            return Error('TypeError', "argument 'a' and 'b' must be a number")
+        return a / b
+
+    def modulus(self, a, b):
+        if type(a) not in [int, float] or type(b) not in [int, float]: 
+            return Error('TypeError', "argument 'a' and 'b' must be a number")
+        return a % b
+
+    def power(self, a, b):
+        if type(a) not in [int, float] or type(b) not in [int, float]: 
+            return Error('TypeError', "argument 'a' and 'b' must be a number")
+        return a ** b
+
+    def sqrt(self, a):
+        if type(a) not in [int, float]: 
+            return Error('TypeError', "argument 'a' must be a number")
+        return sqrt(a)
