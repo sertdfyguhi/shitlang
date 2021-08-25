@@ -92,6 +92,8 @@ class Lexer:
 
             if name in ['True', 'False']:
                 return Token(TT_BOOL, True if name == 'True' else False)
+            elif name == 'None':
+                return Token(TT_NONE)
 
         if self.curr != '(':
             print(self.code[self.i-4:self.i+4])

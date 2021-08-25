@@ -2,6 +2,7 @@ TT_FUNC_CALL = 'function call'
 TT_STRING = 'string'
 TT_NUMBER = 'number'
 TT_BOOL = 'boolean'
+TT_NONE = 'none'
 
 class Token:
     def __init__(self, type_, value=None):

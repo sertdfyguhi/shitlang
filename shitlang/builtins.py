@@ -1,6 +1,13 @@
 from .error import Error
 from math import sqrt
 
+ADD_TYPES = [
+    (str, str),
+    (int, float),
+    (bool, int),
+    (bool, float),
+    (bool, bool)
+]
 class Builtins:
     def __init__(self, vars) -> None:
         self.vars = vars
@@ -63,6 +70,8 @@ class Builtins:
         return a <= b
 
     def add(self, a, b):
+        if not any((type(a), type(b)) in [t, t[::-1]] for t in ADD_TYPES):
+            return Error('TypeError', "argument 'a' and 'b' cannot be added")
         return a + b
 
     def subtract(self, a, b):
@@ -71,6 +80,8 @@ class Builtins:
         return a - b
 
     def multiply(self, a, b):
+        if type(b) == str:
+            return Error('TypeError', "argument 'b' must not be a string")
         return a * b
 
     def divide(self, a, b):
