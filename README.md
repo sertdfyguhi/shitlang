@@ -8,7 +8,7 @@ why would you install this
 download source code and run main.py using python
 
 ## todo
-- [ ] escape characters
+- [x] escape characters
 
 ## example
 ```

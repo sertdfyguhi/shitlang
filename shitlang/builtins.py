@@ -103,3 +103,13 @@ class Builtins:
         if type(a) not in [int, float]: 
             return Error('TypeError', "argument 'a' must be a number")
         return sqrt(a)
+
+    def chr(self, a):
+        if type(a) != int:
+            return Error('TypeError', "argument 'a' must be an integer")
+        return chr(a)
+
+    def ord(self, a):
+        if type(a) != str:
+            return Error('TypeError', "argument 'a' must be a string")
+        return ord(a)
