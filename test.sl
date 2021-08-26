@@ -1,1 +1,1 @@
-print(equals(print(None), None))
+print('\'"')

@@ -2,6 +2,14 @@ from string import digits, ascii_letters
 from .token import *
 from .error import Error
 
+ESCAPES = {
+    'n': '\n',
+    'r': '\r',
+    't': '\t',
+    '"': '"',
+    "'": "'",
+}
+
 class Lexer:
     def __init__(self, code):
         self.code = code
@@ -50,6 +58,21 @@ class Lexer:
         while self.curr != quote:
             if not self.curr:
                 return Error('SyntaxError', 'unexpected EOF')
+
+            if self.curr == '\\':
+                if len(string) == 0 or string[-1] != '\\':
+                    self.next()
+
+                    if not self.curr:
+                        return Error('SyntaxError', 'unexpected EOF')
+
+                    if self.curr not in ESCAPES:
+                        return Error('SyntaxError', 'invalid escape character')
+
+                    string += ESCAPES[self.curr]
+                    self.next()
+                    continue
+
             string += self.curr
             self.next()
 
