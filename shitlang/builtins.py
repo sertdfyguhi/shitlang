@@ -18,12 +18,17 @@ class Builtins:
     def set(self, key, value):
         if type(key) != str: 
             return Error('TypeError', "argument 'key' must be a string")
-        self.vars.set(key, value)
+        return self.vars.set(key, value)
 
     def get(self, key):
         if type(key) != str: 
             return Error('TypeError', "argument 'key' must be a string")
         return self.vars.get(key)
+
+    def delete(self, key): 
+        if type(key) != str: 
+            return Error('TypeError', "argument 'key' must be a string")
+        return self.vars.delete(key)
 
     def input(self, prompt):
         if type(prompt) != str: 

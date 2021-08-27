@@ -39,7 +39,7 @@ class Lexer:
             elif arg and self.curr == ',':
                 self.next()
                 if len(commas) == 0 or commas[-1] == 0:
-                    return Error('SyntaxError', 'unexpected comma')
+                    return Error('SyntaxError', 'unexpected ","')
                 commas.append(0)
             else:
                 return Error('InvalidCharError', repr(self.curr))
@@ -85,7 +85,7 @@ class Lexer:
 
         while self.curr and self.curr in digits + '.-':
             if self.curr == '-' and number.count('-') != len(number):
-                return Error('SyntaxError', 'unexpected -')
+                return Error('SyntaxError', 'unexpected "-"')
             number += self.curr
             self.next()
 

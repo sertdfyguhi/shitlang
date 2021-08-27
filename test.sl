@@ -1,1 +1,1 @@
-print(ord('a'))
+set('', 'a')print(get(''))delete('')print(get(''))
