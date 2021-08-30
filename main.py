@@ -1,8 +1,9 @@
 import shitlang
 import sys
+import os
 
 if len(sys.argv) == 1:
-    print('usage: python3 main.py [file]')
+    print(f'usage: python3 {os.path.basename(__file__)} [file]')
 else:
     path = sys.argv[1]
 
