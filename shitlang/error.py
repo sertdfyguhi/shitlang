@@ -4,4 +4,4 @@ class Error:
         self.details = details
 
     def __repr__(self) -> str:
-        return f'error:\n  {self.type}: {self.details}'
+        return f'Error:\n  {self.type}: {self.details}'

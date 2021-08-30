@@ -1,3 +1,5 @@
+from .function import Function
+from .token import *
 from .error import Error
 from math import sqrt
 
@@ -118,3 +120,14 @@ class Builtins:
         if type(a) != str:
             return Error('TypeError', "argument 'a' must be a string")
         return ord(a)
+
+    def function(self, file, params=Token(TT_PARAMS, [])):
+        return Function(open(file).read(), params)
+
+    def run(self, func, *args):
+        if not isinstance(func, Function):
+            return Error('TypeError', "argument 'func' must be a function")
+        return func.run(*args)
+
+    def return_(self, value):
+        return value

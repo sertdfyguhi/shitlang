@@ -1,1 +1,1 @@
-set('', 'a')print(get(''))delete('')print(get(''))
+set('func1', function('func1.sl', <param1, param2>))print(run(get('func1'), 1, 2))

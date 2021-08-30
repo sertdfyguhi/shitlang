@@ -36,6 +36,9 @@ class Lexer:
                 tokens.append(self.number())
             elif self.curr in ascii_letters:
                 tokens.append(self.func_call())
+            elif arg and self.curr == '<':
+                self.next()
+                tokens.append(self.params())
             elif arg and self.curr == ',':
                 self.next()
                 if len(commas) == 0 or commas[-1] == 0:
@@ -103,27 +106,26 @@ class Lexer:
             int(number) if number.count('.') == 0 else float(number)
         )
 
-    def func_call(self):
-        name = ''
+    def params(self):
+        param = ''
 
-        while (self.curr != '(' and
-            self.curr and
-            self.curr in ascii_letters + '_'
-        ):
-            name += self.curr
+        while self.curr != '>':
+            if not self.curr:
+                return Error('SyntaxError', 'unexpected EOF')
+
+            param += self.curr
             self.next()
-
-            if name in ['True', 'False']:
-                return Token(TT_BOOL, True if name == 'True' else False)
-            elif name == 'None':
-                return Token(TT_NONE)
-
-        if self.curr != '(':
-            print(self.code[self.i-4:self.i+4])
-            return Error('SyntaxError', 'expected function to be called')
 
         self.next()
 
+        params = param.replace(' ', '').split(',')
+
+        if any(p == '' for p in params) and params != ['']:
+            return Error('ParameterError', 'parameter name cannot be empty')
+
+        return Token(TT_PARAMS, params)
+
+    def args(self):
         args = ''
         opens = 1
 
@@ -141,6 +143,30 @@ class Lexer:
 
         self.next()
 
-        args = Lexer(args).tokenize(True)
+        return Lexer(args).tokenize(True)
+
+    def func_call(self):
+        name = ''
+
+        while (self.curr != '(' and
+            self.curr and
+            self.curr in ascii_letters + '_'
+        ):
+            name += self.curr
+            self.next()
+
+            if name in ['True', 'False']:
+                return Token(TT_BOOL, True if name == 'True' else False)
+            elif name == 'None':
+                return Token(TT_NONE)
+
+        if self.curr != '(':
+            return Error('SyntaxError', 'expected function to be called')
+
+        self.next()
+
+        args = self.args()
+
         if isinstance(args, Error): return args
+
         return Token(TT_FUNC_CALL, [name, args])

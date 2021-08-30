@@ -5,7 +5,8 @@ from .token import *
 RESERVED = [
     'not',
     'and',
-    'or'
+    'or',
+    'return'
 ]
 
 class Interpreter:
@@ -28,7 +29,11 @@ class Interpreter:
                     r = getattr(self.builtins, token.value[0])(*i)
                     if isinstance(r, Error): return r
 
-                    res.append(r)
+                    res.append(r if token.value[0] != 'return_' else [r, 'return'])
+
+                    if token.value[0] == 'return_':
+                        break
+
                 except TypeError as e:
                     if 'missing' in str(e):
                         return Error('TypeError', f'{token.value[0]}() missing required arguments')
