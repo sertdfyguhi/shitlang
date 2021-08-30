@@ -17,5 +17,5 @@ class Variables:
             return Error('VarNotDefinedError', f'variable "{key}" not defined')
         del self.vars[key]
 
-    def copy(self):
-        return Variables(self.vars.copy())
+    def copy(self, allow_use_vars=False):
+        return Variables(self.vars.copy() if not allow_use_vars else self.vars)

@@ -120,7 +120,8 @@ class Builtins:
         return Function(
             open(file).read(),
             params,
-            Variables() if not allow_use_vars else self.vars
+            Variables() if not allow_use_vars else self.vars,
+            allow_use_vars
         )
 
     def run(self, func, *args):

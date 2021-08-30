@@ -3,13 +3,14 @@ from .error import Error
 from .lexer import Lexer
 
 class Function:
-    def __init__(self, code, params, vars_=Variables()) -> None:
+    def __init__(self, code, params, vars_=Variables(), allow_use_vars=False) -> None:
         self.code = code
         self.params = params
         self.vars_original = vars_
+        self.allow_use_vars = allow_use_vars
 
     def run(self, *args):
-        self.vars = self.vars_original.copy()
+        self.vars = self.vars_original.copy(self.allow_use_vars)
 
         if len(args) < len(self.params):
             return Error('TypeError', 'function missing arguments')

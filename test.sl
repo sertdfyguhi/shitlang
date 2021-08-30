@@ -1,3 +1,3 @@
 set('test', 1)
-print(run(function('func1.sl', <>, True)))
+run(function('func1.sl', <>))
 print(get('test'))

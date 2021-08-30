@@ -1,2 +1,2 @@
 set('test', 7)
-return(get('test'))
+print(get('test'))
