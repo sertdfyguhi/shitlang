@@ -10,6 +10,7 @@ ADD_TYPES = [
     (bool, float),
     (bool, bool)
 ]
+
 class Builtins:
     def __init__(self, vars) -> None:
         self.vars = vars
@@ -44,7 +45,7 @@ class Builtins:
 
     def and_(self, a, b):
         if type(a) != bool or type(b) != bool:
-            return Error('TypeError', "argument 'a' and 'b' must be a boolean")
+            return Error('TypeError', "arguments 'a' and 'b' must be a boolean")
         return a and b
 
     def or_(self, a, b):
@@ -58,32 +59,33 @@ class Builtins:
 
     def greater(self, a, b):
         if type(a) not in [int, float] or type(b) not in [int, float]: 
-            return Error('TypeError', "argument 'a' and 'b' must be a number")
+            return Error('TypeError', "arguments 'a' and 'b' must be a number")
         return a > b
 
     def greater_or_equal(self, a, b):
         if type(a) not in [int, float] or type(b) not in [int, float]: 
-            return Error('TypeError', "argument 'a' and 'b' must be a number")
+            return Error('TypeError', "arguments 'a' and 'b' must be a number")
         return a >= b
 
     def less(self, a, b):
         if type(a) not in [int, float] or type(b) not in [int, float]: 
-            return Error('TypeError', "argument 'a' and 'b' must be a number")
+            return Error('TypeError', "arguments 'a' and 'b' must be a number")
         return a < b
 
     def less_or_equal(self, a, b):
         if type(a) not in [int, float] or type(b) not in [int, float]: 
-            return Error('TypeError', "argument 'a' and 'b' must be a number")
+            return Error('TypeError', "arguments 'a' and 'b' must be a number")
         return a <= b
 
     def add(self, a, b):
-        if not any((type(a), type(b)) in [t, t[::-1]] for t in ADD_TYPES):
-            return Error('TypeError', "argument 'a' and 'b' cannot be added")
-        return a + b
+        try:
+            return a + b
+        except TypeError:
+            return Error('TypeError', "arguments 'a' and 'b' cannot be added")
 
     def subtract(self, a, b):
         if type(a) not in [int, float] or type(b) not in [int, float]: 
-            return Error('TypeError', "argument 'a' and 'b' must be a number")
+            return Error('TypeError', "arguments 'a' and 'b' must be a number")
         return a - b
 
     def multiply(self, a, b):
@@ -93,17 +95,17 @@ class Builtins:
 
     def divide(self, a, b):
         if type(a) not in [int, float] or type(b) not in [int, float]: 
-            return Error('TypeError', "argument 'a' and 'b' must be a number")
+            return Error('TypeError', "arguments 'a' and 'b' must be a number")
         return a / b
 
     def modulus(self, a, b):
         if type(a) not in [int, float] or type(b) not in [int, float]: 
-            return Error('TypeError', "argument 'a' and 'b' must be a number")
+            return Error('TypeError', "arguments 'a' and 'b' must be a number")
         return a % b
 
     def power(self, a, b):
         if type(a) not in [int, float] or type(b) not in [int, float]: 
-            return Error('TypeError', "argument 'a' and 'b' must be a number")
+            return Error('TypeError', "arguments 'a' and 'b' must be a number")
         return a ** b
 
     def sqrt(self, a):
