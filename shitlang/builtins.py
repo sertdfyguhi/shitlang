@@ -3,14 +3,6 @@ from .token import *
 from .error import Error
 from math import sqrt
 
-ADD_TYPES = [
-    (str, str),
-    (int, float),
-    (bool, int),
-    (bool, float),
-    (bool, bool)
-]
-
 class Builtins:
     def __init__(self, vars) -> None:
         self.vars = vars
