@@ -131,3 +131,6 @@ class Builtins:
 
     def return_(self, value):
         return value
+
+    def replace(self, a, replace, string):
+        return string.replace(a, replace)
