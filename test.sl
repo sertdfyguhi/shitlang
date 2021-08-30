@@ -1,1 +1,3 @@
-set('test', 3)\set('func1', function('func1.sl', <param1, param2>, True))print(run(get('func1'), 1, 2))
+set('test', 1)
+print(run(function('func1.sl', <>, True)))
+print(get('test'))

@@ -118,9 +118,9 @@ class Lexer:
 
         self.next()
 
-        params = param.replace(' ', '').split(',')
+        params = param.replace(' ', '').split(',') if param != '' else []
 
-        if any(p == '' for p in params) and params != ['']:
+        if any(p == '' for p in params):
             return Error('ParameterError', 'parameter name cannot be empty')
 
         return Token(TT_PARAMS, params)
