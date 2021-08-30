@@ -1,3 +1,4 @@
+from .vars import Variables
 from .function import Function
 from .token import *
 from .error import Error
@@ -115,8 +116,12 @@ class Builtins:
             return Error('TypeError', "argument 'a' must be a string")
         return ord(a)
 
-    def function(self, file, params=Token(TT_PARAMS, [])):
-        return Function(open(file).read(), params)
+    def function(self, file, params=Token(TT_PARAMS, []), allow_use_vars=False):
+        return Function(
+            open(file).read(),
+            params,
+            Variables() if not allow_use_vars else self.vars
+        )
 
     def run(self, func, *args):
         if not isinstance(func, Function):

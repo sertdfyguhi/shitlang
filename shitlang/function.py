@@ -3,11 +3,14 @@ from .error import Error
 from .lexer import Lexer
 
 class Function:
-    def __init__(self, code, params) -> None:
+    def __init__(self, code, params, vars_=Variables()) -> None:
         self.code = code
         self.params = params
+        self.vars_original = vars_
 
     def run(self, *args):
+        self.vars = self.vars_original.copy()
+
         if len(args) < len(self.params):
             return Error('TypeError', 'function missing arguments')
         elif len(args) > len(self.params):
@@ -19,14 +22,12 @@ class Function:
         if isinstance(self.lexer, Error):
             return self.lexer
 
-        var = Variables()
-
         for arg, param in zip(args, self.params):
-            var.set(param, arg)
+            self.vars.set(param, arg)
 
         from .interpreter import Interpreter
 
-        res = Interpreter(self.lexer, var).interpret()
+        res = Interpreter(self.lexer, self.vars).interpret()
 
         if isinstance(res, Error):
             return res
@@ -34,4 +35,4 @@ class Function:
         return res[-1][0] if type(res[-1]) == list else None
 
     def __repr__(self) -> str:
-        return f'function: ({", ".join(self.params)})'
+        return f'function: <{", ".join(self.params)}>'
