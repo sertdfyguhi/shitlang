@@ -1,1 +1,0 @@
-print(replace('s', 'a', 'sss'))

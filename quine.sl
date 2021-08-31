@@ -1,0 +1,1 @@
+set('x', "set('x', {})print(format(get('x'), add(chr(34), add(get('x'), chr(34)))))")print(format(get('x'), add(chr(34), add(get('x'), chr(34)))))
