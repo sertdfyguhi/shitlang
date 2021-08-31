@@ -134,15 +134,15 @@ class Lexer:
         if self.curr == ')': opens -= 1
 
         while opens > 0:
+            if not self.curr:
+                return Error('SyntaxError', 'unexpected EOF')   
+
             if not quote and self.curr in '"\'':
                 quote = self.curr
 
-            if self.curr and self.curr == quote and self.code[self.i-1] != '\\':
+            if self.curr == quote and self.code[self.i-1] != '\\':
                 in_str = not in_str
                 quote = None
-
-            if not self.curr:
-                return Error('SyntaxError', 'unexpected EOF')
 
             args += self.curr
             self.next()

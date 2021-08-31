@@ -133,4 +133,11 @@ class Builtins:
         return value
 
     def replace(self, a, replace, string):
+        if any(type(x) != str for x in [a, replace, string]):
+            return Error('TypeError', "arguments 'a', 'replace' and 'string' must be a string")
         return string.replace(a, replace)
+
+    def format(self, string, *args):
+        if type(string) != str:
+            return Error('TypeError', "argument 'string' must be a string")
+        return string.format(*args)
