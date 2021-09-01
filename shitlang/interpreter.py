@@ -41,6 +41,11 @@ class Interpreter:
                         return Error('TypeError', f'{token.value[0]}() given more arguments than expected')
                 except AttributeError:
                     return Error('BuiltinError', f'no builtin named {token.value[0]}')
+            elif token.type == TT_ARRAY:
+                r = Interpreter(token.value, self.vars).interpret()
+                if isinstance(r, Error): return r
+
+                res.append(r)
             else:
                 res.append(token.value)
 

@@ -2,6 +2,7 @@ TT_FUNC_CALL = 'function call'
 TT_PARAMS = 'parameters'
 TT_STRING = 'string'
 TT_NUMBER = 'number'
+TT_ARRAY = 'array'
 TT_BOOL = 'boolean'
 TT_NONE = 'none'
 

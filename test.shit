@@ -1,1 +1,1 @@
-run(function('test.shit'))
+print([])

@@ -10,7 +10,7 @@ download source code and run main.py using python
 ## todo
 - [x] escape characters
 - [ ] somehow implement if, else if and else
-- [ ] arrays
+- [x] arrays
 
 ## example
 ```

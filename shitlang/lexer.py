@@ -32,13 +32,12 @@ class Lexer:
                 self.next()
             elif self.curr in '"\'':
                 tokens.append(self.string())
+            elif self.curr == '[':
+                tokens.append(self.array())
             elif self.curr in digits + '-':
                 tokens.append(self.number())
             elif self.curr in ascii_letters:
                 tokens.append(self.func_call())
-            elif arg and self.curr == '<':
-                self.next()
-                tokens.append(self.params())
             elif arg and self.curr == ',':
                 self.next()
                 if len(commas) == 0 or commas[-1] == 0:
@@ -106,24 +105,40 @@ class Lexer:
             int(number) if number.count('.') == 0 else float(number)
         )
 
-    def params(self):
-        param = ''
-
-        while self.curr != '>':
-            if not self.curr:
-                return Error('SyntaxError', 'unexpected EOF')
-
-            param += self.curr
-            self.next()
+    def array(self):
+        array_str = ''
+        opens = 1
+        in_str = False
+        quote = None
 
         self.next()
 
-        params = param.replace(' ', '').split(',') if param != '' else []
+        if self.curr == ']': opens -= 1
 
-        if any(p == '' for p in params):
-            return Error('ParameterError', 'parameter name cannot be empty')
+        while opens > 0:
+            if not self.curr:
+                return Error('SyntaxError', 'unexpected EOF')   
 
-        return Token(TT_PARAMS, params)
+            if not quote and self.curr in '"\'':
+                quote = self.curr
+
+            if self.curr == quote and self.code[self.i-1] != '\\':
+                in_str = not in_str
+                quote = None
+
+            array_str += self.curr
+            self.next()
+
+            if self.curr == '[' and not in_str: opens += 1
+            if self.curr == ']' and not in_str: opens -= 1
+
+        self.next()
+
+        array = Lexer(array_str).tokenize(True)
+
+        if isinstance(array, Error): return array
+
+        return Token(TT_ARRAY, array)
 
     def args(self):
         args = ''

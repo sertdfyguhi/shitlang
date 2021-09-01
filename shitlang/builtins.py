@@ -117,6 +117,13 @@ class Builtins:
         return ord(a)
 
     def function(self, file, params=[], allow_use_vars=False):
+        if type(file) != str:
+            return Error('TypeError', "argument 'file' must be a string")
+        elif type(params) != list:
+            return Error('TypeError', "argument 'params' must be a array")
+        elif type(allow_use_vars) != bool:
+            return Error('TypeError', "argument 'allow_use_vars' must be a boolean")
+
         return Function(
             open(file).read(),
             params,
@@ -127,6 +134,7 @@ class Builtins:
     def run(self, func, *args):
         if not isinstance(func, Function):
             return Error('TypeError', "argument 'func' must be a function")
+
         try:
             return func.run(*args)
         except RecursionError:
@@ -144,3 +152,22 @@ class Builtins:
         if type(string) != str:
             return Error('TypeError', "argument 'string' must be a string")
         return string.format(*args)
+
+    def index(self, array, index):
+        if type(array) != list:
+            return Error('TypeError', "argument 'array' must be a array")
+        elif type(index) != int:
+            return Error('TypeError', "argument 'index' must be an integer")
+        return array[index]
+
+    def join(self, string, array):
+        if type(string) != str:
+            return Error('TypeError', "argument 'string' must be a string")
+        elif type(array) != list:
+            return Error('TypeError', "argument 'array' must be an array")
+        return string.join(array)
+
+    def split(self, deliminator, string):
+        if type(deliminator) != str or type(string) != str:
+            return Error('TypeError', "arguments 'deliminator' and 'string' must be a string")
+        return string.split(deliminator)
