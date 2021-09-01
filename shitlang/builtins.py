@@ -116,7 +116,7 @@ class Builtins:
             return Error('TypeError', "argument 'a' must be a string")
         return ord(a)
 
-    def function(self, file, params=Token(TT_PARAMS, []), allow_use_vars=False):
+    def function(self, file, params=[], allow_use_vars=False):
         return Function(
             open(file).read(),
             params,
@@ -127,7 +127,10 @@ class Builtins:
     def run(self, func, *args):
         if not isinstance(func, Function):
             return Error('TypeError', "argument 'func' must be a function")
-        return func.run(*args)
+        try:
+            return func.run(*args)
+        except RecursionError:
+            return Error('RecursionError', 'maximum recursion depth exceeded')
 
     def return_(self, value):
         return value
