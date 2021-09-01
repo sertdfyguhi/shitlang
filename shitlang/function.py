@@ -36,4 +36,4 @@ class Function:
         return res[-1][0] if type(res[-1]) == list else None
 
     def __repr__(self) -> str:
-        return f'function: <{", ".join(self.params)}>'
+        return f'function: ({", ".join(self.params)})'

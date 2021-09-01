@@ -119,8 +119,8 @@ class Builtins:
     def function(self, file, params=[], allow_use_vars=False):
         if type(file) != str:
             return Error('TypeError', "argument 'file' must be a string")
-        elif type(params) != list:
-            return Error('TypeError', "argument 'params' must be a array")
+        elif any(type(param) != str for param in params):
+            return Error('TypeError', "argument 'params' must be an array of strings")
         elif type(allow_use_vars) != bool:
             return Error('TypeError', "argument 'allow_use_vars' must be a boolean")
 
