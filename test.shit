@@ -1,2 +1,0 @@
-print([1,2,3,join('-', ['1234','5678','90'])])
-print(function('func1.shit', ['a', 'b']))

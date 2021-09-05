@@ -6,7 +6,8 @@ RESERVED = [
     'not',
     'and',
     'or',
-    'return'
+    'return',
+    'while'
 ]
 
 class Interpreter:
@@ -21,15 +22,17 @@ class Interpreter:
         for token in self.tokens:
             if token.type == TT_FUNC_CALL:
                 try:
+                    func = token.value[0]
+
                     if token.value[0] in RESERVED:
-                        token.value[0] = token.value[0] + '_'
+                        func = token.value[0] + '_'
                     i = Interpreter(token.value[1], self.vars).interpret()
                     if isinstance(i, Error): return i
 
-                    r = getattr(self.builtins, token.value[0])(*i)
+                    r = getattr(self.builtins, func)(*i)
                     if isinstance(r, Error): return r
 
-                    res.append(r if token.value[0] != 'return_' else [r, 'return'])
+                    res.append(r if func != 'return_' else [r, 'return'])
 
                     if token.value[0] == 'return_':
                         break

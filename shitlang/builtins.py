@@ -3,6 +3,7 @@ from .function import Function
 from .token import *
 from .error import Error
 from math import sqrt
+from os.path import exists
 
 class Builtins:
     def __init__(self, vars) -> None:
@@ -123,6 +124,8 @@ class Builtins:
             return Error('TypeError', "argument 'params' must be an array of strings")
         elif type(allow_use_vars) != bool:
             return Error('TypeError', "argument 'allow_use_vars' must be a boolean")
+        elif not exists(file):
+            return Error('FileNotFoundError', f"file {file!r} not found")
 
         return Function(
             open(file).read(),
@@ -136,7 +139,8 @@ class Builtins:
             return Error('TypeError', "argument 'func' must be a function")
 
         try:
-            return func.run(*args)
+            r = func.run(*args)
+            return None if type(r) != list else r[0]
         except RecursionError:
             return Error('RecursionError', 'maximum recursion depth exceeded')
 
@@ -171,3 +175,22 @@ class Builtins:
         if type(deliminator) != str or type(string) != str:
             return Error('TypeError', "arguments 'deliminator' and 'string' must be a string")
         return string.split(deliminator)
+
+    def while_(self, condition, loop):
+        if (not isinstance(condition, Function) or not isinstance(loop, Function) or
+            len(condition.params) > 0 or len(loop.params) > 0):
+            return Error('TypeError', "arguments 'condition' and 'loop' must be an function with no parameters")
+
+        condition.allow_use_vars = True
+        loop.allow_use_vars = True
+
+        c = condition.run()
+        if isinstance(c, Error): return c
+
+        while c if type(c) != list else c[0]:
+            r = loop.run()
+            if isinstance(r, Error): return r
+            elif type(r) == list: return r[0]
+
+            c = condition.run()
+            if isinstance(c, Error): return c

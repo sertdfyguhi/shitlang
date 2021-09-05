@@ -1,4 +1,4 @@
-from shitlang.error import Error
+from .error import Error
 
 class Variables:
     def __init__(self, d={}) -> None:

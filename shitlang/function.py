@@ -33,7 +33,7 @@ class Function:
         if isinstance(res, Error):
             return res
 
-        return res[-1][0] if type(res[-1]) == list else None
+        return res[-1] if type(res[-1]) == list else None
 
     def __repr__(self) -> str:
         return f'function: ({", ".join(self.params)})'

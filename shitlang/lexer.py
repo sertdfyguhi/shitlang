@@ -32,7 +32,7 @@ class Lexer:
                 self.next()
             elif self.curr in '"\'':
                 tokens.append(self.string())
-            elif self.curr == '[':
+            elif self.curr == '<':
                 tokens.append(self.array())
             elif self.curr in digits + '-':
                 tokens.append(self.number())
@@ -113,7 +113,7 @@ class Lexer:
 
         self.next()
 
-        if self.curr == ']': opens -= 1
+        if self.curr == '>': opens -= 1
 
         while opens > 0:
             if not self.curr:
@@ -129,8 +129,8 @@ class Lexer:
             array_str += self.curr
             self.next()
 
-            if self.curr == '[' and not in_str: opens += 1
-            if self.curr == ']' and not in_str: opens -= 1
+            if self.curr == '<' and not in_str: opens += 1
+            if self.curr == '>' and not in_str: opens -= 1
 
         self.next()
 
