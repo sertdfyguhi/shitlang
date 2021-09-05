@@ -7,7 +7,10 @@ if len(sys.argv) == 1:
 else:
     path = sys.argv[1]
 
-    with open(path, 'r') as f:
-        r = shitlang.run(f.read())
-        if isinstance(r, shitlang.Error):
-            print(r)
+    if not os.path.exists(path):
+        print('error: file does not exist')
+    else:
+        with open(path, 'r') as f:
+            r = shitlang.run(f.read())
+            if isinstance(r, shitlang.Error):
+                print(r)
