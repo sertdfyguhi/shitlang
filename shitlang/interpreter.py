@@ -7,7 +7,8 @@ RESERVED = [
     'and',
     'or',
     'return',
-    'while'
+    'while',
+    'if',
 ]
 
 class Interpreter:
@@ -36,7 +37,6 @@ class Interpreter:
 
                     if func == 'return_':
                         break
-
                 except TypeError as e:
                     if 'missing' in str(e):
                         return Error('TypeError', f'{token.value[0]}() missing required arguments')

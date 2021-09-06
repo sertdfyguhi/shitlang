@@ -1,3 +1,6 @@
-- This is a comment
-print('comment')
-- This is an inline comment -print('inline comment')
+set('b', False)
+if(
+  function('test/condition.shit'),
+  function('test/if.shit'),
+  function('test/else.shit')
+)

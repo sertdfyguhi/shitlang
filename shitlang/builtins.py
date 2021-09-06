@@ -156,7 +156,7 @@ class Builtins:
 
     def index(self, array, index):
         if type(array) != list:
-            return Error('TypeError', "argument 'array' must be a array")
+            return Error('TypeError', "argument 'array' must be an array")
         elif type(index) != int:
             return Error('TypeError', "argument 'index' must be an integer")
         return array[index]
@@ -176,7 +176,7 @@ class Builtins:
     def while_(self, condition, loop):
         if (not isinstance(condition, Function) or not isinstance(loop, Function) or
             len(condition.params) > 0 or len(loop.params) > 0):
-            return Error('TypeError', "arguments 'condition' and 'loop' must be an function with no parameters")
+            return Error('TypeError', "arguments 'condition' and 'loop' must be a function with no parameters")
 
         condition.allow_use_vars = True
         loop.allow_use_vars = True
@@ -191,3 +191,24 @@ class Builtins:
 
             c = condition.run()
             if isinstance(c, Error): return c
+
+    def if_(self, condition, func, else_=None):
+        if (not isinstance(condition, Function) or
+            not isinstance(func, Function) or
+            len(condition.params) > 0 or len(func.params) > 0):
+            return Error('TypeError', "arguments 'condition' and 'func' must be a function with no parameters")
+        elif else_ and (not isinstance(else_, Function) or len(else_.params) > 0):
+            return Error('TypeError', "argument 'else' must be a function with no parameters")
+
+        condition.allow_use_vars = True
+        func.allow_use_vars = True
+        if else_:
+            else_.allow_use_vars = True
+
+        c = condition.run()
+        if isinstance(c, Error): return c
+
+        if c if type(c) != list else c[0]:
+            func.run()
+        else:
+            if else_: else_.run()
