@@ -138,11 +138,8 @@ class Builtins:
         if not isinstance(func, Function):
             return Error('TypeError', "argument 'func' must be a function")
 
-        try:
-            r = func.run(*args)
-            return None if type(r) != list else r[0]
-        except RecursionError:
-            return Error('RecursionError', 'maximum recursion depth exceeded')
+        r = func.run(*args)
+        return None if type(r) != list else r[0]
 
     def return_(self, value):
         return value

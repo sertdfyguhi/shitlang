@@ -44,6 +44,8 @@ class Interpreter:
                         return Error('TypeError', f'{token.value[0]}() given more arguments than expected')
                 except AttributeError:
                     return Error('BuiltinError', f'no builtin named {token.value[0]}')
+                except RecursionError:
+                    return Error('RecursionError', 'maximum recursion depth exceeded')
             elif token.type == TT_ARRAY:
                 r = Interpreter(token.value, self.vars).interpret()
                 if isinstance(r, Error): return r
