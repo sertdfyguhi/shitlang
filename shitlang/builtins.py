@@ -141,7 +141,7 @@ class Builtins:
         r = func.run(*args)
         return None if type(r) != list else r[0]
 
-    def return_(self, value):
+    def return_(self, value=None):
         return value
 
     def replace(self, a, replace, string):
