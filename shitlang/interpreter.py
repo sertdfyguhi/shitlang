@@ -34,7 +34,7 @@ class Interpreter:
 
                     res.append(r if func != 'return_' else [r, 'return'])
 
-                    if token.value[0] == 'return_':
+                    if func == 'return_':
                         break
 
                 except TypeError as e:
@@ -52,6 +52,7 @@ class Interpreter:
 
                 res.append(r)
             else:
+                if token.type == TT_COMMA: continue
                 res.append(token.value)
 
         return res

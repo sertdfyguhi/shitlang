@@ -22,12 +22,8 @@ class Lexer:
     
     def tokenize(self, arg=False):
         tokens = []
-        if arg: commas = []
 
         while self.curr:
-            if arg and self.curr and self.curr not in ' \t\n,':
-                commas.append(1)
-
             if self.curr in ' \t\n':
                 self.next()
             elif self.curr in '"\'':
@@ -39,10 +35,10 @@ class Lexer:
             elif self.curr in ascii_letters:
                 tokens.append(self.func_call())
             elif arg and self.curr == ',':
-                self.next()
-                if len(commas) == 0 or commas[-1] == 0:
+                if tokens[-1].type == TT_COMMA:
                     return Error('SyntaxError', 'unexpected ","')
-                commas.append(0)
+                tokens.append(Token(TT_COMMA))
+                self.next()
             else:
                 return Error('InvalidCharError', repr(self.curr))
 
