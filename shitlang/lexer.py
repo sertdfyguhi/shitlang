@@ -22,14 +22,22 @@ class Lexer:
     
     def tokenize(self, arg=False):
         tokens = []
+        in_comment = False
 
         while self.curr:
-            if self.curr in ' \t\n':
+            if in_comment:
+                if self.curr in '\n-':
+                    in_comment = not in_comment
+                self.next()
+            elif self.curr in ' \t\n':
                 self.next()
             elif self.curr in '"\'':
                 tokens.append(self.string())
             elif self.curr == '<':
                 tokens.append(self.array())
+            elif self.curr == '-':
+                in_comment = not in_comment
+                self.next()
             elif self.curr in digits + '-':
                 tokens.append(self.number())
             elif self.curr in ascii_letters:

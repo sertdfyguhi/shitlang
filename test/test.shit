@@ -1,1 +1,3 @@
-print('h',, 'a')
+- This is a comment
+print('comment')
+- This is an inline comment -print('inline comment')
