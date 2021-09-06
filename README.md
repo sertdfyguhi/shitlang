@@ -1,5 +1,7 @@
 # shitlang
 
+![Certified: Shit](https://img.shields.io/badge/Certified-Shit-success)
+
 please dont use this it's named shitlang for a reason  
 code is completely trash
 
