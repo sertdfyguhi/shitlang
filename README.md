@@ -17,7 +17,56 @@ download source code and run main.py using python
 - [x] array builtins
 - [ ] documentation
 
-## example
+## examples
+### hello world
 ```
-set('name', input("What's your name? "))set('age', input("What's your age? "))print('Hello', add(get('name'), '.'), 'You are', get('age'), 'years old.')
+print("Hello World!")
 ```
+
+### cat program
+```
+print(input(''))
+```
+
+### quine
+```
+set('x', "set('x', {})print(format(get('x'), add(chr(34), add(get('x'), chr(34)))))")print(format(get('x'), add(chr(34), add(get('x'), chr(34)))))
+```
+
+### truth machine
+#### main.shit
+```
+set('input', input(''))
+if(function('0condition.shit'), function('0.shit'))
+if(function('1condition.shit'), function('1.shit'))
+```
+
+#### 0condition.shit
+```
+return(equals(get('input'), '0'))
+```
+
+#### 1condition.shit
+```
+return(equals(get('input'), '1'))
+```
+
+#### 0.shit
+```
+print(0)
+```
+
+#### 1.shit
+```
+while(function('1loop_condition.shit'), function('1loop.shit'))
+```
+
+#### 1loop_condition.shit
+```
+return(True)
+```
+
+#### 1loop.shit
+```
+print(1)
+````

@@ -43,7 +43,8 @@ class Interpreter:
 
                     if func == 'return_':
                         break
-                except AttributeError:
+                except AttributeError as e:
+                    print(e)
                     return Error('BuiltinError', f'no builtin named {token.value[0]}')
                 except RecursionError:
                     return Error('RecursionError', 'maximum recursion depth exceeded')

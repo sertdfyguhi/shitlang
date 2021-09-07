@@ -17,21 +17,19 @@ class Function:
         elif len(args) > len(self.params):
             return Error('TypeError', 'function given more arguments than expected')
 
-        if not hasattr(self, 'lexer'):
-            self.lexer = Lexer(self.code).tokenize()
+        if not hasattr(self, 'tokens'):
+            self.tokens = Lexer(self.code).tokenize()
 
-        if isinstance(self.lexer, Error):
-            return self.lexer
+        if isinstance(self.tokens, Error):
+            return self.tokens
 
-        for arg, param in zip(args, self.params):
+        for param, arg in zip(self.params, args):
             self.vars.set(param, arg)
 
         from .interpreter import Interpreter
 
-        res = Interpreter(self.lexer, self.vars).interpret()
-
-        if isinstance(res, Error):
-            return res
+        res = Interpreter(self.tokens, self.vars).interpret()
+        if isinstance(res, Error): return res
 
         return res[-1] if type(res[-1]) == list else None
 
