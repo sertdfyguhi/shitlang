@@ -1,6 +1,7 @@
 from string import digits, ascii_letters
 from .token import *
 from .error import Error
+from shitlang import token
 
 ESCAPES = {
     'n': '\n',
@@ -43,8 +44,11 @@ class Lexer:
             elif self.curr in ascii_letters:
                 tokens.append(self.func_call())
             elif arg and self.curr == ',':
-                if tokens[-1].type == TT_COMMA:
+                if len(tokens) == 0 or tokens[-1].type == TT_COMMA:
                     return Error('SyntaxError', 'unexpected ","')
+                elif len(tokens) > 1 and tokens[-2].type != TT_COMMA:
+                    return Error('SyntaxError', 'expected ","')
+
                 tokens.append(Token(TT_COMMA))
                 self.next()
             else:
@@ -52,6 +56,11 @@ class Lexer:
 
             if len(tokens) > 0 and not isinstance(tokens[-1], Token):
                 return tokens[-1]
+
+        if arg and len(tokens) > 0 and tokens[-1].type == TT_COMMA:
+            return Error('SyntaxError', 'unexpected ","')
+        elif arg and len(tokens) > 1 and tokens[-2].type != TT_COMMA:
+            return Error('SyntaxError', 'expected ","')
 
         return tokens
 
