@@ -30,18 +30,19 @@ class Interpreter:
                     i = Interpreter(token.value[1], self.vars).interpret()
                     if isinstance(i, Error): return i
 
-                    r = getattr(self.builtins, func)(*i)
+                    try:
+                        r = (f := getattr(self.builtins, func))(*i)
+                    except TypeError:
+                        if len(i) > (f.__code__.co_argcount - 1):
+                            return Error('TypeError', f'{token.value[0]}() given more arguments than expected')
+                        else:
+                            return Error('TypeError', f'{token.value[0]}() missing required arguments')
                     if isinstance(r, Error): return r
 
                     res.append(r if func != 'return_' else [r, 'return'])
 
                     if func == 'return_':
                         break
-                except TypeError as e:
-                    if 'missing' in str(e):
-                        return Error('TypeError', f'{token.value[0]}() missing required arguments')
-                    else:
-                        return Error('TypeError', f'{token.value[0]}() given more arguments than expected')
                 except AttributeError:
                     return Error('BuiltinError', f'no builtin named {token.value[0]}')
                 except RecursionError:
