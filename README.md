@@ -3,7 +3,8 @@
 ![Certified: Shit](https://img.shields.io/badge/Certified-Shit-success)
 
 please dont use this it's named shitlang for a reason  
-code is completely trash
+code is completely trash  
+[docs here](https://github.com/sertdfyguhi/shitlang/blob/master/docs/shitlang.md)
 
 ## install
 why would you install this  
