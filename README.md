@@ -14,7 +14,7 @@ download source code and run main.py using python
 - [x] somehow implement if, ~~else if~~ and else
 - [x] arrays
 - [ ] dictionaries (how)
-- [ ] array builtins
+- [x] array builtins
 - [ ] documentation
 
 ## example

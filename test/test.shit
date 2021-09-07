@@ -1,6 +1,1 @@
-set('b', False)
-if(
-  function('test/condition.shit'),
-  function('test/if.shit'),
-  function('test/else.shit')
-)
+print(<1,2,3>)

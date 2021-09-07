@@ -10,7 +10,11 @@ class Builtins:
         self.vars = vars
 
     def print(self, *args):
-        print(*args)
+        p = list(args)
+        for i in range(len(p)):
+            if type(p[i]) == list:
+                p[i] = f'<{repr(p[i])[1:-1]}>'
+        print(*p)
 
     def set(self, key, value):
         if type(key) != str: 
@@ -167,6 +171,29 @@ class Builtins:
         elif type(array) != list:
             return Error('TypeError', "argument 'array' must be an array")
         return string.join(array)
+
+    def remove(self, array, index):
+        if type(array) != list:
+            return Error('TypeError', "argument 'array' must be an array")
+        elif type(index) != int:
+            return Error('TypeError', "argument 'index' must be an integer")
+        temp = array.copy()
+        temp.pop(index)
+        return temp
+
+    def append(self, array, value, index=None):
+        if type(array) != list:
+            return Error('TypeError', "argument 'array' must be an array")
+        elif index and type(index) != int:
+            return Error('TypeError', "argument 'index' must be an integer")
+        temp = array.copy()
+        temp.insert(index if index else len(array), value)
+        return temp
+
+    def reverse(self, a):
+        if type(a) not in [list, str]:
+            return Error('TypeError', "argument 'a' must be a string or an array")
+        return list(reversed(a))
 
     def split(self, deliminator, string):
         if type(deliminator) != str or type(string) != str:

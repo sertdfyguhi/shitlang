@@ -38,6 +38,7 @@ class Interpreter:
                     if func == 'return_':
                         break
                 except TypeError as e:
+                    print(e)
                     if 'missing' in str(e):
                         return Error('TypeError', f'{token.value[0]}() missing required arguments')
                     else:
