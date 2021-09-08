@@ -74,8 +74,7 @@ class Lexer:
             if not self.curr:
                 return Error('SyntaxError', 'unexpected EOF')
 
-            if self.curr == '\\':
-                if len(string) == 0 or string[-1] != '\\':
+            if self.curr == '\\' and (len(string) == 0 or string[-1] != '\\'):
                     self.next()
 
                     if not self.curr:
