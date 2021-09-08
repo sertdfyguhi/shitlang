@@ -16,7 +16,7 @@ download source code and run main.py using python
 - [x] arrays
 - [ ] dictionaries (how)
 - [x] array builtins
-- [ ] documentation
+- [x] documentation
 
 ## examples
 ### hello world
