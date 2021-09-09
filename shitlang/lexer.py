@@ -22,12 +22,16 @@ class Lexer:
     
     def tokenize(self, arg=False):
         tokens = []
-        in_comment = False
+        comment = ''
 
         while self.curr:
-            if in_comment:
-                if self.curr in '\n-':
-                    in_comment = not in_comment
+            if comment:
+                if (
+                    comment == ';' and self.curr == '\n'
+                ) or (
+                    comment == '-' and self.curr == '-'
+                ): 
+                    comment = None
                 self.next()
             elif self.curr in ' \t\n':
                 self.next()
@@ -35,8 +39,8 @@ class Lexer:
                 tokens.append(self.string())
             elif self.curr == '<':
                 tokens.append(self.array())
-            elif self.curr == '-':
-                in_comment = not in_comment
+            elif self.curr in '-;':
+                comment = self.curr
                 self.next()
             elif self.curr in digits + '-.':
                 tokens.append(self.number())

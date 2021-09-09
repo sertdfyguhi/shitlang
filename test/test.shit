@@ -1,1 +1,4 @@
-print(.1)
+; comment
+print('comment')
+- multi line
+comment - print('multi line comment')

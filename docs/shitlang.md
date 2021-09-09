@@ -11,9 +11,10 @@ set("name", "value")
 
 ## Comments
 ```
-- This is a comment
+; This is a comment
 print('comment')
-- This is an inline comment - print('inline comment')
+- This is a
+multi line comment - print('multi line comment')
 ```
 
 ## Types
