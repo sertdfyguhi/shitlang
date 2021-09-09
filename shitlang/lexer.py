@@ -1,7 +1,6 @@
 from string import digits, ascii_letters
 from .token import *
 from .error import Error
-from shitlang import token
 
 ESCAPES = {
     'n': '\n',
@@ -39,7 +38,7 @@ class Lexer:
             elif self.curr == '-':
                 in_comment = not in_comment
                 self.next()
-            elif self.curr in digits + '-':
+            elif self.curr in digits + '-.':
                 tokens.append(self.number())
             elif self.curr in ascii_letters:
                 tokens.append(self.func_call())
