@@ -239,3 +239,18 @@ class Builtins:
             func.run()
         else:
             if else_: else_.run()
+
+    def sum(self, array):
+        if type(array) != list:
+            return Error('TypeError', "argument 'array' must be an array")
+        return sum(array)
+
+    def min(self, array):
+        if type(array) != list or any(type(e) != int for e in array):
+            return Error('TypeError', "argument 'array' must be an array of integers")
+        return min(array)
+
+    def max(self, array):
+        if type(array) != list or any(type(e) != int for e in array):
+            return Error('TypeError', "argument 'array' must be an array of integers")
+        return max(array)
