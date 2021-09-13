@@ -254,3 +254,12 @@ class Builtins:
         if type(array) != list or any(type(e) != int for e in array):
             return Error('TypeError', "argument 'array' must be an array of integers")
         return max(array)
+
+    def set_index(self, index, value, array):
+        if type(index) != int:
+            return Error('TypeError', "argument 'index' must be an integer")
+        elif type(array) != list:
+            return Error('TypeError', "argument 'array' must be an array")
+        arr = array.copy()
+        arr[index] = value
+        return arr

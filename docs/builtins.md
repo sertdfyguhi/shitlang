@@ -35,3 +35,7 @@
 - split
 - while
 - if
+- sum
+- min
+- max
+- set_index
