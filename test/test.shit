@@ -1,4 +1,1 @@
-; comment
-print('comment')
-- multi line
-comment - print('multi line comment')
+print<input<''>>

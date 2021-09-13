@@ -161,7 +161,7 @@ class Lexer:
         in_str = False
         quote = None
 
-        if self.curr == ')': opens -= 1
+        if self.curr == '>': opens -= 1
 
         while opens > 0:
             if not self.curr:
@@ -174,11 +174,12 @@ class Lexer:
                 in_str = not in_str
                 quote = None
 
+            if self.curr == '<' and not in_str: opens += 1
+
             args += self.curr
             self.next()
 
-            if self.curr == '(' and not in_str: opens += 1
-            if self.curr == ')' and not in_str: opens -= 1
+            if self.curr == '>' and not in_str: opens -= 1
 
         self.next()
 
@@ -187,7 +188,7 @@ class Lexer:
     def func_call(self):
         name = ''
 
-        while (self.curr != '(' and
+        while (self.curr != '<' and
             self.curr and
             self.curr in ascii_letters + '_'
         ):
@@ -199,7 +200,7 @@ class Lexer:
             elif name == 'None':
                 return Token(TT_NONE)
 
-        if self.curr != '(':
+        if self.curr != '<':
             return Error('SyntaxError', 'expected function to be called')
 
         self.next()

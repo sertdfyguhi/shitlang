@@ -1,1 +1,1 @@
-return(equals(get('input'), '1'))
+return<equals<get<'input'>, '1'>>

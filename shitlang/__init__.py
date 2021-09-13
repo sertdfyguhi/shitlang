@@ -8,8 +8,7 @@ def run(code, vars=Variables()):
     tokens = lexer.tokenize()
     # return tokens
 
-    if isinstance(tokens, Error):
-        return tokens
+    if isinstance(tokens, Error): return tokens
 
     interpreter = Interpreter(tokens, vars)
     res = interpreter.interpret()
