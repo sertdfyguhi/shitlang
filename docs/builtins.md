@@ -39,3 +39,4 @@
 - min
 - max
 - set_index
+- swap

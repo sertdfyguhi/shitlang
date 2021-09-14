@@ -263,3 +263,12 @@ class Builtins:
         arr = array.copy()
         arr[index] = value
         return arr
+
+    def swap(self, index1, index2, array):
+        if type(index1) != int or type(index2) != int:
+            return Error('TypeError', "argument 'index1' and 'index2' must be an integer")
+        elif type(array) != list:
+            return Error('TypeError', "argument 'array' must be an array")
+        arr = array.copy()
+        arr[index1], arr[index2] = arr[index2], arr[index1]
+        return arr
