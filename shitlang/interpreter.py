@@ -2,6 +2,11 @@ from .error import Error
 from .builtins import Builtins
 from .token import *
 
+RETURN_FUNC_NAMES = [
+    'while',
+    'if'
+]
+
 RESERVED = [
     'not',
     'and',
@@ -17,7 +22,7 @@ class Interpreter:
         self.vars = vars
         self.builtins = Builtins(self.vars)
 
-    def interpret(self):
+    def interpret(self, args=False):
         res = []
 
         for token in self.tokens:
@@ -27,21 +32,22 @@ class Interpreter:
 
                     if token.value[0] in RESERVED:
                         func = token.value[0] + '_'
-                    i = Interpreter(token.value[1], self.vars).interpret()
+                    i = Interpreter(token.value[1], self.vars).interpret(True)
                     if isinstance(i, Error): return i
 
                     try:
                         r = (f := getattr(self.builtins, func))(*i)
+                        if isinstance(r, Error): return r
                     except TypeError:
                         if len(i) > (f.__code__.co_argcount - 1):
                             return Error('TypeError', f'{token.value[0]}() given more arguments than expected')
                         else:
                             return Error('TypeError', f'{token.value[0]}() missing required arguments')
-                    if isinstance(r, Error): return r
 
-                    res.append(r if func != 'return_' else [r, 'return'])
+                    res.append(r if token.value[0] != 'return' else [r, 'return'])
 
-                    if func == 'return_':
+                    if type(res[-1]) == list and len(res[-1]) > 1 and res[-1][1] == 'return':
+                        if args: res[-1] = res[-1][0]
                         break
                 except AttributeError:
                     return Error('BuiltinError', f'no builtin named {token.value[0]}')
@@ -52,8 +58,9 @@ class Interpreter:
                 if isinstance(r, Error): return r
 
                 res.append(r)
+            elif token.type == TT_COMMA:
+                continue
             else:
-                if token.type == TT_COMMA: continue
                 res.append(token.value)
 
         return res

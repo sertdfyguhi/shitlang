@@ -40,3 +40,4 @@
 - max
 - set_index
 - swap
+- length

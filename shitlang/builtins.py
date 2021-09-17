@@ -134,7 +134,7 @@ class Builtins:
         return Function(
             open(file).read(),
             params,
-            Variables() if not allow_use_vars else self.vars,
+            self.vars,
             allow_use_vars
         )
 
@@ -143,6 +143,7 @@ class Builtins:
             return Error('TypeError', "argument 'func' must be a function")
 
         r = func.run(*args)
+        if isinstance(r, Error): return r
         return None if type(r) != list else r[0]
 
     def return_(self, value=None):
@@ -212,9 +213,10 @@ class Builtins:
         if isinstance(c, Error): return c
 
         while c if type(c) != list else c[0]:
-            r = loop.run()
-            if isinstance(r, Error): return r
-            elif type(r) == list: return r[0]
+            res = loop.run()
+
+            if isinstance(res, Error): return res
+            elif res != None: return [res, 'return']
 
             c = condition.run()
             if isinstance(c, Error): return c
@@ -235,10 +237,11 @@ class Builtins:
         c = condition.run()
         if isinstance(c, Error): return c
 
-        if c if type(c) != list else c[0]:
-            func.run()
-        else:
-            if else_: else_.run()
+        res = (func if (None if type(c) != list else c[0]) else else_)
+        if res: res = res.run()
+
+        if isinstance(res, Error): return res
+        elif res != None: return [res, 'return']
 
     def sum(self, array):
         if type(array) != list:
@@ -272,3 +275,8 @@ class Builtins:
         arr = array.copy()
         arr[index1], arr[index2] = arr[index2], arr[index1]
         return arr
+
+    def length(self, value):
+        if type(value) not in [list, str]:
+            return Error('TypeError', "argument 'value' must be an array or string")
+        return len(value)
