@@ -138,9 +138,11 @@ class Builtins:
             allow_use_vars
         )
 
-    def run(self, func, *args):
+    def run(self, func, args):
         if not isinstance(func, Function):
             return Error('TypeError', "argument 'func' must be a function")
+        elif type(args) != list:
+            return Error('TypeError', "argument 'args' must be an array")
 
         r = func.run(*args)
         if isinstance(r, Error): return r
@@ -280,3 +282,10 @@ class Builtins:
         if type(value) not in [list, str]:
             return Error('TypeError', "argument 'value' must be an array or string")
         return len(value)
+
+    def slice(self, value, start, end=None):
+        if type(value) not in [list, str]:
+            return Error('TypeError', "argument 'value' must be an array or string")
+        elif type(start) != int or (type(end) != int and end is not None):
+            return Error('TypeError', "argument 'start' and 'end' must be an integer")
+        return value[start:end]

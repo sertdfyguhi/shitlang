@@ -41,3 +41,4 @@
 - set_index
 - swap
 - length
+- slice

@@ -30,7 +30,7 @@ None      - none
 ## Functions
 ### main.shit
 ```
-run(function("function.shit", <"param1", "param2">), "argument1", "argument2")
+run(function("function.shit", <"param1", "param2">), <"argument1", "argument2">)
 ```
 
 ### function.shit
