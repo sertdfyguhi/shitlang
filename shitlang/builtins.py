@@ -289,3 +289,24 @@ class Builtins:
         elif type(start) != int or (type(end) != int and end is not None):
             return Error('TypeError', "argument 'start' and 'end' must be an integer")
         return value[start:end]
+
+    def run_builtin(self, builtin, args):
+        if type(builtin) != str:
+            return Error('TypeError', "argument 'builtin' must be a string")
+        elif type(args) != list:
+            return Error('TypeError', "argument 'args' must be an array")
+
+        try:
+            f = getattr(
+                self,
+                builtin,
+                lambda *a: Error('BuiltinError', f'no builtin named {builtin}')
+            )
+            return f(*args)
+        except TypeError:
+            if len(args) > (f.__code__.co_argcount - 1):
+                return Error('TypeError', f'{builtin}() given more arguments than expected')
+            else:
+                return Error('TypeError', f'{builtin}() missing required arguments')
+        except AttributeError:
+            return Error('BuiltinError', f'no builtin named {builtin}')

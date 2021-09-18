@@ -42,3 +42,4 @@
 - swap
 - length
 - slice
+- run_builtin
