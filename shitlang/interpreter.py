@@ -38,7 +38,8 @@ class Interpreter:
                     try:
                         r = (f := getattr(self.builtins, func))(*i)
                         if isinstance(r, Error): return r
-                    except TypeError:
+                    except TypeError as e:
+                        print(e)
                         if len(i) > (f.__code__.co_argcount - 1):
                             return Error('TypeError', f'{token.value[0]}() given more arguments than expected')
                         else:

@@ -13,7 +13,6 @@ download source code and run main.py using python
 - [x] escape characters
 - [x] somehow implement if, ~~else if~~ and else
 - [x] arrays
-- [ ] dictionaries (how)
 - [x] array builtins
 - [x] documentation
 

@@ -1,2 +1,1 @@
-run_builtin('set', <'var', 1>)
-print(get('var'))
+print("Hello World!")

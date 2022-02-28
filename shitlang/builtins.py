@@ -1,20 +1,30 @@
-from .vars import Variables
 from .function import Function
 from .token import *
 from .error import Error
-from math import sqrt
 from os.path import exists
+from math import sqrt
+from io import StringIO
+import sys
 
 class Builtins:
     def __init__(self, vars) -> None:
         self.vars = vars
 
     def print(self, *args):
-        p = list(args)
-        for i in range(len(p)):
-            if type(p[i]) == list:
-                p[i] = f'<{repr(p[i])[1:-1]}>'
-        print(*p)
+        print(self._print(args))
+
+    def _print(self, args, array=False):
+        data = args if type(args) == list else list(args)
+
+        for i in range(len(data)):
+            if type(data[i]) == list:
+                data[i] = f'<{self._print(data[i], True)}>'
+            elif array and type(data[i]) == str:
+                data[i] = repr(data[i])
+            else:
+                data[i] = str(data[i])
+        
+        return (', ' if array else ' ').join(data)
 
     def set(self, key, value):
         if type(key) != str: 

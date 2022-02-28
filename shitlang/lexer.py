@@ -122,30 +122,28 @@ class Lexer:
 
     def array(self):
         array_str = ''
-        opens = 1
+        brackets = 1
         in_str = False
         quote = None
 
         self.next()
 
-        if self.curr == '>': opens -= 1
+        if self.curr == '>': brackets -= 1
 
-        while opens > 0:
+        while brackets > 0:
             if not self.curr:
-                return Error('SyntaxError', 'unexpected EOF')   
-
-            if not quote and self.curr in '"\'':
-                quote = self.curr
+                return Error('SyntaxError', 'unexpected EOF')
 
             if self.curr == quote and self.code[self.i-1] != '\\':
                 in_str = not in_str
-                quote = None
+                quote = self.curr if not quote and self.curr in '"\'' else None
+
+            if self.curr == '<' and not in_str: brackets += 1
 
             array_str += self.curr
             self.next()
 
-            if self.curr == '<' and not in_str: opens += 1
-            if self.curr == '>' and not in_str: opens -= 1
+            if self.curr == '>' and not in_str: brackets -= 1
 
         self.next()
 
@@ -157,29 +155,26 @@ class Lexer:
 
     def args(self):
         args = ''
-        opens = 1
+        brackets = 1
         in_str = False
         quote = None
 
-        if self.curr == ')': opens -= 1
+        if self.curr == ')': brackets -= 1
 
-        while opens > 0:
+        while brackets > 0:
             if not self.curr:
-                return Error('SyntaxError', 'unexpected EOF')   
-
-            if not quote and self.curr in '"\'':
-                quote = self.curr
+                return Error('SyntaxError', 'unexpected EOF')
 
             if self.curr == quote and self.code[self.i-1] != '\\':
                 in_str = not in_str
-                quote = None
+                quote = self.curr if not quote and self.curr in '"\'' else None
 
-            if self.curr == '(' and not in_str: opens += 1
+            if self.curr == '(' and not in_str: brackets += 1
 
             args += self.curr
             self.next()
 
-            if self.curr == ')' and not in_str: opens -= 1
+            if self.curr == ')' and not in_str: brackets -= 1
 
         self.next()
 
