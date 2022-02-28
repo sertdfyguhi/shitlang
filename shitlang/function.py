@@ -7,11 +7,11 @@ class Function:
     def __init__(self, code, params, vars_=Variables(), allow_use_vars=False) -> None:
         self.code = code
         self.params = params
-        self.vars_original = vars_
+        self.orig_vars = vars_
         self.allow_use_vars = allow_use_vars
 
     def run(self, *args):
-        self.vars = Variables() if not self.allow_use_vars else self.vars_original.copy(self.allow_use_vars)
+        self.vars = Variables() if not self.allow_use_vars else self.orig_vars.copy(self.allow_use_vars)
 
         if len(args) < len(self.params):
             return Error('TypeError', 'function missing arguments')
