@@ -26,20 +26,20 @@ class Builtins:
         
         return (', ' if array else ' ').join(data)
 
-    def set(self, key, value):
-        if type(key) != str: 
-            return Error('TypeError', "argument 'key' must be a string")
-        return self.vars.set(key, value)
+    def set(self, name, value):
+        if type(name) != str: 
+            return Error('TypeError', "argument 'name' must be a string")
+        return self.vars.set(name, value)
 
-    def get(self, key):
-        if type(key) != str: 
-            return Error('TypeError', "argument 'key' must be a string")
-        return self.vars.get(key)
+    def get(self, name):
+        if type(name) != str: 
+            return Error('TypeError', "argument 'name' must be a string")
+        return self.vars.get(name)
 
-    def delete(self, key): 
-        if type(key) != str: 
-            return Error('TypeError', "argument 'key' must be a string")
-        return self.vars.delete(key)
+    def delete(self, name): 
+        if type(name) != str: 
+            return Error('TypeError', "argument 'name' must be a string")
+        return self.vars.delete(name)
 
     def input(self, prompt):
         if type(prompt) != str: 
@@ -161,10 +161,10 @@ class Builtins:
     def return_(self, value=None):
         return value
 
-    def replace(self, a, replace, string):
-        if any(type(x) != str for x in [a, replace, string]):
-            return Error('TypeError', "arguments 'a', 'replace' and 'string' must be a string")
-        return string.replace(a, replace)
+    def replace(self, replace, replacement, string):
+        if any(type(x) != str for x in [replace, replacement, string]):
+            return Error('TypeError', "arguments 'replace', 'replacement' and 'string' must be a string")
+        return string.replace(replace, replacement)
 
     def format(self, string, *args):
         if type(string) != str:
@@ -178,12 +178,12 @@ class Builtins:
             return Error('TypeError', "argument 'index' must be an integer")
         return array[index]
 
-    def join(self, string, array):
-        if type(string) != str:
-            return Error('TypeError', "argument 'string' must be a string")
-        elif type(array) != list:
-            return Error('TypeError', "argument 'array' must be an array")
-        return string.join(array)
+    def join(self, separator, array):
+        if type(separator) != str:
+            return Error('TypeError', "argument 'separator' must be a string")
+        elif type(array) != list or any(type(el) != str for el in array):
+            return Error('TypeError', "argument 'array' must be an array of strings")
+        return separator.join(array)
 
     def remove(self, array, index):
         if type(array) != list:
@@ -256,18 +256,18 @@ class Builtins:
         elif res != None: return [res, 'return']
 
     def sum(self, array):
-        if type(array) != list:
-            return Error('TypeError', "argument 'array' must be an array")
+        if type(array) != list or any(type(e) not in [int, float] for e in array):
+            return Error('TypeError', "argument 'array' must be an array of numbers")
         return sum(array)
 
     def min(self, array):
-        if type(array) != list or any(type(e) != int for e in array):
-            return Error('TypeError', "argument 'array' must be an array of integers")
+        if type(array) != list or any(type(e) not in [int, float] for e in array):
+            return Error('TypeError', "argument 'array' must be an array of numbers")
         return min(array)
 
     def max(self, array):
-        if type(array) != list or any(type(e) != int for e in array):
-            return Error('TypeError', "argument 'array' must be an array of integers")
+        if type(array) != list or any(type(e) not in [int, float] for e in array):
+            return Error('TypeError', "argument 'array' must be an array of numbers")
         return max(array)
 
     def set_index(self, index, value, array):
