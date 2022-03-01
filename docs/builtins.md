@@ -43,3 +43,6 @@
 - `length(value: array | string) -> int`: returns the length of `value`
 - `slice(value: array | string, start: int, end: int = None) -> array | string | None`: slices `value` from `start` to `end` and returns it
 - `run_builtin(builtin: string, args: array) -> any`: runs a builtin(alternative method)
+- `sin(x: int | float)`: returns the sine of `x`
+- `cos(x: int | float)`: returns the cosine of `x`
+- `tan(x: int | float)`: returns the tangent of `x`

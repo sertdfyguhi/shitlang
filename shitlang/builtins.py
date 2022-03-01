@@ -2,7 +2,7 @@ from .function import Function
 from .token import *
 from .error import Error
 from os.path import exists
-from math import sqrt
+import math
 
 class Builtins:
     def __init__(self, vars) -> None:
@@ -117,7 +117,7 @@ class Builtins:
     def sqrt(self, a):
         if type(a) not in [int, float]: 
             return Error('TypeError', "argument 'a' must be a number")
-        return sqrt(a)
+        return math.sqrt(a)
 
     def chr(self, a):
         if type(a) != int:
@@ -318,3 +318,18 @@ class Builtins:
                 return Error('TypeError', f'{builtin}() missing required arguments')
         except AttributeError:
             return Error('BuiltinError', f'no builtin named {builtin}')
+
+    def sin(self, x):
+        if type(x) not in [int, float]:
+            return Error('TypeError', "argument 'x' must be a number")
+        return math.sin(x)
+
+    def cos(self, x):
+        if type(x) not in [int, float]:
+            return Error('TypeError', "argument 'x' must be a number")
+        return math.cos(x)
+
+    def tan(self, x):
+        if type(x) not in [int, float]:
+            return Error('TypeError', "argument 'x' must be a number")
+        return math.tan(x)
