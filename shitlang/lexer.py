@@ -169,7 +169,7 @@ class Lexer:
             if not self.curr:
                 return Error('SyntaxError', 'unexpected EOF')
 
-            if not comment and self.curr in '-;':
+            if not in_str and not comment and self.curr in '-;':
                 comment = self.curr
             elif comment:
                 if (
@@ -178,15 +178,12 @@ class Lexer:
                     comment == '-' and self.curr == '-'
                 ): 
                     comment = None
-
                     self.next()
-
                     if not comment and self.curr == ')' and not in_str: brackets -= 1
-
                     continue
 
             if not comment:
-                if self.curr == quote and self.code[self.i-1] != '\\':
+                if (self.curr == quote and self.code[self.i-1] != '\\') or self.curr in '"\'':
                     in_str = not in_str
                     quote = self.curr if not quote and self.curr in '"\'' else None
 
@@ -223,7 +220,6 @@ class Lexer:
         self.next()
 
         args = self.args()
-
         if isinstance(args, Error): return args
 
         return Token(TT_FUNC_CALL, [name, args])
