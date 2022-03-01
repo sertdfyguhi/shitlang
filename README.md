@@ -7,7 +7,7 @@ please dont use this it's named shitlang for a reason
 
 ## install
 why would you install this  
-download source code and run main.py using python
+download source code and run shitlang.py using python
 
 ## todo
 - [x] escape characters
