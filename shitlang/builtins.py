@@ -3,8 +3,6 @@ from .token import *
 from .error import Error
 from os.path import exists
 from math import sqrt
-from io import StringIO
-import sys
 
 class Builtins:
     def __init__(self, vars) -> None:

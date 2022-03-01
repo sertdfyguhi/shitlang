@@ -200,8 +200,6 @@ class Lexer:
 
         self.next()
 
-        print(args)
-
         return Lexer(args).tokenize(True)
 
     def func_call(self):
