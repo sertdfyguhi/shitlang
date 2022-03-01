@@ -22,7 +22,7 @@ class Lexer:
     
     def tokenize(self, arg=False):
         tokens = []
-        comment = ''
+        comment = None
 
         while self.curr:
             if comment:
@@ -115,6 +115,9 @@ class Lexer:
         if number.count('.') > 1:
             return Error('SyntaxError', 'unexpected decimal point')
 
+        if number == '.':
+            return Error('SyntaxError', 'invalid syntax')
+
         return Token(
             TT_NUMBER,
             int(number) if number.count('.') == 0 else float(number)
@@ -158,6 +161,7 @@ class Lexer:
         brackets = 1
         in_str = False
         quote = None
+        comment = None
 
         if self.curr == ')': brackets -= 1
 
@@ -165,18 +169,38 @@ class Lexer:
             if not self.curr:
                 return Error('SyntaxError', 'unexpected EOF')
 
-            if self.curr == quote and self.code[self.i-1] != '\\':
-                in_str = not in_str
-                quote = self.curr if not quote and self.curr in '"\'' else None
+            if not comment and self.curr in '-;':
+                comment = self.curr
+            elif comment:
+                if (
+                    comment == ';' and self.curr == '\n'
+                ) or (
+                    comment == '-' and self.curr == '-'
+                ): 
+                    comment = None
 
-            if self.curr == '(' and not in_str: brackets += 1
+                    self.next()
 
-            args += self.curr
+                    if not comment and self.curr == ')' and not in_str: brackets -= 1
+
+                    continue
+
+            if not comment:
+                if self.curr == quote and self.code[self.i-1] != '\\':
+                    in_str = not in_str
+                    quote = self.curr if not quote and self.curr in '"\'' else None
+
+                if self.curr == '(' and not in_str: brackets += 1
+
+                args += self.curr
+
             self.next()
 
-            if self.curr == ')' and not in_str: brackets -= 1
+            if not comment and self.curr == ')' and not in_str: brackets -= 1
 
         self.next()
+
+        print(args)
 
         return Lexer(args).tokenize(True)
 
