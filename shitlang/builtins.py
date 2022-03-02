@@ -8,11 +8,11 @@ class Builtins:
     def __init__(self, vars) -> None:
         self.vars = vars
 
-    def print(self, *args):
-        print(self._print(args))
+    def print(self, *data):
+        print(self._print(data))
 
-    def _print(self, args, array=False):
-        data = args if type(args) == list else list(args)
+    def _print(self, values, array=False):
+        data = values if type(values) == list else list(values)
 
         for i in range(len(data)):
             if type(data[i]) == list:
@@ -302,26 +302,26 @@ class Builtins:
             return Error('TypeError', "argument 'start' and 'end' must be an integer")
         return value[start:end]
 
-    def run_builtin(self, builtin, args):
-        if type(builtin) != str:
-            return Error('TypeError', "argument 'builtin' must be a string")
+    def run_builtin(self, name, args):
+        if type(name) != str:
+            return Error('TypeError', "argument 'name' must be a string")
         elif type(args) != list:
             return Error('TypeError', "argument 'args' must be an array")
 
         try:
             f = getattr(
                 self,
-                builtin,
-                lambda *a: Error('BuiltinError', f'no builtin named {builtin}')
+                name,
+                lambda *_: Error('BuiltinError', f'no builtin named {name}')
             )
             return f(*args)
         except TypeError:
             if len(args) > (f.__code__.co_argcount - 1):
-                return Error('TypeError', f'{builtin}() given more arguments than expected')
+                return Error('TypeError', f'{name}() given more arguments than expected')
             else:
-                return Error('TypeError', f'{builtin}() missing required arguments')
+                return Error('TypeError', f'{name}() missing required arguments')
         except AttributeError:
-            return Error('BuiltinError', f'no builtin named {builtin}')
+            return Error('BuiltinError', f'no builtin named {name}')
 
     def sin(self, x):
         if type(x) not in [int, float]:

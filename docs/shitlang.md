@@ -14,7 +14,7 @@ set("name", "value")
 ; This is a comment
 print('comment')
 - This is a
-multi line comment - print('multi line comment')
+multi line comment -print('multi line comment')
 ```
 
 ## Types
