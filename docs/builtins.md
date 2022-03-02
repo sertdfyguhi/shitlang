@@ -13,9 +13,9 @@
 - `greater_or_equal(a: int | float, b: int | float) -> bool`: returns `True` if `a` is greater than or equal `b`
 - `less(a: int | float, b: int | float) -> bool`: returns `True` if `a` is less than `b`
 - `less_or_equal(a: int | float, b: int | float) -> bool`: returns `True` if `a` is less than or equal `b`
-- `add(a: any, b: any) -> any`: returns `a` added to `b`
+- `add(*numbers: int | float) -> any`: returns all the arguments added together
 - `subtract(a: int | float, b: int | float) -> int | float`: returns `a` subtracted by `b`
-- `multiply(a: !string, b: !string) -> !string`: returns `a` multiplied by `b`
+- `multiply(a: int | float, b: int | float) -> int | float`: returns `a` multiplied by `b`
 - `divide(a: int | float, b: int | float) -> int | float`: returns `a` divided by `b`
 - `modulus(a: int | float, b: int | float) -> int | float`: returns the remainder of `a` divided by `b`
 - `power(a: int | float, b: int | float) -> int | float`: returns `a` to the power of `b`
@@ -35,14 +35,14 @@
 - `split(deliminator: string, string: string) -> array` splits `string` on every instance of `deliminator` and returns it
 - `while(condition: function, loop: function)`: creates a while loop
 - `if(condition: function, func: function, else_: function = None) -> any`: runs `func` if `condition` is `True` else run `else_` if there is one
-- `sum(array: array[int | float]) -> int | float`: adds every number in `array` and returns it
 - `min(array: array[int | float]) -> int | float`: returns the minimum number in `array`
 - `max(array: array[int | float]) -> int | float`: returns the maximum number in `array`
 - `set_index(index: int, value: any, array: array) -> array`: sets `index` of `array` to `value` and returns it
 - `swap(index1: int, index2: int, array: array) -> array`: swaps `index1` with `index2` in `array` and returns it
 - `length(value: array | string) -> int`: returns the length of `value`
 - `slice(value: array | string, start: int, end: int = None) -> array | string | None`: slices `value` from `start` to `end` and returns it
-- `run_builtin(builtin: string, args: array) -> any`: runs a builtin(alternative method)
-- `sin(x: int | float)`: returns the sine of `x`
-- `cos(x: int | float)`: returns the cosine of `x`
-- `tan(x: int | float)`: returns the tangent of `x`
+- `run_builtin(name: string, args: array) -> any`: builtin to run a builtin and returns the result
+- `sin(x: int | float) -> float`: returns the sine of `x`
+- `cos(x: int | float) -> float`: returns the cosine of `x`
+- `tan(x: int | float) -> float`: returns the tangent of `x`
+- `repeat(data: string | array, factor: int) -> string | array`: repeats `data` by `factor`

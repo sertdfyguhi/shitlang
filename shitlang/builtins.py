@@ -87,11 +87,14 @@ class Builtins:
             return Error('TypeError', "arguments 'a' and 'b' must be a number")
         return a <= b
 
-    def add(self, a, b):
+    def add(self, *numbers):
+        if len(numbers) == 0:
+            return Error('TypeError', "argument 'numbers' must be an array of numbers that has at least one value")
+
         try:
-            return a + b
+            return sum(numbers)
         except TypeError:
-            return Error('TypeError', "arguments 'a' and 'b' cannot be added")
+            return Error('TypeError', "argument 'numbers' must be an array of numbers that has at least one value")
 
     def subtract(self, a, b):
         if type(a) not in [int, float] or type(b) not in [int, float]: 
@@ -99,8 +102,8 @@ class Builtins:
         return a - b
 
     def multiply(self, a, b):
-        if type(b) == str:
-            return Error('TypeError', "argument 'b' must not be a string")
+        if type(a) not in [int, float] or type(b) not in [int, float]:
+            return Error('TypeError', "argument 'a' and 'b' must be a number")
         return a * b
 
     def divide(self, a, b):
@@ -257,11 +260,6 @@ class Builtins:
         if isinstance(res, Error): return res
         elif res != None: return [res, 'return']
 
-    def sum(self, array):
-        if type(array) != list or any(type(e) not in [int, float] for e in array):
-            return Error('TypeError', "argument 'array' must be an array of numbers")
-        return sum(array)
-
     def min(self, array):
         if type(array) != list or any(type(e) not in [int, float] for e in array):
             return Error('TypeError', "argument 'array' must be an array of numbers")
@@ -337,3 +335,10 @@ class Builtins:
         if type(x) not in [int, float]:
             return Error('TypeError', "argument 'x' must be a number")
         return math.tan(x)
+
+    def repeat(self, data, factor):
+        if type(data) not in [str, list]:
+            return Error('TypeError', "argument 'data' must be a string or an array")
+        elif type(factor) != int:
+            return Error('TypeError', "argument 'factor' must be an int")
+        return data * factor

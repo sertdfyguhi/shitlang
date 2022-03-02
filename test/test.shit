@@ -1,1 +1,1 @@
-print(run_builtin('a', <1, 2>))
+print(add())

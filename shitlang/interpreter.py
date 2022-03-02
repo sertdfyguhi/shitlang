@@ -28,21 +28,23 @@ class Interpreter:
         for token in self.tokens:
             if token.type == TT_FUNC_CALL:
                 try:
-                    func = token.value[0]
+                    name = token.value[0]
 
                     if token.value[0] in RESERVED:
-                        func = token.value[0] + '_'
-                    i = Interpreter(token.value[1], self.vars).interpret(True)
-                    if isinstance(i, Error): return i
+                        name = token.value[0] + '_'
+
+                    arguments = Interpreter(token.value[1], self.vars).interpret(True)
+                    if isinstance(arguments, Error): return arguments
 
                     try:
-                        r = (f := getattr(self.builtins, func))(*i)
+                        r = (builtin := getattr(self.builtins, name))(*arguments)
                         if isinstance(r, Error): return r
                     except TypeError as e:
-                        print(e)
-                        if len(i) > (f.__code__.co_argcount - 1):
+                        # .__code__.co_argcount is how many parameters the function has
+                        # len(.__defaults__) gets the amount of optional parameters
+                        if len(arguments) > (builtin.__code__.co_argcount - 1):
                             return Error('TypeError', f'{token.value[0]}() given more arguments than expected')
-                        else:
+                        elif len(arguments) < (builtin.__code__.co_argcount - len(builtin.__defaults__)):
                             return Error('TypeError', f'{token.value[0]}() missing required arguments')
 
                     res.append(r if token.value[0] != 'return' else [r, 'return'])
@@ -55,10 +57,10 @@ class Interpreter:
                 except RecursionError:
                     return Error('RecursionError', 'maximum recursion depth exceeded')
             elif token.type == TT_ARRAY:
-                r = Interpreter(token.value, self.vars).interpret()
-                if isinstance(r, Error): return r
+                array = Interpreter(token.value, self.vars).interpret()
+                if isinstance(array, Error): return r
 
-                res.append(r)
+                res.append(array)
             elif token.type == TT_COMMA:
                 continue
             else:
