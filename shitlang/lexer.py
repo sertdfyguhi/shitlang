@@ -204,16 +204,17 @@ class Lexer:
     def func_call(self):
         name = ''
 
-        while (self.curr != '(' and
+        while (
+            self.curr != '(' and
             self.curr and
             self.curr in ascii_letters + '_'
         ):
             name += self.curr
             self.next()
 
-            if name in ['True', 'False']:
-                return Token(TT_BOOL, True if name == 'True' else False)
-            elif name == 'None':
+            if name in ['true', 'false']:
+                return Token(TT_BOOL, True if name == 'true' else False)
+            elif name == 'none':
                 return Token(TT_NONE)
 
         if self.curr != '(':

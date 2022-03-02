@@ -21,8 +21,8 @@ multi line comment - print('multi line comment')
 ```
 1         - integer
 1.2       - float
-True      - boolean
-None      - none
+true      - boolean
+none      - none
 "string"  - string
 <1, 2, 3> - array
 ```

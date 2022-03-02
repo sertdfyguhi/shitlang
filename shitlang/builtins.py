@@ -17,6 +17,10 @@ class Builtins:
         for i in range(len(data)):
             if type(data[i]) == list:
                 data[i] = f'<{self._print(data[i], True)}>'
+            elif type(data[i]) == bool:
+                data[i] = 'true' if data[i] else 'false'
+            elif data[i] == None:
+                data[i] = 'none'
             elif array and type(data[i]) == str:
                 data[i] = repr(data[i])
             else:
