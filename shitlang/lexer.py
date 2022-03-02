@@ -8,6 +8,7 @@ ESCAPES = {
     't': '\t',
     '"': '"',
     "'": "'",
+    "\\": "\\",
 }
 
 class Lexer:
@@ -77,18 +78,19 @@ class Lexer:
             if not self.curr:
                 return Error('SyntaxError', 'unexpected EOF')
 
-            if self.curr == '\\' and (len(string) == 0 or string[-1] != '\\'):
-                    self.next()
+            if self.curr == '\\':
+                self.next()
 
-                    if not self.curr:
-                        return Error('SyntaxError', 'unexpected EOF')
+                if not self.curr:
+                    return Error('SyntaxError', 'unexpected EOF')
 
-                    if self.curr not in ESCAPES:
-                        return Error('SyntaxError', 'invalid escape character')
+                if self.curr not in ESCAPES:
+                    return Error('SyntaxError', 'invalid escape character')
 
-                    string += ESCAPES[self.curr]
-                    self.next()
-                    continue
+                string += ESCAPES[self.curr]
+
+                self.next()
+                continue
 
             string += self.curr
             self.next()
