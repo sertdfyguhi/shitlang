@@ -2,6 +2,7 @@ from .function import Function
 from .token import *
 from .error import Error
 from os.path import exists
+import random
 import math
 
 class Builtins:
@@ -210,7 +211,7 @@ class Builtins:
 
     def reverse(self, a):
         if type(a) not in [list, str]:
-            return Error('TypeError', "argument 'a' must be a string or an array")
+            return Error('TypeError', "argument 'a' must be a string or array")
         return list(reversed(a))
 
     def split(self, deliminator, string):
@@ -338,7 +339,13 @@ class Builtins:
 
     def repeat(self, data, factor):
         if type(data) not in [str, list]:
-            return Error('TypeError', "argument 'data' must be a string or an array")
+            return Error('TypeError', "argument 'data' must be a string or array")
         elif type(factor) != int:
             return Error('TypeError', "argument 'factor' must be an int")
         return data * factor
+
+    def random(self, seed=None):
+        if seed and type(seed) not in [int, float, str]:
+            return Error('TypeError', "argument 'seed' must be an int, float or string")
+        random.seed(seed)
+        return random.random()

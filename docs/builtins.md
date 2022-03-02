@@ -24,25 +24,26 @@
 - `ord(a: string) -> int`: returns the ascii code of ascii character
 - `function(file: string, params: array = [], allow_use_vars: bool = False) -> function`: creates a function
 - `run(func: function, args: array) -> any`: runs a function
-- `return(value: any = None)`: used in functions to return values and stop execution
+- `return(value: any = none)`: used in functions to return values and stop execution
 - `replace(replace: string, replacement: string, string: string) -> string`: replaces every instance of `replace` with `replacement` in `string` and returns it
 - `format(string: str, *args: any) -> string`: returns formatted `string` using `args`
 - `index(array: array, index: int) -> any`: returns the value of `index` in `array`
 - `join(separator: string, array: array[string]) -> string`: joins `array` using `separator` and returns it
 - `remove(array: array, index: int) -> array`: removes `index` from `array` and returns it
-- `append(array: array, value: any, index: int = None) -> array`: inserts `value` into `index` of `array` and returns it
+- `append(array: array, value: any, index: int = none) -> array`: inserts `value` into `index` of `array` and returns it
 - `reverse(a: array | string) -> array | string`: returns `a` reversed
 - `split(deliminator: string, string: string) -> array` splits `string` on every instance of `deliminator` and returns it
 - `while(condition: function, loop: function)`: creates a while loop
-- `if(condition: function, func: function, else_: function = None) -> any`: runs `func` if `condition` is `True` else run `else_` if there is one
+- `if(condition: function, func: function, else_: function = none) -> any`: runs `func` if `condition` is `True` else run `else_` if there is one
 - `min(array: array[int | float]) -> int | float`: returns the minimum number in `array`
 - `max(array: array[int | float]) -> int | float`: returns the maximum number in `array`
 - `set_index(index: int, value: any, array: array) -> array`: sets `index` of `array` to `value` and returns it
 - `swap(index1: int, index2: int, array: array) -> array`: swaps `index1` with `index2` in `array` and returns it
 - `length(value: array | string) -> int`: returns the length of `value`
-- `slice(value: array | string, start: int, end: int = None) -> array | string | None`: slices `value` from `start` to `end` and returns it
+- `slice(value: array | string, start: int, end: int = none) -> array | string | none`: slices `value` from `start` to `end` and returns it
 - `run_builtin(name: string, args: array) -> any`: builtin to run a builtin and returns the result
 - `sin(x: int | float) -> float`: returns the sine of `x`
 - `cos(x: int | float) -> float`: returns the cosine of `x`
 - `tan(x: int | float) -> float`: returns the tangent of `x`
 - `repeat(data: string | array, factor: int) -> string | array`: repeats `data` by `factor`
+- `random(seed: int | float | string = none) -> float`: returns a pseudo-random float from 0 to 1 and uses `seed` if `seed` is provided
