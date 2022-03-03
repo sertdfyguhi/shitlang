@@ -1,9 +1,19 @@
+from types import NoneType
+from os.path import exists
 from .function import Function
 from .token import *
 from .error import *
-from os.path import exists
 import random
 import math
+
+TYPE_TO_STRING_TABLE = {
+    str: 'str',
+    int: 'int',
+    float: 'float',
+    bool: 'bool',
+    list: 'array',
+    NoneType: 'none'
+}
 
 class Builtins:
     def __init__(self, vars) -> None:
@@ -387,3 +397,6 @@ class Builtins:
             return bool(value)
         except ValueError:
             return TypeError_("argument 'value' cannot be converted to bool")
+
+    def type(self, value):
+        return TYPE_TO_STRING_TABLE[type(value)]
