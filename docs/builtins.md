@@ -1,5 +1,5 @@
 # Builtins
-- `print(*args: any)`: print to console
+- `print(*data: any)`: print to console
 - `set(name: string, value: any)`: set a variable with `value`
 - `get(name: string) -> any`: returns the value of a variable
 - `delete(name: string)`: delete a variable
@@ -51,3 +51,7 @@
 - `floor(number: float) -> int`: rounds `number` down to largest number that is less than `number`
 - `ceil(number: float) -> int`: rounds `number` up to next largest number
 - `sum(array: array[int | float]) -> int | float`: adds every number in `array` and returns it
+- `to_string(value: any) -> string`: returns `value` converted into a `string`
+- `to_int(value: any) -> int`: returns `value` converted into a `int`
+- `to_float(value: any) -> float`: returns `value` converted into a `float`
+- `to_bool(value: any) -> bool`: returns `value` converted into a `bool`

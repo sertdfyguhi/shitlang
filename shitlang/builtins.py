@@ -12,9 +12,6 @@ class Builtins:
     def print(self, *data):
         print(self._print(data))
 
-    def print_string(self, *data):
-        return self._print(data)
-
     def _print(self, values, array=False):
         data = values if type(values) == list else list(values)
 
@@ -369,3 +366,24 @@ class Builtins:
         if type(array) != list or any(type(e) not in [int, float] for e in array):
             return Error('TypeError', "argument 'array' must be an array of numbers")
         return sum(array)
+
+    def to_string(self, value):
+        return self._print([value])
+
+    def to_int(self, value):
+        try:
+            return int(value)
+        except ValueError:
+            return Error('TypeError', "argument 'value' cannot be converted to int")
+
+    def to_float(self, value):
+        try:
+            return float(value)
+        except ValueError:
+            return Error('TypeError', "argument 'value' cannot be converted to float")
+
+    def to_bool(self, value):
+        try:
+            return bool(value)
+        except ValueError:
+            return Error('TypeError', "argument 'value' cannot be converted to bool")

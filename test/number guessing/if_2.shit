@@ -1,1 +1,1 @@
-print(add('you lost :((\nthe number was ', print_string(get('num'))))
+print(add('you lost :((\nthe number was ', to_string(get('num'))))

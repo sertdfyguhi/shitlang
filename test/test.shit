@@ -1,0 +1,1 @@
+print(add(to_int('2'), 1))
