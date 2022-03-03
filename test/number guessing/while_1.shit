@@ -1,0 +1,2 @@
+if(function('condition_2.shit'), function('if_1.shit'))
+set('try', add(get('try'), 1))

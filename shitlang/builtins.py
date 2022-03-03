@@ -12,6 +12,9 @@ class Builtins:
     def print(self, *data):
         print(self._print(data))
 
+    def print_string(self, *data):
+        return self._print(data)
+
     def _print(self, values, array=False):
         data = values if type(values) == list else list(values)
 
@@ -88,14 +91,11 @@ class Builtins:
             return Error('TypeError', "arguments 'a' and 'b' must be a number")
         return a <= b
 
-    def add(self, *numbers):
-        if len(numbers) == 0:
-            return Error('TypeError', "argument 'numbers' must be an array of numbers that has at least one value")
-
+    def add(self, a, b):
         try:
-            return sum(numbers)
+            return a + b
         except TypeError:
-            return Error('TypeError', "argument 'numbers' must be an array of numbers that has at least one value")
+            return Error('TypeError', "arguments 'a' and 'b' cannot be added")
 
     def subtract(self, a, b):
         if type(a) not in [int, float] or type(b) not in [int, float]: 
@@ -140,7 +140,7 @@ class Builtins:
     def function(self, file, params=[], allow_use_vars=False):
         if type(file) != str:
             return Error('TypeError', "argument 'file' must be a string")
-        elif any(type(param) != str for param in params):
+        elif type(params) != list or any(type(param) != str for param in params):
             return Error('TypeError', "argument 'params' must be an array of strings")
         elif type(allow_use_vars) != bool:
             return Error('TypeError', "argument 'allow_use_vars' must be a boolean")
@@ -349,3 +349,23 @@ class Builtins:
             return Error('TypeError', "argument 'seed' must be an int, float or string")
         random.seed(seed)
         return random.random()
+
+    def round(self, number):
+        if type(number) != float:
+            return Error('TypeError', "argument 'number' must be a float")
+        return round(number)
+
+    def floor(self, number):
+        if type(number) != float:
+            return Error('TypeError', "argument 'number' must be a float")
+        return math.floor(number)
+
+    def ceil(self, number):
+        if type(number) != float:
+            return Error('TypeError', "argument 'number' must be a float")
+        return math.ceil(number)
+
+    def sum(self, array):
+        if type(array) != list or any(type(e) not in [int, float] for e in array):
+            return Error('TypeError', "argument 'array' must be an array of numbers")
+        return sum(array)

@@ -1,0 +1,5 @@
+set('try', 0)
+set('win', false)
+set('num', add(floor(multiply(random(), 100)), 1))
+while(function('condition_1.shit'), function('while_1.shit'))
+if(function('condition_3.shit'), function('if_2.shit'))

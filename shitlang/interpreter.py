@@ -44,8 +44,9 @@ class Interpreter:
                         # len(.__defaults__) gets the amount of optional parameters
                         if len(arguments) > (builtin.__code__.co_argcount - 1):
                             return Error('TypeError', f'{token.value[0]}() given more arguments than expected')
-                        elif len(arguments) < (builtin.__code__.co_argcount - len(builtin.__defaults__)):
+                        elif len(arguments) < (builtin.__code__.co_argcount - len(builtin.__defaults__ or [0])):
                             return Error('TypeError', f'{token.value[0]}() missing required arguments')
+                        else: raise e
 
                     res.append(r if token.value[0] != 'return' else [r, 'return'])
 

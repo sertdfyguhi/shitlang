@@ -1,0 +1,1 @@
+return(less(get('try'), 5))

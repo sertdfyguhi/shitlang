@@ -1,0 +1,1 @@
+return(equals(input('guess number: '), print_string(get('num'))))
