@@ -1,4 +1,4 @@
-from .error import Error
+from .error import *
 
 class Variables:
     def __init__(self, d={}) -> None:
@@ -9,12 +9,12 @@ class Variables:
 
     def get(self, name):
         if name not in self.vars:
-            return Error('VarNotDefinedError', f'variable "{name}" not defined')
+            return VarNotDefinedError_(f'variable "{name}" not defined')
         return self.vars[name]
 
     def delete(self, name):
         if name not in self.vars:
-            return Error('VarNotDefinedError', f'variable "{name}" not defined')
+            return VarNotDefinedError_(f'variable "{name}" not defined')
         del self.vars[name]
 
     def copy(self, allow_use_vars=False):

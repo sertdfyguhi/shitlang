@@ -1,5 +1,5 @@
-from .error import Error
 from .builtins import Builtins
+from .error import *
 from .token import *
 
 RETURN_FUNC_NAMES = [
@@ -43,9 +43,9 @@ class Interpreter:
                         # .__code__.co_argcount is how many parameters the function has
                         # len(.__defaults__) gets the amount of optional parameters
                         if len(arguments) > (builtin.__code__.co_argcount - 1):
-                            return Error('TypeError', f'{token.value[0]}() given more arguments than expected')
+                            return TypeError_(f'{token.value[0]}() given more arguments than expected')
                         elif len(arguments) < (builtin.__code__.co_argcount - len(builtin.__defaults__ or [0])):
-                            return Error('TypeError', f'{token.value[0]}() missing required arguments')
+                            return TypeError_(f'{token.value[0]}() missing required arguments')
                         else: raise e
 
                     res.append(r if token.value[0] != 'return' else [r, 'return'])
@@ -54,9 +54,9 @@ class Interpreter:
                         if args: res[-1] = res[-1][0]
                         break
                 except AttributeError:
-                    return Error('BuiltinError', f'no builtin named {token.value[0]}')
+                    return BuiltinError_(f'no builtin named {token.value[0]}')
                 except RecursionError:
-                    return Error('RecursionError', 'maximum recursion depth exceeded')
+                    return RecursionError_('maximum recursion depth exceeded')
             elif token.type == TT_ARRAY:
                 array = Interpreter(token.value, self.vars).interpret()
                 if isinstance(array, Error): return r

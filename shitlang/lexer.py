@@ -1,6 +1,6 @@
 from string import digits, ascii_letters
 from .token import *
-from .error import Error
+from .error import *
 
 ESCAPES = {
     'n': '\n',
@@ -49,22 +49,22 @@ class Lexer:
                 tokens.append(self.func_call())
             elif arg and self.curr == ',':
                 if len(tokens) == 0 or tokens[-1].type == TT_COMMA:
-                    return Error('SyntaxError', 'unexpected ","')
+                    return SyntaxError_('unexpected ","')
                 elif len(tokens) > 1 and tokens[-2].type != TT_COMMA:
-                    return Error('SyntaxError', 'expected ","')
+                    return SyntaxError_('expected ","')
 
                 tokens.append(Token(TT_COMMA))
                 self.next()
             else:
-                return Error('InvalidCharError', repr(self.curr))
+                return InvalidCharError_(repr(self.curr))
 
             if len(tokens) > 0 and not isinstance(tokens[-1], Token):
                 return tokens[-1]
 
         if arg and len(tokens) > 0 and tokens[-1].type == TT_COMMA:
-            return Error('SyntaxError', 'unexpected ","')
+            return SyntaxError_('unexpected ","')
         elif arg and len(tokens) > 1 and tokens[-2].type != TT_COMMA:
-            return Error('SyntaxError', 'expected ","')
+            return SyntaxError_('expected ","')
 
         return tokens
 
@@ -76,16 +76,16 @@ class Lexer:
 
         while self.curr != quote:
             if not self.curr:
-                return Error('SyntaxError', 'unexpected EOF')
+                return SyntaxError_('unexpected EOF')
 
             if self.curr == '\\':
                 self.next()
 
                 if not self.curr:
-                    return Error('SyntaxError', 'unexpected EOF')
+                    return SyntaxError_('unexpected EOF')
 
                 if self.curr not in ESCAPES:
-                    return Error('SyntaxError', 'invalid escape character')
+                    return SyntaxError_('invalid escape character')
 
                 string += ESCAPES[self.curr]
 
@@ -104,7 +104,7 @@ class Lexer:
 
         while self.curr and self.curr in digits + '.-':
             if self.curr == '-' and number.count('-') != len(number):
-                return Error('SyntaxError', 'unexpected "-"')
+                return SyntaxError_('unexpected "-"')
             number += self.curr
             self.next()
 
@@ -115,10 +115,10 @@ class Lexer:
                 number = number.replace('-' * number.count('-'), '-')
 
         if number.count('.') > 1:
-            return Error('SyntaxError', 'unexpected decimal point')
+            return SyntaxError_('unexpected decimal point')
 
         if number == '.':
-            return Error('SyntaxError', 'invalid syntax')
+            return SyntaxError_('invalid syntax')
 
         return Token(
             TT_NUMBER,
@@ -137,7 +137,7 @@ class Lexer:
 
         while brackets > 0:
             if not self.curr:
-                return Error('SyntaxError', 'unexpected EOF')
+                return SyntaxError_('unexpected EOF')
 
             if self.curr == quote and self.code[self.i-1] != '\\':
                 in_str = not in_str
@@ -169,7 +169,7 @@ class Lexer:
 
         while brackets > 0:
             if not self.curr:
-                return Error('SyntaxError', 'unexpected EOF')
+                return SyntaxError_('unexpected EOF')
 
             if not in_str and not comment and self.curr in '-;':
                 comment = self.curr
@@ -218,7 +218,7 @@ class Lexer:
                 return Token(TT_NONE)
 
         if self.curr != '(':
-            return Error('SyntaxError', 'expected function to be called')
+            return SyntaxError_('expected function to be called')
 
         self.next()
 

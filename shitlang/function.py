@@ -1,7 +1,7 @@
 from .token import TT_NONE, Token
 from .vars import Variables
-from .error import Error
 from .lexer import Lexer
+from .error import *
 
 class Function:
     def __init__(self, code, params, vars_=Variables(), allow_use_vars=False) -> None:
@@ -14,9 +14,9 @@ class Function:
         self.vars = Variables() if not self.allow_use_vars else self.orig_vars.copy(self.allow_use_vars)
 
         if len(args) < len(self.params):
-            return Error('TypeError', 'function missing arguments')
+            return TypeError_('function missing arguments')
         elif len(args) > len(self.params):
-            return Error('TypeError', 'function given more arguments than expected')
+            return TypeError_('function given more arguments than expected')
 
         if not hasattr(self, 'tokens'):
             self.tokens = Lexer(self.code).tokenize()
