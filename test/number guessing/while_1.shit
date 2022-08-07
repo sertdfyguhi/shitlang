@@ -1,2 +1,2 @@
-if(function('condition_2.shit'), function('if_1.shit'))
 set('try', add(get('try'), 1))
+if(function('condition_2.shit'), function('if_1.shit'), function('else_1.shit'))

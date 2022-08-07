@@ -12,7 +12,8 @@ ESCAPES = {
 }
 
 class Lexer:
-    def __init__(self, code):
+    def __init__(self, code, fn):
+        self.fn = fn
         self.code = code
         self.i = -1
         self.next()
@@ -49,22 +50,22 @@ class Lexer:
                 tokens.append(self.func_call())
             elif arg and self.curr == ',':
                 if len(tokens) == 0 or tokens[-1].type == TT_COMMA:
-                    return SyntaxError_('unexpected ","')
+                    return SyntaxError_(self.fn, 'unexpected ","')
                 elif len(tokens) > 1 and tokens[-2].type != TT_COMMA:
-                    return SyntaxError_('expected ","')
+                    return SyntaxError_(self.fn, 'expected ","')
 
                 tokens.append(Token(TT_COMMA))
                 self.next()
             else:
-                return InvalidCharError_(repr(self.curr))
+                return InvalidCharError_(self.fn, repr(self.curr))
 
             if len(tokens) > 0 and not isinstance(tokens[-1], Token):
                 return tokens[-1]
 
         if arg and len(tokens) > 0 and tokens[-1].type == TT_COMMA:
-            return SyntaxError_('unexpected ","')
+            return SyntaxError_(self.fn, 'unexpected ","')
         elif arg and len(tokens) > 1 and tokens[-2].type != TT_COMMA:
-            return SyntaxError_('expected ","')
+            return SyntaxError_(self.fn, 'expected ","')
 
         return tokens
 
@@ -76,16 +77,16 @@ class Lexer:
 
         while self.curr != quote:
             if not self.curr:
-                return SyntaxError_('unexpected EOF')
+                return SyntaxError_(self.fn, 'unexpected EOF')
 
             if self.curr == '\\':
                 self.next()
 
                 if not self.curr:
-                    return SyntaxError_('unexpected EOF')
+                    return SyntaxError_(self.fn, 'unexpected EOF')
 
                 if self.curr not in ESCAPES:
-                    return SyntaxError_('invalid escape character')
+                    return SyntaxError_(self.fn, 'invalid escape character')
 
                 string += ESCAPES[self.curr]
 
@@ -104,7 +105,7 @@ class Lexer:
 
         while self.curr and self.curr in digits + '.-':
             if self.curr == '-' and number.count('-') != len(number):
-                return SyntaxError_('unexpected "-"')
+                return SyntaxError_(self.fn, 'unexpected "-"')
             number += self.curr
             self.next()
 
@@ -115,10 +116,10 @@ class Lexer:
                 number = number.replace('-' * number.count('-'), '-')
 
         if number.count('.') > 1:
-            return SyntaxError_('unexpected decimal point')
+            return SyntaxError_(self.fn, 'unexpected decimal point')
 
         if number == '.':
-            return SyntaxError_('invalid syntax')
+            return SyntaxError_(self.fn, 'invalid syntax')
 
         return Token(
             TT_NUMBER,
@@ -137,7 +138,7 @@ class Lexer:
 
         while brackets > 0:
             if not self.curr:
-                return SyntaxError_('unexpected EOF')
+                return SyntaxError_(self.fn, 'unexpected EOF')
 
             if self.curr == quote and self.code[self.i-1] != '\\':
                 in_str = not in_str
@@ -152,7 +153,7 @@ class Lexer:
 
         self.next()
 
-        array = Lexer(array_str).tokenize(True)
+        array = Lexer(array_str, self.fn).tokenize(True)
 
         if isinstance(array, Error): return array
 
@@ -169,7 +170,7 @@ class Lexer:
 
         while brackets > 0:
             if not self.curr:
-                return SyntaxError_('unexpected EOF')
+                return SyntaxError_(self.fn, 'unexpected EOF')
 
             if not in_str and not comment and self.curr in '-;':
                 comment = self.curr
@@ -199,7 +200,7 @@ class Lexer:
 
         self.next()
 
-        return Lexer(args).tokenize(True)
+        return Lexer(args, self.fn).tokenize(True)
 
     def func_call(self):
         name = ''
@@ -218,7 +219,7 @@ class Lexer:
                 return Token(TT_NONE)
 
         if self.curr != '(':
-            return SyntaxError_('expected function to be called')
+            return SyntaxError_(self.fn, 'expected function to be called')
 
         self.next()
 

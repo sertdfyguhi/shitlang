@@ -23,7 +23,7 @@
 - `chr(a: int) -> string`: returns the ascii character of ascii code(`a`)
 - `ord(a: str) -> int`: returns the ascii code of ascii character
 - `function(file: str, params: array = [], allow_use_vars: bool = false) -> function`: creates a function
-- `run(func: function, args: array) -> any`: runs a function
+- `run(func: function, args: array = []) -> any`: runs a function
 - `return(value: any = none)`: used in functions to return values and stop execution
 - `replace(replace: str, replacement: str, string: str) -> string`: replaces every instance of `replace` with `replacement` in `string` and returns it
 - `format(string: str, *args: any) -> string`: returns formatted `string` using `args`

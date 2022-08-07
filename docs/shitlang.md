@@ -19,12 +19,12 @@ multi line comment -print('multi line comment')
 
 ## Types
 ```
-1         - integer
-1.2       - float
-true      - boolean
-none      - none
-"string"  - string
-<1, 2, 3> - array
+1               - integer
+1.2             - float
+true / false    - boolean
+none            - none
+"string"        - string
+<1, 2, 3>       - array
 ```
 
 ## Functions

@@ -4,22 +4,19 @@ from .lexer import Lexer
 from .error import *
 
 class Function:
-    def __init__(self, code, params, vars_=Variables(), allow_use_vars=False) -> None:
+    def __init__(self, code, params, fn, vars_=None, allow_use_vars=False) -> None:
         self.code = code
         self.params = params
-        self.orig_vars = vars_
+        self.fn = fn
+        self.orig_vars = vars_.copy() if vars_ else Variables(fn)
+        self.orig_vars.fn = fn
         self.allow_use_vars = allow_use_vars
 
     def run(self, *args):
-        self.vars = Variables() if not self.allow_use_vars else self.orig_vars.copy(self.allow_use_vars)
-
-        if len(args) < len(self.params):
-            return TypeError_('function missing arguments')
-        elif len(args) > len(self.params):
-            return TypeError_('function given more arguments than expected')
+        self.vars = Variables(self.fn) if not self.allow_use_vars else self.orig_vars.copy(self.allow_use_vars)
 
         if not hasattr(self, 'tokens'):
-            self.tokens = Lexer(self.code).tokenize()
+            self.tokens = Lexer(self.code, self.fn).tokenize()
 
         if isinstance(self.tokens, Error):
             return self.tokens
@@ -29,7 +26,7 @@ class Function:
 
         from .interpreter import Interpreter
 
-        res = Interpreter(self.tokens, self.vars).interpret()
+        res = Interpreter(self.tokens, self.vars, self.fn).interpret()
         if isinstance(res, Error): return res
 
         return Token(TT_NONE) if len(res) == 0 or type(res[-1]) != list else res[-1]

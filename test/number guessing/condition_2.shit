@@ -1,1 +1,1 @@
-return(equals(input('guess number: '), print_string(get('num'))))
+return(equals(input('guess number: '), to_string(get('num'))))
