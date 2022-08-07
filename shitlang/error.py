@@ -5,7 +5,7 @@ class Error:
 
     def __repr__(self) -> str:
         return f'Error:\n  {self.type}: {self.details}'
-        
+
 class SyntaxError_(Error):
     def __init__(self, details=None):
         super().__init__('SyntaxError', details)
