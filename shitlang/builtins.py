@@ -1,8 +1,10 @@
 from types import NoneType
-from os.path import exists
 from .function import Function
 from .token import *
 from .error import *
+
+from os.path import exists
+import base64
 import random
 import math
 
@@ -407,3 +409,15 @@ class Builtins:
 
     def type(self, value):
         return TYPE_TO_STRING_TABLE[type(value)]
+
+    def encode_base64(self, string):
+        if type(string) != str:
+            return TypeError(self.fn, "argument 'string' must be a string")
+
+        return base64.b64encode(string.encode('ascii')).decode('ascii')
+
+    def decode_base64(self, string):
+        if type(string) != str:
+            return TypeError(self.fn, "argument 'string' must be a string")
+
+        return base64.b64decode(string.encode('ascii')).decode('ascii')

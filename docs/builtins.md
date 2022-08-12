@@ -56,3 +56,5 @@
 - `to_float(value: any) -> float`: returns `value` converted into a float
 - `to_bool(value: any) -> bool`: returns `value` converted into a bool
 - `type(value: any) -> str`: returns the type of `value` as a string
+- `encode_base64(string: str) -> str`: encodes `string` in base64
+- `decode_base64(string: str) -> str`: decodes `string` from base4 
