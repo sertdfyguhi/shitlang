@@ -3,13 +3,17 @@ from .token import *
 from .error import *
 
 ESCAPES = {
-    'n': '\n',
-    'r': '\r',
-    't': '\t',
+    "n": "\n",
+    "r": "\r",
+    "t": "\t",
     '"': '"',
     "'": "'",
     "\\": "\\",
 }
+
+NUMBER_CHARS = digits + "-."
+IDENTIFIER_CHARS = ascii_letters + digits + "_"
+
 
 class Lexer:
     def __init__(self, code, fn):
@@ -18,212 +22,131 @@ class Lexer:
         self.i = -1
         self.next()
 
-    def next(self):
+    def next(self, change_curr: bool = True):
         self.i += 1
-        self.curr = self.code[self.i] if self.i < len(self.code) else None
-    
-    def tokenize(self, arg=False):
+        next_char = self.code[self.i] if self.i < len(self.code) else None
+
+        if change_curr:
+            self.curr = next_char
+        else:
+            self.i -= 1
+
+        return next_char
+
+    def tokenize(self, in_args=False):
         tokens = []
-        comment = None
+
+        if in_args:
+            nests = 1
 
         while self.curr:
-            if comment:
-                if (
-                    comment == ';' and self.curr == '\n'
-                ) or (
-                    comment == '-' and self.curr == '-'
-                ): 
-                    comment = None
+            if in_args:
+                if self.curr == ",":
+                    tokens.append(Token(TT_COMMA))
+                    self.next()
+                elif self.curr == "(":
+                    nests += 1
+                    self.next()
+                elif self.curr == ")":
+                    nests -= 1
+                    self.next()
+
+            if self.curr in " \t\r\n":
                 self.next()
-            elif self.curr in ' \t\n':
-                self.next()
-            elif self.curr in '"\'':
+            elif self.curr in "\"'":
                 tokens.append(self.string())
-            elif self.curr == '<':
-                tokens.append(self.array())
-            elif self.curr in '-;':
-                comment = self.curr
-                self.next()
-            elif self.curr in digits + '-.':
+            elif self.curr in NUMBER_CHARS:
                 tokens.append(self.number())
             elif self.curr in ascii_letters:
-                tokens.append(self.func_call())
-            elif arg and self.curr == ',':
-                if len(tokens) == 0 or tokens[-1].type == TT_COMMA:
-                    return SyntaxError_(self.fn, 'unexpected ","')
-                elif len(tokens) > 1 and tokens[-2].type != TT_COMMA:
-                    return SyntaxError_(self.fn, 'expected ","')
-
-                tokens.append(Token(TT_COMMA))
-                self.next()
+                tokens.append(self.func())
+            elif self.curr == "<":
+                tokens.append(self.array())
             else:
-                return InvalidCharError_(self.fn, repr(self.curr))
+                return SLInvalidCharError(self.fn, f"invalid character '{self.curr}'")
 
-            if len(tokens) > 0 and not isinstance(tokens[-1], Token):
-                return tokens[-1]
-
-        if arg and len(tokens) > 0 and tokens[-1].type == TT_COMMA:
-            return SyntaxError_(self.fn, 'unexpected ","')
-        elif arg and len(tokens) > 1 and tokens[-2].type != TT_COMMA:
-            return SyntaxError_(self.fn, 'expected ","')
+            try:
+                if is_SLerr(tokens[-1]):
+                    return tokens[-1]
+            except IndexError:
+                # ignore if last token doesnt exist
+                continue
 
         return tokens
 
     def string(self):
+        """tokenizes a string"""
         quote = self.curr
-        string = ''
+        string = ""
 
         self.next()
 
         while self.curr != quote:
-            if not self.curr:
-                return SyntaxError_(self.fn, 'unexpected EOF')
+            if self.curr is None:
+                return SLSyntaxError(self.fn, "unexpected EOF")
 
-            if self.curr == '\\':
+            # is escape
+            if self.curr == "\\":
                 self.next()
 
-                if not self.curr:
-                    return SyntaxError_(self.fn, 'unexpected EOF')
-
-                if self.curr not in ESCAPES:
-                    return SyntaxError_(self.fn, 'invalid escape character')
+                if self.curr is None:
+                    return SLSyntaxError(self.fn, "unexpected EOF")
+                elif self.curr not in ESCAPES:
+                    return SLSyntaxError(self.fn, f"invalid escape '\\{self.curr}'")
 
                 string += ESCAPES[self.curr]
+            else:
+                string += self.curr
 
-                self.next()
-                continue
-
-            string += self.curr
             self.next()
 
         self.next()
-
         return Token(TT_STRING, string)
 
     def number(self):
-        number = ''
+        """tokenizes a number"""
+        number = ""
+        is_float = False
 
-        while self.curr and self.curr in digits + '.-':
-            if self.curr == '-' and number.count('-') != len(number):
-                return SyntaxError_(self.fn, 'unexpected "-"')
+        while self.curr and self.curr in NUMBER_CHARS:
+            if self.curr == "-" and len(number) > 0 and number[-1] != "-":
+                return SLSyntaxError(self.fn, "unexpected minus sign")
+
+            if self.curr == ".":
+                if is_float:
+                    return SLSyntaxError(self.fn, "unexpected decimal point")
+
+                is_float = True
+
             number += self.curr
             self.next()
 
-        if '-' in number:
-            if number.count('-') % 2 == 0:
-                number = number.replace('-', '')
-            else:
-                number = number.replace('-' * number.count('-'), '-')
-
-        if number.count('.') > 1:
-            return SyntaxError_(self.fn, 'unexpected decimal point')
-
-        if number == '.':
-            return SyntaxError_(self.fn, 'invalid syntax')
-
-        return Token(
-            TT_NUMBER,
-            int(number) if number.count('.') == 0 else float(number)
-        )
+        return Token(TT_NUMBER, (float if is_float else int)(number))
 
     def array(self):
-        array_str = ''
-        brackets = 1
-        in_str = False
-        quote = None
+        """tokenizes an array"""
+        pass
 
-        self.next()
+    def func(self):
+        """tokenizes a function call"""
+        name = ""
 
-        if self.curr == '>': brackets -= 1
-
-        while brackets > 0:
-            if not self.curr:
-                return SyntaxError_(self.fn, 'unexpected EOF')
-
-            if self.curr == quote and self.code[self.i-1] != '\\':
-                in_str = not in_str
-                quote = self.curr if not quote and self.curr in '"\'' else None
-
-            if self.curr == '<' and not in_str: brackets += 1
-
-            array_str += self.curr
-            self.next()
-
-            if self.curr == '>' and not in_str: brackets -= 1
-
-        self.next()
-
-        array = Lexer(array_str, self.fn).tokenize(True)
-
-        if isinstance(array, Error): return array
-
-        return Token(TT_ARRAY, array)
-
-    def args(self):
-        args = ''
-        brackets = 1
-        in_str = False
-        quote = None
-        comment = None
-
-        if self.curr == ')': brackets -= 1
-
-        while brackets > 0:
-            if not self.curr:
-                return SyntaxError_(self.fn, 'unexpected EOF')
-
-            if not in_str and not comment and self.curr in '-;':
-                comment = self.curr
-            elif comment:
-                if (
-                    comment == ';' and self.curr == '\n'
-                ) or (
-                    comment == '-' and self.curr == '-'
-                ): 
-                    comment = None
-                    self.next()
-                    if not comment and self.curr == ')' and not in_str: brackets -= 1
-                    continue
-
-            if not comment:
-                if (self.curr == quote and self.code[self.i-1] != '\\') or self.curr in '"\'':
-                    in_str = not in_str
-                    quote = self.curr if not quote and self.curr in '"\'' else None
-
-                if self.curr == '(' and not in_str: brackets += 1
-
-                args += self.curr
-
-            self.next()
-
-            if not comment and self.curr == ')' and not in_str: brackets -= 1
-
-        self.next()
-
-        return Lexer(args, self.fn).tokenize(True)
-
-    def func_call(self):
-        name = ''
-
-        while (
-            self.curr != '(' and
-            self.curr and
-            self.curr in ascii_letters + '_'
-        ):
+        while self.curr and self.curr in IDENTIFIER_CHARS:
             name += self.curr
             self.next()
 
-            if name in ['true', 'false']:
-                return Token(TT_BOOL, True if name == 'true' else False)
-            elif name == 'none':
-                return Token(TT_NONE)
+        if (value := name == "true") or name == "false":
+            return Token(TT_BOOL, value)
+        elif name == "none":
+            return Token(TT_NONE)
+        elif self.curr is None:
+            return SLSyntaxError(self.fn, "unexpected EOF")
 
-        if self.curr != '(':
-            return SyntaxError_(self.fn, 'expected function to be called')
+        # function call
+        if self.curr == "(":
+            args = Lexer(self.code[self.i :], self.fn).tokenize(in_args=True)
+            if is_SLerr(args):
+                return args
 
-        self.next()
-
-        args = self.args()
-        if isinstance(args, Error): return args
-
-        return Token(TT_FUNC_CALL, [name, args])
+            return Token(TT_FUNC_CALL, [name, args])
+        else:
+            return SLSyntaxError(self.fn, f"expected function call, got '{self.curr}'")

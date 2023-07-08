@@ -1,10 +1,12 @@
-TT_FUNC_CALL = 'function call'
-TT_STRING = 'string'
-TT_NUMBER = 'number'
-TT_ARRAY = 'array'
-TT_COMMA = 'comma'
-TT_BOOL = 'boolean'
-TT_NONE = 'none'
+TT_FUNC_CALL = "function call"
+TT_COMMA = "comma"
+
+TT_STRING = "string"
+TT_NUMBER = "number"
+TT_ARRAY = "array"
+TT_BOOL = "boolean"
+TT_NONE = "none"
+
 
 class Token:
     def __init__(self, type_, value=None):
@@ -12,7 +14,7 @@ class Token:
         self.value = value
 
     def __repr__(self):
-        return f'{self.type}: {repr(self.value)}'
+        return f"{self.type}: {repr(self.value)}"
 
     def __eq__(self, o: object) -> bool:
         if not isinstance(o, Token):

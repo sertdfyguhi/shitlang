@@ -1,4 +1,4 @@
-class Error:
+class SLError:
     def __init__(self, type_, fn, details=None):
         self.type = type_
         self.fn = fn
@@ -7,34 +7,46 @@ class Error:
     def __repr__(self) -> str:
         return f'File "{self.fn}":\nError:\n  {self.type}: {self.details}'
 
-class SyntaxError_(Error):
-    def __init__(self, fn, details=None):
-        super().__init__('SyntaxError', fn, details)
 
-class TypeError_(Error):
+class SLSyntaxError(SLError):
     def __init__(self, fn, details=None):
-        super().__init__('TypeError', fn, details)
+        super().__init__("SyntaxError", fn, details)
 
-class ValueError_(Error):
-    def __init__(self, fn, details=None):
-        super().__init__('ValueError', fn, details)
 
-class BuiltinError_(Error):
+class SLTypeError(SLError):
     def __init__(self, fn, details=None):
-        super().__init__('BuiltinError', fn, details)
+        super().__init__("TypeError", fn, details)
 
-class RecursionError_(Error):
-    def __init__(self, fn, details=None):
-        super().__init__('RecursionError', fn, details)
 
-class VarNotDefinedError_(Error):
+class SLValueError(SLError):
     def __init__(self, fn, details=None):
-        super().__init__('VarNotDefinedError', fn, details)
+        super().__init__("ValueError", fn, details)
 
-class FileNotFoundError_(Error):
-    def __init__(self, fn, details=None):
-        super().__init__('FileNotFoundError', fn, details)
 
-class InvalidCharError_(Error):
+class SLBuiltinError(SLError):
     def __init__(self, fn, details=None):
-        super().__init__('InvalidCharError', fn, details)
+        super().__init__("BuiltinError", fn, details)
+
+
+class SLRecursionError(SLError):
+    def __init__(self, fn, details=None):
+        super().__init__("RecursionError", fn, details)
+
+
+class SLVarNotDefinedError(SLError):
+    def __init__(self, fn, details=None):
+        super().__init__("VarNotDefinedError", fn, details)
+
+
+class SLFileNotFoundError(SLError):
+    def __init__(self, fn, details=None):
+        super().__init__("FileNotFoundError", fn, details)
+
+
+class SLInvalidCharError(SLError):
+    def __init__(self, fn, details=None):
+        super().__init__("InvalidCharError", fn, details)
+
+
+def is_SLerr(obj):
+    return isinstance(obj, SLError)
