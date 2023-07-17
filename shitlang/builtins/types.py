@@ -19,21 +19,25 @@ class TypeBuiltins:
         try:
             return int(value)
         except ValueError:
-            return SLValueError(self.fn, "argument 'value' cannot be converted to int")
+            return SLValueError(
+                self.context, "argument 'value' cannot be converted to int"
+            )
 
     def to_float(self, value):
         try:
             return float(value)
         except ValueError:
             return SLValueError(
-                self.fn, "argument 'value' cannot be converted to float"
+                self.context, "argument 'value' cannot be converted to float"
             )
 
     def to_bool(self, value):
         try:
             return bool(value)
         except ValueError:
-            return SLValueError(self.fn, "argument 'value' cannot be converted to bool")
+            return SLValueError(
+                self.context, "argument 'value' cannot be converted to bool"
+            )
 
     def to_string(self, value):
         return self._print([value])

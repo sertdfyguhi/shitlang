@@ -16,36 +16,31 @@ if len(sys.argv) == 1:
             # ignore control + c exit
             exit(0)
 
-        ret = shitlang.run(code, STDIN_FN, vars=variables)
-        print(ret)
+        ret = shitlang.run(code, STDIN_FN, vars_=variables)
+        if ret[-1]:
+            print(ret[-1])
         # if shitlang.is_SLerr(ret):
         #     print(ret)
 elif sys.argv[1] in ["-h", "--help"]:
-    print(f"usage: python3 {os.path.basename(__file__)} file [run directory]")
+    print(
+        f"""\
+\033[1mshitlang interpreter v1.0\033[m
+made in python
+
+usage:
+    python3 {os.path.basename(__file__)} [file]
+
+    run without file to get stdin interpreter"""
+    )
     exit(0)
 else:
     path = sys.argv[1]
-    rundir = sys.argv[2] if len(sys.argv) >= 3 else None
 
     if not os.path.exists(path):
         print("error: file does not exist")
         exit(1)
-    elif os.path.isdir(path):
-        print("error: cannot run directory")
-        exit(1)
-
-    if rundir:
-        if not os.path.exists(rundir):
-            print("error: run directory does not exist")
-            exit(1)
-        elif not os.path.isdir(rundir):
-            print("error: run directory is not a directory")
-            exit(1)
 
     with open(path, "r") as f:
-        if rundir:
-            os.chdir(rundir)
-
-        ret = shitlang.run(f.read(), os.path.basename(path))
+        ret = shitlang.run_file(path)
         if shitlang.is_SLerr(ret):
             print(ret)

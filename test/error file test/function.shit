@@ -1,1 +1,15 @@
-return(add(1, subtract(1, run(function('c.shit', <'a'>), <>))))
+return(
+    add(
+        1,
+        subtract(
+            1,
+            run(
+                function(
+                    'c.shit',
+                    <'a'>
+                ),
+                <''>
+            )
+        )
+    )
+)

@@ -1,5 +1,4 @@
 TT_FUNC_CALL = "function call"
-TT_COMMA = "comma"
 
 TT_STRING = "string"
 TT_NUMBER = "number"

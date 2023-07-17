@@ -1,9 +1,10 @@
 from .builtins import Builtins
+from .context import Context
+from .vars import Variables
 from .token import *
 from .error import *
 
 RETURN_FUNC_NAMES = ["while", "if"]
-
 RESERVED = [
     "not",
     "and",
@@ -15,13 +16,13 @@ RESERVED = [
 
 
 class Interpreter:
-    def __init__(self, tokens, vars, fn) -> None:
+    def __init__(self, tokens: list[Token], vars_: Variables, context: Context) -> None:
+        self.context = context
         self.tokens = tokens
-        self.vars = vars
-        self.fn = fn
-        self.builtins = Builtins(self.vars, self.fn)
+        self.vars = vars_
+        self.builtins = Builtins(self.vars, self.context)
 
-    def interpret(self, args=False):
+    def interpret(self, in_args: bool = False):
         res = []
 
         for token in self.tokens:
@@ -29,11 +30,18 @@ class Interpreter:
                 try:
                     orig_name = token.value[0]
 
-                    args = Interpreter(token.value[1], self.vars, self.fn).interpret(
-                        True
-                    )
+                    # fmt: off
+                    args = Interpreter(
+                        token.value[1],
+                        self.vars,
+                        self.context
+                    ).interpret(in_args=True)
+                    # print(token.value[1])
+                    print(args)
+
                     if is_SLerr(args):
                         return args
+                    # fmt: on
 
                     try:
                         builtin = getattr(
@@ -41,19 +49,21 @@ class Interpreter:
                             orig_name + "_" if orig_name in RESERVED else orig_name,
                         )
                     except AttributeError:
-                        return SLBuiltinError(self.fn, f"no builtin named {orig_name}")
+                        return SLBuiltinError(
+                            self.context, f"no builtin named {orig_name}"
+                        )
 
                     try:
                         ret = builtin(*args)
                         if is_SLerr(ret):
                             return ret
-                    # TODO: hwo does thi work
                     except TypeError as e:
+                        # TODO: refactor
                         # .__code__.co_argcount is how many parameters the function has
                         # len(.__defaults__) is the amount of optional parameters
                         if len(args) > (builtin.__code__.co_argcount - 1):
                             return SLTypeError(
-                                self.fn,
+                                self.context,
                                 f"{orig_name}() given more args than expected",
                             )
                         elif len(args) < (
@@ -61,32 +71,31 @@ class Interpreter:
                             - len(builtin.__defaults__ or [0])
                         ):
                             return SLTypeError(
-                                self.fn,
+                                self.context,
                                 f"{orig_name}() missing required args",
                             )
                         else:
                             raise e
 
-                    res.append(ret if orig_name != "return" else [ret, "return"])
+                    res.append(
+                        ret
+                        if orig_name != "return" and not in_args
+                        else [ret, "return"]
+                    )
 
-                    if (
-                        type(res[-1]) == list
-                        and len(res[-1]) > 1
-                        and res[-1][1] == "return"
-                    ):
-                        if args:
-                            res[-1] = res[-1][0]
+                    if orig_name == "return":
                         break
                 except RecursionError:
-                    return SLRecursionError(self.fn, "maximum recursion depth exceeded")
+                    return SLRecursionError(
+                        self.context, "maximum recursion depth exceeded"
+                    )
             elif token.type == TT_ARRAY:
-                array = Interpreter(token.value, self.vars, self.fn).interpret()
+                # do the parsing in lexer
+                array = Interpreter(token.value, self.vars, self.context).interpret()
                 if is_SLerr(array):
                     return array
 
                 res.append(array)
-            elif token.type == TT_COMMA:
-                continue
             else:
                 res.append(token.value)
 

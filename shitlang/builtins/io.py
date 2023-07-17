@@ -24,6 +24,6 @@ class IOBuiltins:
 
     def input(self, prompt):
         if type(prompt) != str:
-            return create_typeerror(self.fn, "prompt", "string")
+            return create_typeerror(self.context, "prompt", "string")
 
         return input(prompt)

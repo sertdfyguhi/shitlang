@@ -1,38 +1,47 @@
 from .token import TT_NONE, Token
+from .context import Context
 from .vars import Variables
 from .lexer import Lexer
 from .error import *
 
 
 class Function:
-    def __init__(self, code, params, fn, vars_=None, allow_use_vars=False) -> None:
+    def __init__(
+        self,
+        code: str,
+        params,
+        context: Context,
+        vars_: Variables = None,
+        allow_use_vars: bool = False,
+    ) -> None:
         # TODO: wtf
         self.code = code
         self.params = params
-        self.fn = fn
-        self.orig_vars = vars_.copy() if vars_ else Variables(fn)
-        self.orig_vars.fn = fn
+        self.context = context
+        self.orig_vars = vars_.copy() if vars_ else Variables(context)
+        self.orig_vars.context = context
         self.allow_use_vars = allow_use_vars
 
     def run(self, *args):
         self.vars = (
-            Variables(self.fn)
+            Variables(self.context)
             if not self.allow_use_vars
             else self.orig_vars.copy(self.allow_use_vars)
         )
 
         if not hasattr(self, "tokens"):
-            self.tokens = Lexer(self.code, self.fn).tokenize()
-
+            self.tokens = Lexer(self.code, self.context).tokenize()
             if is_SLerr(self.tokens):
                 return self.tokens
 
         for param, arg in zip(self.params, args):
             self.vars.set(param, arg)
 
+        # to avoid circular import
         from .interpreter import Interpreter
 
-        res = Interpreter(self.tokens, self.vars, self.fn).interpret()
+        res = Interpreter(self.tokens, self.vars, self.context).interpret()
+        # print(res)
         if is_SLerr(res):
             return res
 
