@@ -25,6 +25,4 @@ class Variables:
         del self.vars[name]
 
     def copy(self, allow_use_vars=False):
-        return Variables(
-            self.context, self.vars if allow_use_vars else self.vars.copy()
-        )
+        return self if allow_use_vars else Variables(self.context, self.vars)
