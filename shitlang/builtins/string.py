@@ -16,6 +16,12 @@ class StringBuiltins:
 
         return string.split(pattern)
 
+    def concat(self, *strings):
+        if any(type(string) != str for string in strings):
+            return create_typeerror(self.context, "strings", "string")
+
+        return "".join(strings)
+
     def format(self, string, *args):
         if type(string) != str:
             return create_typeerror(self.context, "string", "string")

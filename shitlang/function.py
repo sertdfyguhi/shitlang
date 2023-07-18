@@ -1,4 +1,4 @@
-from .token import TT_NONE, Token
+from .utils import ReturnedValue
 from .context import Context
 from .vars import Variables
 from .lexer import Lexer
@@ -41,11 +41,15 @@ class Function:
         from .interpreter import Interpreter
 
         res = Interpreter(self.tokens, self.vars, self.context).interpret()
-        # print(res)
         if is_SLerr(res):
             return res
 
-        return Token(TT_NONE) if len(res) == 0 or type(res[-1]) != list else res[-1]
+        try:
+            if type(res[-1]) == ReturnedValue:
+                return res[-1].value
+        except IndexError:
+            # ignore if res is empty array
+            return None
 
     def __repr__(self) -> str:
         return f'function: <{", ".join(self.params)}>'

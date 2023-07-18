@@ -1,4 +1,5 @@
-from .utils import create_typeerror
+from .utils import create_typeerror, run_builtin
+from ..utils import ReturnedValue
 from ..function import Function
 from ..context import Context
 from ..error import *
@@ -33,7 +34,6 @@ class FunctionBuiltins:
         )
 
     def run(self, func, args=[]):
-        print(func)
         if not isinstance(func, Function):
             return create_typeerror(self.context, "func", "function")
         elif type(args) != list:
@@ -52,7 +52,7 @@ class FunctionBuiltins:
         if is_SLerr(ret):
             return ret
 
-        return ret[0] if type(ret) == list else None
+        return ret.value if type(ret) == ReturnedValue else None
 
     def return_(self, value=None):
         return value
@@ -63,19 +63,7 @@ class FunctionBuiltins:
         elif type(args) != list:
             return create_typeerror(self.context, "args", "array")
 
-        try:
-            func = getattr(self, name, None)
-            if func is None:
-                return SLBuiltinError(self.context, f"no builtin named {name}")
-
-            return func(*args)
-        except TypeError:
-            if len(args) > (func.__code__.co_argcount - 1):
-                return SLTypeError(
-                    self.context, f"{name}() given more arguments than expected"
-                )
-            else:
-                return SLTypeError(self.context, f"{name}() missing required arguments")
+        return run_builtin(name, args, self)
 
     def while_(self, condition, loop):
         if (
@@ -96,18 +84,12 @@ class FunctionBuiltins:
         if is_SLerr(cond):
             return cond
 
-        print(cond)
+        while cond:
+            ret = loop.run()
 
-        # TODO: refactor
-        while cond[0] if type(cond) == list else cond:
-            res = loop.run()
-            if is_SLerr(res):
-                return res
-
-            print(res)
-
-            if res is not None:
-                return [res, "return"]
+            # return error / result if loop returns
+            if ret is not None:
+                return ret
 
             cond = condition.run()
             if is_SLerr(cond):
@@ -138,12 +120,13 @@ class FunctionBuiltins:
         if is_SLerr(cond):
             return cond
 
-        # wtf is this
-        # TODO: refactor
-        res = func if (None if type(cond) != list else cond[0]) else else_
-        if res:
-            res = res.run()
-            if is_SLerr(res):
-                return res
+        ret = None
 
-            return [res, "return"]
+        # check if returned result of condition is truthy
+        if cond:
+            ret = func.run()
+        elif else_ is not None:
+            ret = else_.run()
+
+        if is_SLerr(ret):
+            return ret

@@ -1,5 +1,3 @@
 set('input', input(''))
-print(run(function('0condition.shit')))
-print(run(function('1condition.shit')))
 if(function('0condition.shit'), function('0.shit'))
 if(function('1condition.shit'), function('1.shit'))

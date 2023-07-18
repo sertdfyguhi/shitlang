@@ -42,6 +42,7 @@
 
 - `replace(replace: str, replacement: str, string: str) -> string`: replaces every instance of `replace` with `replacement` in `string` and returns it
 - `split(pattern: str, string: str) -> array` splits `string` on every instance of `deliminator` and returns it
+- `concat(*strings: str) -> string`: returns all string in strings concatenated
 - `format(string: str, *args: any) -> string`: returns formatted `string` using `args`
 - `repeat(data: str | array, factor: int) -> string | array`: repeats `data` by `factor`
 
