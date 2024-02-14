@@ -78,7 +78,7 @@ class Lexer:
                 tokens.append(Token(TT_ARRAY, array))
             else:
                 return SLInvalidCharError(
-                    self.context, f"invalid character '{self.curr}'"
+                    self.context, f"invalid character {self.curr!r}"
                 )
 
             try:

@@ -1,16 +1,20 @@
+from colorama import Fore, Style
 import shitlang
 import sys
 import os
 
+# bold ansi
+BOLD = "\033[1m"
+
 STDIN_FN = "<stdin>"
 HELP = f"""\
-\033[1mshitlang interpreter\033[m
-made in python
+{Fore.CYAN}shitlang interpreter
+{Fore.YELLOW}made in python{Style.RESET_ALL}
 
-usage:
-    python3 {os.path.basename(__file__)} [file]
+{Fore.LIGHTGREEN_EX}usage:{Style.RESET_ALL}
+    {BOLD}{Fore.CYAN}python3 {Fore.YELLOW}{os.path.basename(__file__)} {Fore.LIGHTGREEN_EX}[file]{Style.RESET_ALL}
 
-    run without file to get stdin interpreter"""
+    run without arguments to get stdin interpreter"""
 
 
 def run_file():
@@ -29,11 +33,11 @@ def run_file():
 def run_stdin():
     variables = shitlang.Variables(STDIN_FN)
 
-    print("\033[1m== shitlang interpreter ==\033[m")
+    print(f"{Fore.CYAN}shitlang interpreter{Style.RESET_ALL}")
 
     while True:
         try:
-            code = input(">> ")
+            code = input(f"{BOLD}>>{Style.RESET_ALL} ")
         except KeyboardInterrupt:
             # ignore control + c exit
             exit(0)

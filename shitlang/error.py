@@ -1,3 +1,8 @@
+from colorama import Fore, Style
+
+_BOLD = "\033[1m"
+
+
 class SLError:
     def __init__(self, type_, context, details=None):
         self.type = type_
@@ -5,7 +10,7 @@ class SLError:
         self.details = details
 
     def __repr__(self) -> str:
-        return f'File "{self.context.fn}":\nError:\n  {self.type}: {self.details}'
+        return f'{Fore.RED}{_BOLD}File "{self.context.fn}":{Style.RESET_ALL}{Fore.RED}\nError:\n  {self.type}: {self.details}{Style.RESET_ALL}'
 
 
 class SLSyntaxError(SLError):
