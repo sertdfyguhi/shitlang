@@ -39,12 +39,28 @@ class Lexer:
 
     def tokenize(self, in_args: bool = False, in_arr: bool = False):
         tokens = []
+        comment = None
 
         if in_args or in_arr:
             CLOSE_PAREN = ")" if in_args else ">"
             res = []
 
         while self.curr:
+            if comment is not None:
+                if (comment == ";" and self.curr == "\n") or (
+                    comment == "-" and self.curr == "-"
+                ):
+                    comment = None
+                    self.next()
+                else:
+                    self.next()
+                    continue
+
+            if self.curr in ";-":
+                comment = self.curr
+                self.next()
+                continue
+
             if in_args or in_arr:
                 if self.curr == ",":
                     if len(tokens) > 1:

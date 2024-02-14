@@ -26,12 +26,12 @@ python3 shitlang.py
 - [x] arrays
 - [x] array builtins
 - [x] documentation
-- [ ] new lexer
+- [x] new lexer
   - [x] string
   - [x] numbers
   - [x] arrays
   - [x] func calls
-  - [ ] comments
+  - [x] comments
 - [ ] rewrite shitlang.py
 
 ## examples
