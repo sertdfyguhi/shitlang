@@ -1,7 +1,6 @@
 from .builtins.utils import run_builtin
 from .environment import Environment
 from .utils import ReturnedValue
-from .function import Function
 from .builtins import Builtins
 from .context import Context
 from .vars import Variables
@@ -18,12 +17,17 @@ class Interpreter:
         vars_: Variables,
         context: Context,
         environment: Environment,
+        builtins: Builtins = None,
     ) -> None:
-        self.vars = vars_
         self.tokens = tokens
+        self.vars = vars_
         self.context = context
         self.environment = environment
-        self.builtins = Builtins(self.vars, context, environment)
+
+        if builtins is None:
+            builtins = Builtins(self.vars, context, environment)
+
+        self.builtins = builtins
 
     def interpret(self, in_args: bool = False):
         res = []
@@ -55,6 +59,7 @@ class Interpreter:
                         self.vars,
                         self.context,
                         self.environment,
+                        self.builtins,
                     ).interpret(in_args=True)
                     # fmt: on
 
@@ -81,6 +86,7 @@ class Interpreter:
                     self.vars,
                     self.context,
                     self.environment,
+                    self.builtins,
                 ).interpret(in_args=True)
                 # fmt: on
 
