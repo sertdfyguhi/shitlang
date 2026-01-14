@@ -40,6 +40,7 @@ class FunctionBuiltins:
             params,
             context,
             self.environment,
+            self,
             self.vars,
             allow_use_vars,
         )

@@ -13,6 +13,7 @@ class Function:
         params,
         context: Context,
         environment: Environment,
+        builtins,
         vars_: Variables = None,
         allow_use_vars: bool = False,
     ) -> None:
@@ -24,6 +25,7 @@ class Function:
         self.params = params
         self.context = context
         self.environment = environment
+        self.builtins = builtins
         self.orig_vars = vars_.copy() if vars_ else Variables(context)
         self.orig_vars.context = context
         self.allow_use_vars = allow_use_vars
@@ -46,9 +48,9 @@ class Function:
         # to avoid circular import
         from .interpreter import Interpreter
 
-        res = Interpreter(self.vars, self.context, self.environment).interpret(
-            self.tokens
-        )
+        res = Interpreter(
+            self.vars, self.context, self.environment, self.builtins
+        ).interpret(self.tokens)
         if is_SLerr(res):
             return res
 

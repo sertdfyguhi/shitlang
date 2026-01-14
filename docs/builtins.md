@@ -60,7 +60,6 @@
 - `min(array: array[int | float]) -> int | float`: returns the minimum number in `array`
 - `max(array: array[int | float]) -> int | float`: returns the maximum number in `array`
 - `length(value: array | string) -> int`: returns the length of `value`
--
 
 ## Math Builtins
 
