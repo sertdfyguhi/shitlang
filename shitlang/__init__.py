@@ -6,7 +6,12 @@ from .vars import Variables
 from .lexer import Lexer
 
 
-def _run(code: str, context: Context, vars_: Variables = None):
+def _run(
+    code: str,
+    context: Context,
+    vars_: Variables = None,
+    environment: Environment = None,
+):
     if vars_ is None:
         vars_ = Variables(context)
 
@@ -16,19 +21,33 @@ def _run(code: str, context: Context, vars_: Variables = None):
 
     # print(tokens)
 
-    environment = Environment(context)
+    if environment is None:
+        environment = Environment(context)
+
     return Interpreter(tokens, vars_, context, environment).interpret()
 
 
-def run_file(fp: str, vars_: Variables = None):
+def run_file(fp: str, vars_: Variables = None, environment: Environment = None):
     """run shitlang code from file"""
     code = open(fp, "r").read()
     context = Context(fp)
 
-    return _run(code, context, vars_)
+    if environment is None:
+        environment = Environment(context)
+
+    return _run(code, context, vars_, environment)
 
 
-def run(code: str, fn: str = "python", vars_: Variables = None):
-    """run shitlang code from code (lacks function functionality)"""
+def run(
+    code: str,
+    fn: str = "python",
+    vars_: Variables = None,
+    environment: Environment = None,
+):
+    """run shitlang code from code"""
     context = Context(fn, is_name=True)
+
+    if environment is None:
+        environment = Environment(context)
+
     return _run(code, context, vars_)

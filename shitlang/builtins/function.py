@@ -9,43 +9,41 @@ import os
 
 class FunctionBuiltins:
     def function(self, file, params=[], allow_use_vars=False):
-        if self.context.fd is None:
-            return SLValueError(
-                self.context, "functions are not available in this context"
-            )
-
-        file_path = os.path.join(self.context.fd, file)
-
-        if type(file_path) != str:
+        if type(file) != str:
             return create_typeerror(self.context, "file", "string")
         elif type(params) != list or any(type(p) != str for p in params):
             return create_typeerror(self.context, "params", "array of strings")
         elif type(allow_use_vars) != bool:
             return create_typeerror(self.context, "allow_use_vars", "boolean")
 
-        if os.path.exists(file_path):
-            return Function(
-                open(file_path).read(),
-                params,
-                Context(file_path),
-                self.environment,
-                self.vars,
-                allow_use_vars,
-            )
+        code = None
+        context = self.context
+
+        if self.environment.has_func(file):
+            code = self.environment.get_func(file)
         else:
-            if self.environment.has_func(file):
-                return Function(
-                    self.environment.get_func(file),
-                    params,
-                    self.context,
-                    self.environment,
-                    self.vars,
-                    allow_use_vars,
-                )
-            else:
+            if self.context.fd is None:
                 return SLFileNotFoundError(
-                    self.context, f"file {file_path!r} not found"
+                    self.context,
+                    f"function {file!r} not found, cannot use files for functions in this context",
                 )
+
+            file_path = os.path.join(self.context.fd, file)
+
+            if os.path.exists(file_path):
+                code = open(file_path).read()
+                context = Context(file_path)
+            else:
+                return SLFileNotFoundError(self.context, f"function {file!r} not found")
+
+        return Function(
+            code,
+            params,
+            context,
+            self.environment,
+            self.vars,
+            allow_use_vars,
+        )
 
     def run(self, func, args=[]):
         if not isinstance(func, Function):

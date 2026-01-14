@@ -32,6 +32,7 @@ def run_file():
 
 def run_stdin():
     variables = shitlang.Variables(STDIN_FN)
+    environment = shitlang.Environment(shitlang.Context(STDIN_FN, is_name=True))
 
     print(f"{Fore.CYAN}shitlang interpreter{Style.RESET_ALL}")
 
@@ -42,7 +43,7 @@ def run_stdin():
             # ignore control + c exit
             exit(0)
 
-        ret = shitlang.run(code, STDIN_FN, vars_=variables)
+        ret = shitlang.run(code, STDIN_FN, vars_=variables, environment=environment)
         if ret:
             print(ret)
         # if shitlang.is_SLerr(ret):
