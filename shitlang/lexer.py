@@ -51,10 +51,9 @@ class Lexer:
                     comment == "-" and self.curr == "-"
                 ):
                     comment = None
-                    self.next()
-                else:
-                    self.next()
-                    continue
+
+                self.next()
+                continue
 
             if self.curr in ";-":
                 comment = self.curr
@@ -65,7 +64,7 @@ class Lexer:
                 if self.curr == ",":
                     if len(tokens) > 1:
                         return SLSyntaxError(
-                            self.context, f"multiple tokens in array value"
+                            self.context, "multiple tokens in array value"
                         )
                     elif len(tokens) == 0:
                         return SLSyntaxError(self.context, "unexpected comma")
@@ -92,6 +91,17 @@ class Lexer:
                     return array
 
                 tokens.append(Token(TT_ARRAY, array))
+            elif self.curr == "~":
+                if in_args:
+                    return SLSyntaxError(
+                        self.context, "cannot define function in arguments"
+                    )
+                elif in_arr:
+                    return SLSyntaxError(
+                        self.context, "cannot define function in array"
+                    )
+
+                tokens.append(self.func_def())
             else:
                 return SLInvalidCharError(
                     self.context, f"invalid character {self.curr!r}"
@@ -111,7 +121,7 @@ class Lexer:
             if len(tokens) == 1:
                 res.append(tokens[0])
             elif len(tokens) > 1:
-                return SLSyntaxError(self.context, f"multiple tokens in array value")
+                return SLSyntaxError(self.context, "multiple tokens in array value")
 
             return res
         else:
@@ -222,3 +232,26 @@ class Lexer:
             return SLSyntaxError(
                 self.context, f"expected function call, got '{self.curr}'"
             )
+
+    def func_def(self):
+        """tokenizes a function definition"""
+        name = ""
+
+        self.next()
+
+        while self.curr != "~" and self.curr != "\n":
+            if self.curr is None:
+                return self.EOF_ERR
+
+            name += self.curr
+            self.next()
+
+        self.next()
+
+        name = name.strip()
+
+        if name == "":
+            # return SLSyntaxError(self.context, "function name cannot be empty")
+            return Token(TT_FUNC_DEF_END)
+        else:
+            return Token(TT_FUNC_DEF, name)

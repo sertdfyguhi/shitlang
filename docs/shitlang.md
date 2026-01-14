@@ -32,7 +32,7 @@ none            - none
 <1, 2, 3>       - array
 ```
 
-## Functions
+## Functions (File syntax)
 
 ### main.shit
 
@@ -44,6 +44,16 @@ run(function("function.shit", <"param1", "param2">), <"argument1", "argument2">)
 
 ```
 print(get("param1"), get("param2"))
+```
+
+## Functions (Inline syntax)
+
+```
+~ function ~
+print(get("param1"), get("param2"))
+~~
+
+run(function("function", <"param1", "param2">), <"argument1", "argument2">)
 ```
 
 ## If

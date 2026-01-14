@@ -1,1 +1,5 @@
-print(<-s- "s", 1>)
+~ function ~
+print(get("param1"), get("param2"))
+~~
+
+run(function("function", <"param1", "param2">), <"argument1", "argument2">)

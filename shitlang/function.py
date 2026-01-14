@@ -1,3 +1,4 @@
+from .environment import Environment
 from .utils import ReturnedValue
 from .context import Context
 from .vars import Variables
@@ -8,16 +9,21 @@ from .error import *
 class Function:
     def __init__(
         self,
-        code: str,
+        code: str | list,
         params,
         context: Context,
+        environment: Environment,
         vars_: Variables = None,
         allow_use_vars: bool = False,
     ) -> None:
         # TODO: wtf
         self.code = code
+        if type(self.code) == list:
+            self.tokens = code
+
         self.params = params
         self.context = context
+        self.environment = environment
         self.orig_vars = vars_.copy() if vars_ else Variables(context)
         self.orig_vars.context = context
         self.allow_use_vars = allow_use_vars
@@ -40,14 +46,16 @@ class Function:
         # to avoid circular import
         from .interpreter import Interpreter
 
-        res = Interpreter(self.tokens, self.vars, self.context).interpret()
+        res = Interpreter(
+            self.tokens, self.vars, self.context, self.environment
+        ).interpret()
         if is_SLerr(res):
             return res
 
         try:
             if type(res[-1]) == ReturnedValue:
                 return res[-1].value
-        except IndexError:
+        except IndexError as e:
             # ignore if res is empty array
             return None
 

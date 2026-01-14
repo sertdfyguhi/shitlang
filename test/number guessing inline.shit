@@ -1,0 +1,37 @@
+~ condition 1 ~
+return(less(get('try'), 5))
+~~
+
+~ condition 2 ~
+return(equals(input('guess number: '), to_string(get('num'))))
+~~
+
+~ condition 3 ~
+return(not(get('win')))
+~~
+
+~ if 1 ~
+print(add(add('you won! you guessed it in ', to_string(get('try'))), ' tries!'))
+set('win', true)
+set('try', 5)
+~~
+
+~ if 2 ~
+print(add('you lost :((\nthe number was ', to_string(get('num'))))
+~~
+
+~ else 1 ~
+print('wrong guess :(')
+~~
+
+~ while 1 ~
+set('try', add(get('try'), 1))
+if(function('condition 2'), function('if 1'), function('else 1'))
+~~
+
+set('try', 0)
+set('win', false)
+set('num', add(floor(multiply(random(), 100)), 1))
+; print(add('number: ', to_string(get('num'))))
+while(function('condition 1'), function('while 1'))
+if(function('condition 3'), function('if 2'))

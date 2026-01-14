@@ -1,3 +1,6 @@
+TT_FUNC_DEF = "function definition"
+TT_FUNC_DEF_END = "function definition end"
+
 TT_FUNC_CALL = "function call"
 
 TT_STRING = "string"

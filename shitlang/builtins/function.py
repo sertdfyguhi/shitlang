@@ -14,24 +14,38 @@ class FunctionBuiltins:
                 self.context, "functions are not available in this context"
             )
 
-        file = os.path.join(self.context.fd, file)
+        file_path = os.path.join(self.context.fd, file)
 
-        if type(file) != str:
+        if type(file_path) != str:
             return create_typeerror(self.context, "file", "string")
         elif type(params) != list or any(type(p) != str for p in params):
             return create_typeerror(self.context, "params", "array of strings")
         elif type(allow_use_vars) != bool:
             return create_typeerror(self.context, "allow_use_vars", "boolean")
-        elif not os.path.exists(file):
-            return SLFileNotFoundError(self.context, f"file {file!r} not found")
 
-        return Function(
-            open(file).read(),
-            params,
-            Context(file),
-            self.vars,
-            allow_use_vars,
-        )
+        if os.path.exists(file_path):
+            return Function(
+                open(file_path).read(),
+                params,
+                Context(file_path),
+                self.environment,
+                self.vars,
+                allow_use_vars,
+            )
+        else:
+            if self.environment.has_func(file):
+                return Function(
+                    self.environment.get_func(file),
+                    params,
+                    self.context,
+                    self.environment,
+                    self.vars,
+                    allow_use_vars,
+                )
+            else:
+                return SLFileNotFoundError(
+                    self.context, f"file {file_path!r} not found"
+                )
 
     def run(self, func, args=[]):
         if not isinstance(func, Function):
@@ -52,7 +66,7 @@ class FunctionBuiltins:
         if is_SLerr(ret):
             return ret
 
-        return ret.value if type(ret) == ReturnedValue else None
+        return ret
 
     def return_(self, value=None):
         return value
