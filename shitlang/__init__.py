@@ -24,7 +24,7 @@ def _run(
     if environment is None:
         environment = Environment(context)
 
-    return Interpreter(tokens, vars_, context, environment).interpret()
+    return Interpreter(vars_, context, environment).interpret(tokens)
 
 
 def run_file(fp: str, vars_: Variables = None, environment: Environment = None):

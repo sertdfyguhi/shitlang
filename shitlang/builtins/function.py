@@ -1,5 +1,4 @@
 from .utils import create_typeerror, run_builtin
-from ..utils import ReturnedValue
 from ..function import Function
 from ..context import Context
 from ..error import *

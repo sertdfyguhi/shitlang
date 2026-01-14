@@ -13,30 +13,28 @@ RETURN_FUNC_NAMES = ["while", "if"]
 class Interpreter:
     def __init__(
         self,
-        tokens: list[Token],
         vars_: Variables,
         context: Context,
         environment: Environment,
         builtins: Builtins = None,
     ) -> None:
-        self.tokens = tokens
         self.vars = vars_
         self.context = context
         self.environment = environment
 
         if builtins is None:
-            builtins = Builtins(self.vars, context, environment)
+            builtins = Builtins(vars_, context, environment)
 
         self.builtins = builtins
 
-    def interpret(self, in_args: bool = False):
+    def interpret(self, tokens: list[Token], in_args: bool = False):
         res = []
 
         in_function = False
         func_tokens = []
         func_name = ""
 
-        for token in self.tokens:
+        for token in tokens:
             if in_function:
                 if token.type == TT_FUNC_DEF_END:
                     self.environment.add_func(func_name, func_tokens)
@@ -53,18 +51,11 @@ class Interpreter:
                 try:
                     orig_name = token.value[0]
 
-                    # fmt: off
-                    args = Interpreter(
-                        token.value[1],
-                        self.vars,
-                        self.context,
-                        self.environment,
-                        self.builtins,
-                    ).interpret(in_args=True)
-                    # fmt: on
-
+                    args = self.interpret(token.value[1], in_args=True)
                     if is_SLerr(args):
                         return args
+
+                    # print(orig_name, token, args)
 
                     ret = run_builtin(orig_name, args, self.builtins)
                     if is_SLerr(ret):
@@ -80,16 +71,7 @@ class Interpreter:
                         self.context, "maximum recursion depth exceeded"
                     )
             elif token.type == TT_ARRAY:
-                # fmt: off
-                array = Interpreter(
-                    token.value,
-                    self.vars,
-                    self.context,
-                    self.environment,
-                    self.builtins,
-                ).interpret(in_args=True)
-                # fmt: on
-
+                array = self.interpret(token.value, in_args=True)
                 if is_SLerr(array):
                     return array
 

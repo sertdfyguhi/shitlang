@@ -27,7 +27,10 @@ class Builtins(
     IOBuiltins,
 ):
     def __init__(
-        self, vars_: Variables, context: Context, environment: Environment
+        self,
+        vars_: Variables,
+        context: Context,
+        environment: Environment,
     ) -> None:
         self.vars = vars_
         self.context = context

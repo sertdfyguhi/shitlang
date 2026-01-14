@@ -46,9 +46,9 @@ class Function:
         # to avoid circular import
         from .interpreter import Interpreter
 
-        res = Interpreter(
-            self.tokens, self.vars, self.context, self.environment
-        ).interpret()
+        res = Interpreter(self.vars, self.context, self.environment).interpret(
+            self.tokens
+        )
         if is_SLerr(res):
             return res
 
