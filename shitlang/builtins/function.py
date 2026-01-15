@@ -118,7 +118,8 @@ class FunctionBuiltins:
                 self.context,
                 "arguments 'condition' and 'func' must be a function with no parameters",
             )
-        elif else_ and (not isinstance(else_, Function) or len(else_.params) > 0):
+
+        if else_ and (not isinstance(else_, Function) or len(else_.params) > 0):
             return SLTypeError(
                 self.context, "argument 'else' must be a function with no parameters"
             )

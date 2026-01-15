@@ -49,7 +49,7 @@ class Function:
         from .interpreter import Interpreter
 
         res = Interpreter(
-            self.vars, self.context, self.environment, self.builtins
+            self.context, self.vars, self.environment, self.builtins
         ).interpret(self.tokens)
         if is_SLerr(res):
             return res

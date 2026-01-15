@@ -24,6 +24,7 @@ class Lexer:
 
         self.next()
 
+        # need self.context
         self.EOF_ERR = SLSyntaxError(self.context, "unexpected EOF")
 
     def next(self, change_curr: bool = True):
@@ -55,11 +56,6 @@ class Lexer:
                 self.next()
                 continue
 
-            if self.curr in ";-":
-                comment = self.curr
-                self.next()
-                continue
-
             if in_args or in_arr:
                 if self.curr == ",":
                     if len(tokens) > 1:
@@ -79,6 +75,11 @@ class Lexer:
 
             if self.curr in " \t\r\n":
                 self.next()
+                continue
+            elif self.curr in ";-":
+                comment = self.curr
+                self.next()
+                continue
             elif self.curr in "\"'":
                 tokens.append(self.string())
             elif self.curr in NUMBER_CHARS:
@@ -141,6 +142,7 @@ class Lexer:
             # check if is escape
             if self.curr == "\\":
                 self.next()
+
                 if self.curr is None:
                     return self.EOF_ERR
 
@@ -250,8 +252,4 @@ class Lexer:
 
         name = name.strip()
 
-        if name == "":
-            # return SLSyntaxError(self.context, "function name cannot be empty")
-            return Token(TT_FUNC_DEF_END)
-        else:
-            return Token(TT_FUNC_DEF, name)
+        return Token(TT_FUNC_DEF_END) if name == "" else Token(TT_FUNC_DEF, name)

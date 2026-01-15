@@ -15,27 +15,27 @@ RESERVED_BUILTINS = [
 def run_builtin(name: str, args: list, builtins):
     context = builtins.context
 
+    if name in RESERVED_BUILTINS:
+        name += "_"
+
     try:
-        builtin = getattr(
-            builtins,
-            name + "_" if name in RESERVED_BUILTINS else name,
-        )
+        builtin = getattr(builtins, name, None)
+        if builtin is None:
+            return SLBuiltinError(context, f"no builtin named '{name}'")
 
         return builtin(*args)
-    except AttributeError as e:
-        return SLBuiltinError(context, f"no builtin named '{name}'")
     except TypeError as e:
         # TODO: refactor to use inspect.signature or smth
         # .__code__.co_argcount is how many parameters the function has
         # len(.__defaults__) is the amount of optional parameters
-        if len(args) > (builtin.__code__.co_argcount - 1):
+        argcount = builtin.__code__.co_argcount - 1  # remove self
+
+        if len(args) > argcount:
             return SLTypeError(
                 context,
                 f"{name}() given more args than expected",
             )
-        elif len(args) < (
-            builtin.__code__.co_argcount - len(builtin.__defaults__ or [0])
-        ):
+        elif len(args) < (argcount - len(builtin.__defaults__ or [])):
             return SLTypeError(
                 context,
                 f"{name}() missing required args",
@@ -45,7 +45,8 @@ def run_builtin(name: str, args: list, builtins):
 
 
 def create_typeerror(context: Context, name: str | list[str], type_: str | list[str]):
-    if is_list := type(name) == list:
+    is_list = type(name) == list
+    if is_list:
         name = "' and '".join(name)
 
     if type(type_) == list:

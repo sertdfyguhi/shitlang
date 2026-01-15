@@ -20,14 +20,16 @@ HELP = f"""\
 def run_file():
     path = sys.argv[1]
 
+    if os.path.isdir(path):
+        path = os.path.join(path, "main.shit")
+
     if not os.path.exists(path):
         print("error: file does not exist")
         exit(1)
 
-    with open(path, "r") as f:
-        ret = shitlang.run_file(path)
-        if shitlang.is_SLerr(ret):
-            print(ret)
+    ret = shitlang.run_file(path)
+    if shitlang.is_SLerr(ret):
+        print(ret)
 
 
 def run_stdin():

@@ -12,28 +12,17 @@ def _run(
     vars_: Variables = None,
     environment: Environment = None,
 ):
-    if vars_ is None:
-        vars_ = Variables(context)
-
     tokens = Lexer(code, context).tokenize()
     if is_SLerr(tokens):
         return tokens
 
-    # print(tokens)
-
-    if environment is None:
-        environment = Environment(context)
-
-    return Interpreter(vars_, context, environment).interpret(tokens)
+    return Interpreter(context, vars_, environment).interpret(tokens)
 
 
 def run_file(fp: str, vars_: Variables = None, environment: Environment = None):
     """run shitlang code from file"""
     code = open(fp, "r").read()
     context = Context(fp)
-
-    if environment is None:
-        environment = Environment(context)
 
     return _run(code, context, vars_, environment)
 

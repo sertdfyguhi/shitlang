@@ -23,7 +23,7 @@ class ArrayBuiltins:
     def join(self, sep, array):
         if type(sep) != str:
             return create_typeerror(self.context, "sep", "string")
-        elif type(array) != list or any(type(el) != str for el in array):
+        elif type(array) != list or any(type(value) != str for value in array):
             return create_typeerror(self.context, "array", "array of strings")
 
         return sep.join(array)
@@ -77,6 +77,7 @@ class ArrayBuiltins:
     def sum(self, array):
         if type(array) != list or any(type(e) not in [int, float] for e in array):
             return create_typeerror(self.context, "array", "array of numbers")
+
         return sum(array)
 
     def min(self, array):

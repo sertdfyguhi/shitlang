@@ -6,11 +6,12 @@ class IOBuiltins:
         print(self._print(data))
 
     def _print(self, values, array=False):
+        # values can come in as tuple
         data = values if type(values) == list else list(values)
 
         for i in range(len(data)):
             if type(data[i]) == list:
-                data[i] = f"<{self._print(data[i], True)}>"
+                data[i] = f"<{self._print(data[i], array=True)}>"
             elif type(data[i]) == bool:
                 data[i] = "true" if data[i] else "false"
             elif data[i] == None:
