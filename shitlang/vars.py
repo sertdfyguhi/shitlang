@@ -12,9 +12,7 @@ class Variables:
 
     def get(self, name):
         if name not in self.vars:
-            return SLVarNotDefinedError(
-                self.context.filename, f'variable "{name}" not defined'
-            )
+            return SLVarNotDefinedError(self.context, f'variable "{name}" not defined')
 
         return self.vars[name]
 

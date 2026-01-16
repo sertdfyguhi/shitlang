@@ -3,6 +3,7 @@
 ## IO Builtins
 
 - `print(*data: any)`: print to console
+- `bprint(*data: any)`: print to console with no newline
 - `input(prompt: str) -> string`: returns input from console
 
 ## Function Builtins
@@ -26,17 +27,16 @@
 - `and(a: bool, b: bool) -> bool`: returns true if both `a` and `b` is true if not returns false
 - `or(a: any, b: any) -> bool`: returns true or false based on the `or` operator
 - `equals(a: any, b: any) -> bool`: returns true if `a` equals `b` if not returns false
-- `not_equals(a: any, b: any) -> bool`: returns the opposite of `equals`
 - `greater(a: int | float, b: int | float) -> bool`: returns true if `a` is greater than `b`
 - `greater_or_equal(a: int | float, b: int | float) -> bool`: returns true if `a` is greater than or equal `b`
 - `less(a: int | float, b: int | float) -> bool`: returns true if `a` is less than `b`
 - `less_or_equal(a: int | float, b: int | float) -> bool`: returns true if `a` is less than or equal `b`
 - `add(a: any, b: any) -> any`: returns `a` added to `b`
-- `subtract(a: int | float, b: int | float) -> int | float`: returns `a` subtracted by `b`
-- `multiply(a: int | float, b: int | float) -> int | float`: returns `a` multiplied by `b`
-- `divide(a: int | float, b: int | float) -> int | float`: returns `a` divided by `b`
-- `modulus(a: int | float, b: int | float) -> int | float`: returns the remainder of `a` divided by `b`
-- `power(a: int | float, b: int | float) -> int | float`: returns `a` to the power of `b`
+- `sub(a: int | float, b: int | float) -> int | float`: returns `a` subtracted by `b`
+- `mul(a: int | float, b: int | float) -> int | float`: returns `a` multiplied by `b`
+- `div(a: int | float, b: int | float) -> int | float`: returns `a` divided by `b`
+- `mod(a: int | float, b: int | float) -> int | float`: returns the remainder of `a` divided by `b`
+- `pow(a: int | float, b: int | float) -> int | float`: returns `a` to the power of `b`
 
 ## String Builtins
 
@@ -52,12 +52,12 @@
 
 ## Array Builtins
 
-- `index(array: array, index: int) -> any`: returns the value of `index` in `array`
-- `set_index(index: int, value: any, array: array) -> array`: sets `index` of `array` to `value` and returns it
-- `join(separator: str, array: array[string]) -> string`: joins `array` using `separator` and returns it
+- `get_index(array: array, index: int) -> any`: returns the value of `index` in `array`
+- `set_index(array: array, index: int, value: any) -> array`: sets `index` of `array` to `value` and returns it
+- `join(array: array[string], separator: str) -> string`: joins `array` using `separator` and returns it
 - `remove(array: array, index: int) -> array`: removes `index` from `array` and returns it
 - `append(array: array, value: any, index: int = none) -> array`: inserts `value` into `index` of `array` and returns it
-- `swap(index1: int, index2: int, array: array) -> array`: swaps `index1` with `index2` in `array` and returns it
+- `swap(array: array, index1: int, index2: int) -> array`: swaps `index1` with `index2` in `array` and returns it
 - `slice(value: array | string, start: int, end: int = none) -> array | string | none`: slices `value` from `start` to `end` and returns it
 - `reverse(a: array | string) -> array | string`: returns `a` reversed
 - `sum(array: array[int | float]) -> int | float`: adds every number in `array` and returns it
@@ -66,10 +66,11 @@
 - `length(value: array | string) -> int`: returns the length of `value`
 - `find(array: array | string, value: any) -> array`: returns indexes of all occurences of `value` in `array`
 - `find_by(array: array, condition: function, index: bool = false) -> array`: returns values or indicies that match condition in `array`
+- `iterate(array: array | string, func: function)`: iterates through `array` and executes `func` for every element
 
 ## Math Builtins
 
-- `sqrt(a: int | float) -> int | float`: returns the square root of `a`
+- `sqrt(x: int | float) -> int | float`: returns the square root of `x`
 - `sin(x: int | float) -> float`: returns the sine of `x`
 - `cos(x: int | float) -> float`: returns the cosine of `x`
 - `tan(x: int | float) -> float`: returns the tangent of `x`

@@ -5,9 +5,12 @@ class IOBuiltins:
     def print(self, *data):
         print(self._print(data))
 
+    def bprint(self, *data):
+        print(self._print(data), end="")
+
     def _print(self, values, array=False):
         # values can come in as tuple
-        data = values if type(values) == list else list(values)
+        data = values.copy() if type(values) == list else list(values)
 
         for i in range(len(data)):
             if type(data[i]) == list:

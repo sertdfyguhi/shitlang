@@ -27,9 +27,6 @@ class OperatorBuiltins:
     def equals(self, a, b):
         return a == b
 
-    def not_equals(self, a, b):
-        return a != b
-
     def greater(self, a, b):
         if err := op_type_check(self.context, a, b):
             return err
@@ -60,31 +57,31 @@ class OperatorBuiltins:
         except TypeError:
             return SLTypeError(self.context, "arguments 'a' and 'b' cannot be added")
 
-    def subtract(self, a, b):
+    def sub(self, a, b):
         if err := op_type_check(self.context, a, b):
             return err
 
         return a - b
 
-    def multiply(self, a, b):
+    def mul(self, a, b):
         if err := op_type_check(self.context, a, b):
             return err
 
         return a * b
 
-    def divide(self, a, b):
+    def div(self, a, b):
         if err := op_type_check(self.context, a, b):
             return err
 
         return a / b
 
-    def modulus(self, a, b):
+    def mod(self, a, b):
         if err := op_type_check(self.context, a, b):
             return err
 
         return a % b
 
-    def power(self, a, b):
+    def pow(self, a, b):
         if err := op_type_check(self.context, a, b):
             return err
 

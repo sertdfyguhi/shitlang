@@ -1,0 +1,161 @@
+set("pointer", 0)
+set("memory", <0>)
+
+~ > if condition ~
+return(greater(add(get("pointer"), 1), length(get("memory"))))
+~~
+
+~ > if callback ~
+set("memory", append(get("memory"), 0))
+~~
+
+~ > ~
+set("pointer", add(get("pointer"), 1))
+if(function("> if condition"), function("> if callback"))
+~~
+
+~ < ~
+set("pointer", max(<0, sub(get("pointer"), 1)>))
+~~
+
+~ + ~
+set("memory",
+    set_index(
+        get("memory"),
+        get("pointer"),
+        mod(add(get_index(get("memory"), get("pointer")), 1), 256)
+    )
+)
+~~
+
+~ - ~
+set("memory",
+    set_index(
+        get("memory"),
+        get("pointer"),
+        mod(sub(get_index(get("memory"), get("pointer")), 1), 256)
+    )
+)
+~~
+
+~ . ~
+bprint(chr(get_index(get("memory"), get("pointer"))))
+~~
+
+~ , ~
+set("memory",
+    set_index(
+        get("memory"),
+        get("pointer"),
+        ord(get_index(input(""), 0))
+    )
+)
+~~
+
+set("brackets", <>)
+
+~ add bracket ~
+set("brackets", append(get("brackets"), get("i")))
+~~
+
+~ remove bracket ~
+set("brackets", remove(get("brackets"), -1))
+~~
+
+~ [ while condition ~
+return(not(equals(length(get("brackets")), get("x"))))
+~~
+
+~ [ while callback ~
+run(function("next"))
+
+if(function("[ code condition"), function("add bracket"))
+if(function("] code condition"), function("remove bracket"))
+~~
+
+~ [ is 0 ~
+return(equals(get_index(get("memory"), get("pointer")), 0))
+~~
+
+
+~ [ is 0 callback ~
+set("x", sub(length(get("brackets")), 1))
+while(function("[ while condition"), function("[ while callback"))
+~~
+
+~ [ ~
+run(function("add bracket"))
+if(function("[ is 0"), function("[ is 0 callback"))
+~~
+
+~ ] is not 0 ~
+return(not(equals(get_index(get("memory"), get("pointer")), 0)))
+~~
+
+~ ] is not 0 callback ~
+set("i", get_index(get("brackets"), -1))
+~~
+
+~ ] ~
+if(function("] is not 0"), function("] is not 0 callback"), function("remove bracket"))
+~~
+
+; debug character
+~ / ~
+print(get("memory"), get("pointer"), get("brackets"), get("i"))
+~~
+
+; reset character
+~ * ~
+set("pointer", 0)
+set("memory", <0>)
+~~
+
+~ > code condition ~ return(equals(get("char"), ">")) ~~
+~ < code condition ~ return(equals(get("char"), "<")) ~~
+~ + code condition ~ return(equals(get("char"), "+")) ~~
+~ - code condition ~ return(equals(get("char"), "-")) ~~
+~ . code condition ~ return(equals(get("char"), ".")) ~~
+~ , code condition ~ return(equals(get("char"), ",")) ~~
+~ [ code condition ~ return(equals(get("char"), "[")) ~~
+~ ] code condition ~ return(equals(get("char"), "]")) ~~
+
+~ / code condition ~ return(equals(get("char"), "/")) ~~
+~ * code condition ~ return(equals(get("char"), "*")) ~~
+
+~ [ code else ~ if(function("] code condition"), function("]")) ~~
+
+~ code callback ~
+run(function("next"))
+
+if(function("> code condition"), function(">"))
+if(function("< code condition"), function("<"))
+if(function("+ code condition"), function("+"))
+if(function("- code condition"), function("-"))
+if(function(". code condition"), function("."))
+if(function(", code condition"), function(","))
+; need to be mutually exclusive since it changes i
+if(function("[ code condition"), function("["), function("[ code else"))
+
+if(function("/ code condition"), function("/"))
+if(function("* code condition"), function("*"))
+~~
+
+~ next ~
+set("i", add(get("i"), 1))
+set("char", get_index(get("code"), get("i")))
+~~
+
+~ while condition ~
+return(less(add(get("i"), 1), length(get("code"))))
+~~
+
+~ loop ~
+set("code", input("brainfuck code> "))
+set("i", -1)
+
+while(function("while condition"), function("code callback"))
+~~
+
+~ loop condition ~ return(true) ~~
+while(function("loop condition"), function("loop"))

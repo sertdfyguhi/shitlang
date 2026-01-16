@@ -1,7 +1,7 @@
 return(
     add(
         1,
-        subtract(
+        sub(
             1,
             run(
                 function(

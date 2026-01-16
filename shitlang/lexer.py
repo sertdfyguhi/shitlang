@@ -49,7 +49,7 @@ class Lexer:
         while self.curr:
             if comment is not None:
                 if (comment == ";" and self.curr == "\n") or (
-                    comment == "-" and self.curr == "-"
+                    comment == "=" and self.curr == "="
                 ):
                     comment = None
 
@@ -59,8 +59,10 @@ class Lexer:
             if in_args or in_arr:
                 if self.curr == ",":
                     if len(tokens) > 1:
+                        print(tokens)
                         return SLSyntaxError(
-                            self.context, "multiple tokens in array value"
+                            self.context,
+                            f"multiple tokens in {"array value" if in_arr else "argument"}",
                         )
                     elif len(tokens) == 0:
                         return SLSyntaxError(self.context, "unexpected comma")
@@ -76,7 +78,7 @@ class Lexer:
             if self.curr in " \t\r\n":
                 self.next()
                 continue
-            elif self.curr in ";-":
+            elif self.curr in ";=":
                 comment = self.curr
                 self.next()
                 continue

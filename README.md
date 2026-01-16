@@ -19,22 +19,7 @@ git clone https://github.com/sertdfyguhi/shitlang
 python3 shitlang.py
 ```
 
-## todo
-
-- [x] escape characters
-- [x] somehow implement if, ~~else if~~ and else
-- [x] arrays
-- [x] array builtins
-- [x] documentation
-- [x] new lexer
-  - [x] string
-  - [x] numbers
-  - [x] arrays
-  - [x] func calls
-  - [x] comments
-- [ ] rewrite shitlang.py
-
-## examples
+## examples (more [examples](https://github.com/sertdfyguhi/shitlang/tree/master/examples))
 
 ### hello world
 

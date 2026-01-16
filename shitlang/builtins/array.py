@@ -4,29 +4,31 @@ from ..error import SLTypeError
 
 
 class ArrayBuiltins:
-    def index(self, array, index):
-        if type(array) != list:
-            return create_typeerror(self.context, "array", "array")
+    def get_index(self, array, index):
+        if type(array) not in [list, str]:
+            return create_typeerror(self.context, "array", ["array", "string"])
         elif type(index) != int:
             return create_typeerror(self.context, "index", "integer")
 
         return array[index]
 
     def set_index(self, array, index, value):
-        if type(array) != list:
-            return create_typeerror(self.context, "array", "array")
+        if type(array) not in [list, str]:
+            return create_typeerror(self.context, "array", ["array", "string"])
         elif type(index) != int:
             return create_typeerror(self.context, "index", "integer")
 
-        arr = array.copy()
-        arr[index] = value
-        return arr
+        if type(array) == list:
+            array = array.copy()
 
-    def join(self, sep, array):
-        if type(sep) != str:
-            return create_typeerror(self.context, "sep", "string")
-        elif type(array) != list or any(type(value) != str for value in array):
+        array[index] = value
+        return array
+
+    def join(self, array, sep):
+        if type(array) != list or any(type(value) != str for value in array):
             return create_typeerror(self.context, "array", "array of strings")
+        elif type(sep) != str:
+            return create_typeerror(self.context, "sep", "string")
 
         return sep.join(array)
 
@@ -125,3 +127,17 @@ class ArrayBuiltins:
             return [i for i, value in enumerate(array) if condition.run(value)]
         else:
             return [value for value in array if condition.run(value)]
+
+    def iterate(self, array, func):
+        if type(array) not in [list, str]:
+            return create_typeerror(self.context, "array", ["array", "string"])
+        elif not isinstance(func, Function):
+            return create_typeerror(self.context, "func", "function")
+        elif len(func.params) != 1:
+            return SLTypeError(
+                self.context,
+                "argument 'func' must be a function with one parameter",
+            )
+
+        for value in array:
+            func.run(value)

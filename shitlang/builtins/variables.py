@@ -6,6 +6,7 @@ class VariableBuiltins:
         if type(name) != str:
             return create_typeerror(self.context, "name", "string")
 
+        # print("set:", name, value)
         return self.vars.set(name, value)
 
     def get(self, name):

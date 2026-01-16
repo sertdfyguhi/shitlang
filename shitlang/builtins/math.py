@@ -4,11 +4,11 @@ import math
 
 
 class MathBuiltins:
-    def sqrt(self, a):
-        if type(a) not in [int, float]:
-            return create_typeerror(self.context, "a", "number")
+    def sqrt(self, x):
+        if type(x) not in [int, float]:
+            return create_typeerror(self.context, "x", "number")
 
-        return math.sqrt(a)
+        return math.sqrt(x)
 
     # trigonometry
     def sin(self, x):

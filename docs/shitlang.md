@@ -17,19 +17,19 @@ set("name", "value")
 ```
 ; This is a comment
 print('comment')
-- This is a
-multi line comment - print('multi line comment')
+= This is a
+multi line comment = print('multi line comment')
 ```
 
 ## Types
 
 ```
-1               - integer
-1.2             - float
-true / false    - boolean
-none            - none
-"string"        - string
-<1, 2, 3>       - array
+1               ; integer
+1.2             ; float
+true / false    ; boolean
+none            ; none
+"string"        ; string
+<1, 2, 3>       ; array
 ```
 
 ## Functions (File syntax)
