@@ -1,4 +1,6 @@
 from .utils import create_typeerror
+from ..function import Function
+from ..error import SLTypeError
 
 
 class ArrayBuiltins:
@@ -92,8 +94,34 @@ class ArrayBuiltins:
 
         return max(array)
 
-    def length(self, value):
-        if type(value) not in [list, str]:
-            return create_typeerror(self.context, "value", ["array", "string"])
+    def length(self, array):
+        if type(array) not in [list, str]:
+            return create_typeerror(self.context, "array", ["array", "string"])
 
-        return len(value)
+        return len(array)
+
+    def find(self, array, value):
+        if type(array) not in [list, str]:
+            return create_typeerror(self.context, "array", ["array", "string"])
+        elif type(array) == str and type(value) != str:
+            return create_typeerror(self.context, "value", "string")
+
+        return [i for i, val in enumerate(array) if val == value]
+
+    def find_by(self, array, condition, index=False):
+        if type(array) != list:
+            return create_typeerror(self.context, "array", "array")
+        elif not isinstance(condition, Function):
+            return create_typeerror(self.context, "condition", "function")
+        elif len(condition.params) != 1:
+            return SLTypeError(
+                self.context,
+                "argument 'condition' must be a function with one parameter",
+            )
+        elif type(index) != bool:
+            return create_typeerror(self.context, "index", "boolean")
+
+        if index:
+            return [i for i, value in enumerate(array) if condition.run(value)]
+        else:
+            return [value for value in array if condition.run(value)]

@@ -45,6 +45,10 @@
 - `concat(*strings: str) -> string`: returns all string in strings concatenated
 - `format(string: str, *args: any) -> string`: returns formatted `string` using `args`
 - `repeat(data: str | array, factor: int) -> string | array`: repeats `data` by `factor`
+- `chr(a: int) -> string`: returns the ascii character of ascii code(`a`)
+- `ord(a: str) -> int`: returns the ascii code of ascii character
+- `encode_base64(string: str) -> str`: encodes `string` in base64
+- `decode_base64(string: str) -> str`: decodes `string` from base4
 
 ## Array Builtins
 
@@ -60,6 +64,8 @@
 - `min(array: array[int | float]) -> int | float`: returns the minimum number in `array`
 - `max(array: array[int | float]) -> int | float`: returns the maximum number in `array`
 - `length(value: array | string) -> int`: returns the length of `value`
+- `find(array: array | string, value: any) -> array`: returns indexes of all occurences of `value` in `array`
+- `find_by(array: array, condition: function, index: bool = false) -> array`: returns values or indicies that match condition in `array`
 
 ## Math Builtins
 
@@ -73,6 +79,7 @@
 - `round(number: float) -> int`: rounds `number`
 - `floor(number: float) -> int`: rounds `number` down to largest number that is less than `number`
 - `ceil(number: float) -> int`: rounds `number` up to next largest number
+- `random(seed: int | float | string = none) -> float`: returns a pseudo-random float from 0 to 1 and uses `seed` if `seed` is provided
 
 ## Type Builtins
 
@@ -81,11 +88,3 @@
 - `to_int(value: any) -> int`: returns `value` converted into a int
 - `to_float(value: any) -> float`: returns `value` converted into a float
 - `to_bool(value: any) -> bool`: returns `value` converted into a bool
-
-## Miscellaneous Builtins
-
-- `chr(a: int) -> string`: returns the ascii character of ascii code(`a`)
-- `ord(a: str) -> int`: returns the ascii code of ascii character
-- `random(seed: int | float | string = none) -> float`: returns a pseudo-random float from 0 to 1 and uses `seed` if `seed` is provided
-- `encode_base64(string: str) -> str`: encodes `string` in base64
-- `decode_base64(string: str) -> str`: decodes `string` from base4

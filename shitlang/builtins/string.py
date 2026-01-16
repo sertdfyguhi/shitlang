@@ -1,4 +1,5 @@
 from .utils import create_typeerror
+import base64
 
 
 class StringBuiltins:
@@ -35,3 +36,27 @@ class StringBuiltins:
             return create_typeerror(self.context, "amount", "integer")
 
         return obj * amount
+
+    def chr(self, a):
+        if type(a) != int:
+            return create_typeerror(self.context, "a", "integer")
+
+        return chr(a)
+
+    def ord(self, a):
+        if type(a) != str:
+            return create_typeerror(self.context, "a", "string")
+
+        return ord(a)
+
+    def encode_base64(self, string):
+        if type(string) != str:
+            return create_typeerror(self.context, "string", "string")
+
+        return base64.b64encode(string.encode("ascii")).decode("ascii")
+
+    def decode_base64(self, string):
+        if type(string) != str:
+            return create_typeerror(self.context, "string", "string")
+
+        return base64.b64decode(string.encode("ascii")).decode("ascii")

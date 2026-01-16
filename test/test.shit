@@ -1,27 +1,5 @@
-~ 0 ~
-print(0)
+~ condition ~
+    return(equals(get("value"), 3))
 ~~
 
-~ 0 condition ~
-return(equals(get('input'), '0'))
-~~
-
-~ 1 ~
-while(function('1 loop condition'), function('1 loop'))
-~~
-
-~ 1 condition ~
-return(equals(get('input'), '1'))
-~~
-
-~ 1 loop condition ~
-return(true)
-~~
-
-~ 1 loop ~
-print(1)
-~~
-
-set('input', input(''))
-if(function('0 condition'), function('0'))
-if(function('1 condition'), function('1'))
+print(find_by(<3, 1, 2, 4>, function("condition", <"value">), true))

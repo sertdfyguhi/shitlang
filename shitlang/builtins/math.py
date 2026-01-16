@@ -1,4 +1,5 @@
 from .utils import create_typeerror
+import random
 import math
 
 
@@ -64,3 +65,10 @@ class MathBuiltins:
             return create_typeerror(self.context, "n", "float")
 
         return math.ceil(n)
+
+    def random(self, seed=None):
+        if seed and type(seed) not in [int, float, str]:
+            return create_typeerror(self.context, "seed", ["int", "float", "string"])
+
+        random.seed(seed)
+        return random.random()
