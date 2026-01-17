@@ -1,6 +1,6 @@
+from ..error import SLTypeError, SLIndexError
 from .utils import create_typeerror
 from ..function import Function
-from ..error import SLTypeError
 
 
 class ArrayBuiltins:
@@ -10,7 +10,12 @@ class ArrayBuiltins:
         elif type(index) != int:
             return create_typeerror(self.context, "index", "integer")
 
-        return array[index]
+        try:
+            return array[index]
+        except IndexError:
+            return SLIndexError(
+                self.context, "argument 'index' out of range of 'array'"
+            )
 
     def set_index(self, array, index, value):
         if type(array) not in [list, str]:
@@ -21,7 +26,13 @@ class ArrayBuiltins:
         if type(array) == list:
             array = array.copy()
 
-        array[index] = value
+        try:
+            array[index] = value
+        except IndexError:
+            return SLIndexError(
+                self.context, "argument 'index' out of range of 'array'"
+            )
+
         return array
 
     def join(self, array, sep):
@@ -39,7 +50,14 @@ class ArrayBuiltins:
             return create_typeerror(self.context, "index", "integer")
 
         temp = array.copy()
-        temp.pop(index)
+
+        try:
+            temp.pop(index)
+        except IndexError:
+            return SLIndexError(
+                self.context, "argument 'index' out of range of 'array'"
+            )
+
         return temp
 
     def append(self, array, value, index=None):
@@ -59,7 +77,12 @@ class ArrayBuiltins:
             return create_typeerror(self.context, "array", "array")
 
         arr = array.copy()
-        arr[index1], arr[index2] = arr[index2], arr[index1]
+
+        try:
+            arr[index1], arr[index2] = arr[index2], arr[index1]
+        except IndexError:
+            return SLIndexError(self.context, "indices out of range of 'array'")
+
         return arr
 
     def slice(self, value, start, end=None):
@@ -70,7 +93,10 @@ class ArrayBuiltins:
         elif end is not None or type(end) != int:
             return create_typeerror(self.context, "end", "integer")
 
-        return value[start:end]
+        try:
+            return value[start:end]
+        except IndexError:
+            return SLIndexError(self.context, "indices out of range of 'array'")
 
     def reverse(self, a):
         if type(a) not in [list, str]:

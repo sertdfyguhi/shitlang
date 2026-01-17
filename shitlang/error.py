@@ -28,6 +28,11 @@ class SLValueError(SLError):
         super().__init__("ValueError", context, details)
 
 
+class SLIndexError(SLError):
+    def __init__(self, context, details=None):
+        super().__init__("IndexError", context, details)
+
+
 class SLBuiltinError(SLError):
     def __init__(self, context, details=None):
         super().__init__("BuiltinError", context, details)
