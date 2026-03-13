@@ -51,20 +51,13 @@ class Interpreter:
             if token.type == TT_FUNC_CALL:
                 orig_name = token.value[0]
 
-                try:
-                    args = self.interpret(token.value[1], in_args=True)
-                    if is_SLerr(args):
-                        return args
+                args = self.interpret(token.value[1], in_args=True)
+                if is_SLerr(args):
+                    return args
 
-                    # print(orig_name, token, args)
-
-                    ret = run_builtin(orig_name, args, self.builtins)
-                    if is_SLerr(ret):
-                        return ret
-                except RecursionError:
-                    return SLRecursionError(
-                        self.context, "maximum recursion depth exceeded"
-                    )
+                ret = run_builtin(orig_name, args, self.builtins)
+                if is_SLerr(ret):
+                    return ret
 
                 if orig_name == "return" and not in_args:
                     res.append(ReturnedValue(ret))

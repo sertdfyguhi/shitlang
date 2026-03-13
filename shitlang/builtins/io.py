@@ -1,4 +1,4 @@
-from .utils import create_typeerror
+import os
 
 
 class IOBuiltins:
@@ -26,8 +26,20 @@ class IOBuiltins:
 
         return (", " if array else " ").join(data)
 
-    def input(self, prompt):
-        if type(prompt) != str:
-            return create_typeerror(self.context, "prompt", "string")
-
+    def input(self, prompt: str):
         return input(prompt)
+
+    def file_exists(self, path: str):
+        return os.path.isfile(path)
+
+    def read_file(self, path: str):
+        with open(path, "r") as f:
+            return f.read()
+
+    def write_file(self, path: str, content: str):
+        with open(path, "w") as f:
+            f.write(content)
+
+    def append_file(self, path: str, content: str):
+        with open(path, "a") as f:
+            f.write(content)

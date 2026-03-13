@@ -1,24 +1,11 @@
-from .utils import create_typeerror
 from ..error import SLTypeError
-from ..context import Context
-
-
-def op_type_check(context: Context, a, b):
-    if type(a) not in [int, float] or type(b) not in [int, float]:
-        return create_typeerror(context, ["a", "b"], "number")
 
 
 class OperatorBuiltins:
-    def not_(self, a):
-        if type(a) != bool:
-            return create_typeerror(self.context, "a", "boolean")
-
+    def not_(self, a: bool):
         return not a
 
     def and_(self, a, b):
-        if type(a) != bool or type(b) != bool:
-            return create_typeerror(self.context, ["a", "b"], "boolean")
-
         return a and b
 
     def or_(self, a, b):
@@ -27,62 +14,60 @@ class OperatorBuiltins:
     def equals(self, a, b):
         return a == b
 
-    def greater(self, a, b):
-        if err := op_type_check(self.context, a, b):
-            return err
-
+    def greater(self, a: int | float, b: int | float):
         return a > b
 
-    def greater_or_equal(self, a, b):
-        if err := op_type_check(self.context, a, b):
-            return err
-
+    def greater_or_equal(self, a: int | float, b: int | float):
         return a >= b
 
-    def less(self, a, b):
-        if err := op_type_check(self.context, a, b):
-            return err
-
+    def less(self, a: int | float, b: int | float):
         return a < b
 
-    def less_or_equal(self, a, b):
-        if err := op_type_check(self.context, a, b):
-            return err
-
+    def less_or_equal(self, a: int | float, b: int | float):
         return a <= b
 
-    def add(self, a, b):
+    def add(self, a, b, *c):
         try:
-            return a + b
+            result = a + b
+            for value in c:
+                result += value
+
+            return result
         except TypeError:
-            return SLTypeError(self.context, "arguments 'a' and 'b' cannot be added")
+            return SLTypeError(self.context, "arguments could not be added")
 
-    def sub(self, a, b):
-        if err := op_type_check(self.context, a, b):
-            return err
+    def sub(self, a, b, *c):
+        try:
+            result = a - b
+            for value in c:
+                result -= value
 
-        return a - b
+            return result
+        except TypeError:
+            return SLTypeError(self.context, "arguments could not be subtracted")
 
-    def mul(self, a, b):
-        if err := op_type_check(self.context, a, b):
-            return err
+    def mul(self, a, b, *c):
+        try:
+            result = a * b
+            for value in c:
+                result *= value
 
-        return a * b
+            return result
+        except TypeError:
+            return SLTypeError(self.context, "arguments could not be multiplied")
 
-    def div(self, a, b):
-        if err := op_type_check(self.context, a, b):
-            return err
+    def div(self, a, b, *c):
+        try:
+            result = a / b
+            for value in c:
+                result /= value
 
-        return a / b
+            return result
+        except TypeError:
+            return SLTypeError(self.context, "arguments could not be divided")
 
-    def mod(self, a, b):
-        if err := op_type_check(self.context, a, b):
-            return err
-
+    def mod(self, a: int | float, b: int | float):
         return a % b
 
-    def pow(self, a, b):
-        if err := op_type_check(self.context, a, b):
-            return err
-
+    def pow(self, a: int | float, b: int | float):
         return a**b

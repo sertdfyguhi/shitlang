@@ -1,22 +1,10 @@
-from .utils import create_typeerror
-
-
 class VariableBuiltins:
-    def set(self, name, value):
-        if type(name) != str:
-            return create_typeerror(self.context, "name", "string")
-
+    def set(self, name: str, value):
         # print("set:", name, value)
         return self.vars.set(name, value)
 
-    def get(self, name):
-        if type(name) != str:
-            return create_typeerror(self.context, "name", "string")
-
+    def get(self, name: str):
         return self.vars.get(name)
 
-    def delete(self, name):
-        if type(name) != str:
-            return create_typeerror(self.context, "name", "string")
-
+    def delete(self, name: str):
         return self.vars.delete(name)

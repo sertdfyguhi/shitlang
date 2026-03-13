@@ -5,6 +5,15 @@
 - `print(*data: any)`: print to console
 - `bprint(*data: any)`: print to console with no newline
 - `input(prompt: str) -> string`: returns input from console
+- `file_exists(path: str) -> bool`: checks if `path` is a file
+- `read_file(path: str) -> string`: returns content in `path`
+- `write_file(path: str, content: str)`: writes to `path`
+- `append_file(path: str, content: str)`: appends to `path`
+
+## Time Builtins
+
+- `sleep(seconds: int | float)`: sleeps for `seconds`
+- `now() -> float`: returns unix time now
 
 ## Function Builtins
 
@@ -14,6 +23,7 @@
 - `run_builtin(name: str, args: array) -> any`: builtin to run a builtin and returns the result
 - `while(condition: function, loop: function)`: creates a while loop
 - `if(condition: function, func: function, else_: function = none) -> any`: runs `func` if `condition` is true else run `else_` if there is one
+- `try(func: function, catch_func: function)`: if `func` retuens an error, runs `catch_func` with error string passed in
 
 ## Variable Builtins
 
@@ -31,11 +41,11 @@
 - `greater_or_equal(a: int | float, b: int | float) -> bool`: returns true if `a` is greater than or equal `b`
 - `less(a: int | float, b: int | float) -> bool`: returns true if `a` is less than `b`
 - `less_or_equal(a: int | float, b: int | float) -> bool`: returns true if `a` is less than or equal `b`
-- `add(a: any, b: any) -> any`: returns `a` added to `b`
-- `sub(a: int | float, b: int | float) -> int | float`: returns `a` subtracted by `b`
-- `mul(a: int | float, b: int | float) -> int | float`: returns `a` multiplied by `b`
-- `div(a: int | float, b: int | float) -> int | float`: returns `a` divided by `b`
-- `mod(a: int | float, b: int | float) -> int | float`: returns the remainder of `a` divided by `b`
+- `add(a: any, b: any, *c: any) -> any`: returns all arguments added together
+- `sub(a: int | float, b: int | float, *c: int | float) -> int | float`: returns all arguments subtracted together
+- `mul(a: int | float, b: int | float, *c: int | float) -> int | float`: returns all arguments multiplied together
+- `div(a: int | float, b: int | float, *c: int | float) -> int | float`: returns all arguments divided together
+- `mod(a: int | float, b: int | float) -> int | float`: returns the modulo of `a` and `b`
 - `pow(a: int | float, b: int | float) -> int | float`: returns `a` to the power of `b`
 
 ## String Builtins
@@ -44,9 +54,9 @@
 - `split(pattern: str, string: str) -> array` splits `string` on every instance of `deliminator` and returns it
 - `concat(*strings: str) -> string`: returns all string in strings concatenated
 - `format(string: str, *args: any) -> string`: returns formatted `string` using `args`
-- `repeat(data: str | array, factor: int) -> string | array`: repeats `data` by `factor`
-- `chr(a: int) -> string`: returns the ascii character of ascii code(`a`)
-- `ord(a: str) -> int`: returns the ascii code of ascii character
+- `repeat(value: str | array, amount: int) -> string | array`: repeats `value` by `amount`
+- `chr(index: int) -> string`: returns the ascii character of ascii code `index`
+- `ord(char: str) -> int`: returns the ascii code of ascii character
 - `encode_base64(string: str) -> str`: encodes `string` in base64
 - `decode_base64(string: str) -> str`: decodes `string` from base4
 
@@ -58,8 +68,8 @@
 - `remove(array: array, index: int) -> array`: removes `index` from `array` and returns it
 - `append(array: array, value: any, index: int = none) -> array`: inserts `value` into `index` of `array` and returns it
 - `swap(array: array, index1: int, index2: int) -> array`: swaps `index1` with `index2` in `array` and returns it
-- `slice(value: array | string, start: int, end: int = none) -> array | string | none`: slices `value` from `start` to `end` and returns it
-- `reverse(a: array | string) -> array | string`: returns `a` reversed
+- `slice(array: array | string, start: int, end: int = none) -> array | string | none`: returns `array` sliced from `start` to `end`
+- `reverse(array: array | string) -> array | string`: returns `array` reversed
 - `sum(array: array[int | float]) -> int | float`: adds every number in `array` and returns it
 - `min(array: array[int | float]) -> int | float`: returns the minimum number in `array`
 - `max(array: array[int | float]) -> int | float`: returns the maximum number in `array`

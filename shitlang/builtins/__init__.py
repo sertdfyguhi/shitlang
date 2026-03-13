@@ -1,3 +1,7 @@
+from beartype.claw import beartype_this_package
+
+beartype_this_package()
+
 from .operators import OperatorBuiltins
 from .variables import VariableBuiltins
 from .function import FunctionBuiltins
@@ -5,6 +9,7 @@ from .string import StringBuiltins
 from .array import ArrayBuiltins
 from .types import TypeBuiltins
 from .math import MathBuiltins
+from .time import TimeBuiltins
 from .io import IOBuiltins
 
 from ..environment import Environment
@@ -20,6 +25,7 @@ class Builtins(
     ArrayBuiltins,
     TypeBuiltins,
     MathBuiltins,
+    TimeBuiltins,
     IOBuiltins,
 ):
     def __init__(

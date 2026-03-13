@@ -1,5 +1,9 @@
-~ condition ~
-    return(equals(get("value"), 3))
+~ test ~
+sub("a", <>)
 ~~
 
-print(find_by(<3, 1, 2, 4>, function("condition", <"value">), true))
+~ catch ~
+print(get("msg"))
+~~
+
+try(function("test"), function("catch", <"msg">))

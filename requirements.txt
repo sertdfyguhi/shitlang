@@ -1,0 +1,2 @@
+beartype==0.22.9
+colorama==0.4.6

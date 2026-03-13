@@ -1,5 +1,5 @@
-from .utils import create_typeerror, run_builtin
 from ..function import Function
+from .utils import run_builtin
 from ..context import Context
 from ..error import *
 
@@ -7,14 +7,7 @@ import os
 
 
 class FunctionBuiltins:
-    def function(self, file, params=[], allow_use_vars=False):
-        if type(file) != str:
-            return create_typeerror(self.context, "file", "string")
-        elif type(params) != list or any(type(p) != str for p in params):
-            return create_typeerror(self.context, "params", "array of strings")
-        elif type(allow_use_vars) != bool:
-            return create_typeerror(self.context, "allow_use_vars", "boolean")
-
+    def function(self, file: str, params: list[str] = [], allow_use_vars: bool = False):
         code = None
         context = self.context
 
@@ -30,7 +23,9 @@ class FunctionBuiltins:
             file_path = os.path.join(self.context.fd, file)
 
             if os.path.exists(file_path):
-                code = open(file_path).read()
+                with open(file_path) as f:
+                    code = f.read()
+
                 context = Context(file_path)
             else:
                 return SLFileNotFoundError(self.context, f"function {file!r} not found")
@@ -45,19 +40,15 @@ class FunctionBuiltins:
             allow_use_vars,
         )
 
-    def run(self, func, args=[]):
-        if not isinstance(func, Function):
-            return create_typeerror(self.context, "func", "function")
-        elif type(args) != list:
-            return create_typeerror(self.context, "args", "array")
-
+    def run(self, func: Function, args: list = []):
         if len(args) < len(func.params):
             return SLValueError(
                 self.context, f"function '{func.context.fn}' missing arguments"
             )
         elif len(args) > len(func.params):
             return SLValueError(
-                self.context, "function given more arguments than expected"
+                self.context,
+                f"function '{func.context.fn}' given more arguments than expected",
             )
 
         ret = func.run(*args)
@@ -69,24 +60,14 @@ class FunctionBuiltins:
     def return_(self, value=None):
         return value
 
-    def run_builtin(self, name, args):
-        if type(name) != str:
-            return create_typeerror(self.context, "name", "string")
-        elif type(args) != list:
-            return create_typeerror(self.context, "args", "array")
-
+    def run_builtin(self, name: str, args: list):
         return run_builtin(name, args, self)
 
-    def while_(self, condition, loop):
-        if (
-            not isinstance(condition, Function)
-            or not isinstance(loop, Function)
-            or len(condition.params) > 0
-            or len(loop.params) > 0
-        ):
+    def while_(self, condition: Function, loop: Function):
+        if len(condition.params) > 0 or len(loop.params) > 0:
             return SLTypeError(
                 self.context,
-                "arguments 'condition' and 'loop' must be a function with no parameters",
+                "arguments 'condition' and 'loop' must have no parameters",
             )
 
         condition.allow_use_vars = True
@@ -107,22 +88,15 @@ class FunctionBuiltins:
             if is_SLerr(cond):
                 return cond
 
-    def if_(self, condition, func, else_=None):
-        if (
-            not isinstance(condition, Function)
-            or not isinstance(func, Function)
-            or len(condition.params) > 0
-            or len(func.params) > 0
-        ):
+    def if_(self, condition: Function, func: Function, else_: Function | None = None):
+        if len(condition.params) > 0 or len(func.params) > 0:
             return SLTypeError(
                 self.context,
-                "arguments 'condition' and 'func' must be a function with no parameters",
+                "arguments 'condition' and 'func' must have no parameters",
             )
 
-        if else_ and (not isinstance(else_, Function) or len(else_.params) > 0):
-            return SLTypeError(
-                self.context, "argument 'else' must be a function with no parameters"
-            )
+        if else_ and len(else_.params) > 0:
+            return SLTypeError(self.context, "argument 'else' must have no parameters")
 
         condition.allow_use_vars = True
         func.allow_use_vars = True
@@ -143,3 +117,15 @@ class FunctionBuiltins:
 
         if is_SLerr(ret):
             return ret
+
+    def try_(self, func: Function, catch_func: Function):
+        if len(func.params) > 0:
+            return SLTypeError(self.context, "argument 'func' must have no parameters")
+        elif len(catch_func.params) != 1:
+            return SLTypeError(
+                self.context, "argument 'catch_func' must have 1 parameter"
+            )
+
+        ret = func.run()
+        if is_SLerr(ret):
+            catch_func.run(ret.details)
