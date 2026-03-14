@@ -3,14 +3,15 @@ from colorama import Fore, Style
 _BOLD = "\033[1m"
 
 
-class SLError:
+class SLError(Exception):
     def __init__(self, type_, context, details=None):
         self.type = type_
         self.context = context
         self.details = details
 
-    def __repr__(self) -> str:
-        return f'{Fore.RED}{_BOLD}File "{self.context.fn}":{Style.RESET_ALL}{Fore.RED}\nError:\n  {self.type}: {self.details}{Style.RESET_ALL}'
+        super().__init__(
+            f'{Fore.RED}{_BOLD}File "{context.fn}":{Style.RESET_ALL}{Fore.RED}\n{type_}: {Style.RESET_ALL}{details}'
+        )
 
 
 class SLSyntaxError(SLError):
@@ -56,7 +57,3 @@ class SLFileNotFoundError(SLError):
 class SLInvalidCharError(SLError):
     def __init__(self, context, details=None):
         super().__init__("InvalidCharError", context, details)
-
-
-def is_SLerr(obj):
-    return isinstance(obj, SLError)

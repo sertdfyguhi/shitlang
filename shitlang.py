@@ -27,9 +27,10 @@ def run_file():
         print("error: file does not exist")
         exit(1)
 
-    ret = shitlang.run_file(path)
-    if shitlang.is_SLerr(ret):
-        print(ret)
+    try:
+        shitlang.run_file(path)
+    except shitlang.SLError as err:
+        print(err)
 
 
 def run_stdin():
@@ -45,11 +46,12 @@ def run_stdin():
             # ignore control + c exit
             exit(0)
 
-        ret = shitlang.run(code, STDIN_FN, vars_=variables, environment=environment)
-        if ret:
-            print(ret)
-        # if shitlang.is_SLerr(ret):
-        #     print(ret)
+        try:
+            ret = shitlang.run(code, STDIN_FN, vars_=variables, environment=environment)
+            if ret:
+                print(ret)
+        except shitlang.SLError as err:
+            print(err)
 
 
 if len(sys.argv) == 1:

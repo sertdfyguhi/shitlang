@@ -1,7 +1,7 @@
 from .environment import Environment
 from .interpreter import Interpreter
 from .context import Context
-from .error import is_SLerr
+from .error import SLError
 from .vars import Variables
 from .lexer import Lexer
 
@@ -13,9 +13,6 @@ def _run(
     environment: Environment = None,
 ):
     tokens = Lexer(code, context).tokenize()
-    if is_SLerr(tokens):
-        return tokens
-
     return Interpreter(context, vars_, environment).interpret(tokens)
 
 

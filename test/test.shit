@@ -1,9 +1,1 @@
-~ test ~
-sub("a", <>)
-~~
-
-~ catch ~
-print(get("msg"))
-~~
-
-try(function("test"), function("catch", <"msg">))
+_

@@ -39,8 +39,6 @@ class Function:
 
         if not hasattr(self, "tokens"):
             self.tokens = Lexer(self.code, self.context).tokenize()
-            if is_SLerr(self.tokens):
-                return self.tokens
 
         for param, arg in zip(self.params, args):
             self.vars.set(param, arg)
@@ -51,15 +49,8 @@ class Function:
         res = Interpreter(
             self.context, self.vars, self.environment, self.builtins
         ).interpret(self.tokens)
-        if is_SLerr(res):
-            return res
-
-        try:
-            if type(res[-1]) == ReturnedValue:
-                return res[-1].value
-        except IndexError as e:
-            # ignore if res is empty array
-            return None
+        if len(res) > 0 and isinstance(res[-1], ReturnedValue):
+            return res[-1].value
 
     def __repr__(self) -> str:
         return f'function: <{", ".join(self.params)}>'

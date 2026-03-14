@@ -7,9 +7,7 @@ class ArrayBuiltins:
         try:
             return array[index]
         except IndexError:
-            return SLIndexError(
-                self.context, "argument 'index' out of range of 'array'"
-            )
+            raise SLIndexError(self.context, "argument 'index' out of range of 'array'")
 
     def set_index(self, array: list | str, index: int, value):
         if isinstance(array, list):
@@ -18,9 +16,7 @@ class ArrayBuiltins:
         try:
             array[index] = value
         except IndexError:
-            return SLIndexError(
-                self.context, "argument 'index' out of range of 'array'"
-            )
+            raise SLIndexError(self.context, "argument 'index' out of range of 'array'")
 
         return array
 
@@ -33,9 +29,7 @@ class ArrayBuiltins:
         try:
             temp.pop(index)
         except IndexError:
-            return SLIndexError(
-                self.context, "argument 'index' out of range of 'array'"
-            )
+            raise SLIndexError(self.context, "argument 'index' out of range of 'array'")
 
         return temp
 
@@ -50,7 +44,7 @@ class ArrayBuiltins:
         try:
             arr[index1], arr[index2] = arr[index2], arr[index1]
         except IndexError:
-            return SLIndexError(self.context, "indices out of range of 'array'")
+            raise SLIndexError(self.context, "indices out of range of 'array'")
 
         return arr
 
@@ -58,7 +52,7 @@ class ArrayBuiltins:
         try:
             return array[start:end]
         except IndexError:
-            return SLIndexError(self.context, "indices out of range of 'array'")
+            raise SLIndexError(self.context, "indices out of range of 'array'")
 
     def reverse(self, array: list | str):
         return list(reversed(array))
@@ -80,7 +74,7 @@ class ArrayBuiltins:
 
     def find_by(self, array: list, condition: Function, index: bool = False):
         if len(condition.params) != 1:
-            return SLTypeError(
+            raise SLTypeError(
                 self.context,
                 "argument 'condition' must be a function with one parameter",
             )
@@ -92,7 +86,7 @@ class ArrayBuiltins:
 
     def iterate(self, array: list | str, func: Function):
         if len(func.params) != 1:
-            return SLTypeError(
+            raise SLTypeError(
                 self.context,
                 "argument 'func' must be a function with one parameter",
             )

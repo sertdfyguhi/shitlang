@@ -31,40 +31,40 @@ class OperatorBuiltins:
             result = a + b
             for value in c:
                 result += value
-
-            return result
         except TypeError:
-            return SLTypeError(self.context, "arguments could not be added")
+            raise SLTypeError(self.context, "arguments could not be added")
+
+        return result
 
     def sub(self, a, b, *c):
         try:
             result = a - b
             for value in c:
                 result -= value
-
-            return result
         except TypeError:
-            return SLTypeError(self.context, "arguments could not be subtracted")
+            raise SLTypeError(self.context, "arguments could not be subtracted")
+
+        return result
 
     def mul(self, a, b, *c):
         try:
             result = a * b
             for value in c:
                 result *= value
-
-            return result
         except TypeError:
-            return SLTypeError(self.context, "arguments could not be multiplied")
+            raise SLTypeError(self.context, "arguments could not be multiplied")
+
+        return result
 
     def div(self, a, b, *c):
         try:
             result = a / b
             for value in c:
                 result /= value
-
-            return result
         except TypeError:
-            return SLTypeError(self.context, "arguments could not be divided")
+            raise SLTypeError(self.context, "arguments could not be divided")
+
+        return result
 
     def mod(self, a: int | float, b: int | float):
         return a % b

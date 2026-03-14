@@ -12,13 +12,13 @@ class Variables:
 
     def get(self, name):
         if name not in self.vars:
-            return SLVarNotDefinedError(self.context, f'variable "{name}" not defined')
+            raise SLVarNotDefinedError(self.context, f'variable "{name}" not defined')
 
         return self.vars[name]
 
     def delete(self, name):
         if name not in self.vars:
-            return SLVarNotDefinedError(self.context, f'variable "{name}" not defined')
+            raise SLVarNotDefinedError(self.context, f'variable "{name}" not defined')
 
         del self.vars[name]
 

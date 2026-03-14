@@ -28,19 +28,17 @@ class Interpreter:
             else builtins
         )
 
-    def interpret(self, tokens: list[Token], in_args: bool = False):
+    def interpret(self, tokens: list[Token]):
         res = []
 
-        in_function = False
         func_tokens = []
         func_name = ""
 
         for token in tokens:
-            if in_function:
+            if func_name:
                 if token.type == TT_FUNC_DEF_END:
                     self.environment.add_func(func_name, func_tokens)
 
-                    in_function = False
                     func_tokens = []
                     func_name = ""
                 else:
@@ -51,34 +49,22 @@ class Interpreter:
             if token.type == TT_FUNC_CALL:
                 orig_name = token.value[0]
 
-                args = self.interpret(token.value[1], in_args=True)
-                if is_SLerr(args):
-                    return args
+                args = self.interpret(token.value[1])
+
+                if orig_name == "return":
+                    res.append(ReturnedValue(None if len(args) == 0 else args[0]))
+                    break
 
                 ret = run_builtin(orig_name, args, self.builtins)
-                if is_SLerr(ret):
-                    return ret
-
-                if orig_name == "return" and not in_args:
-                    res.append(ReturnedValue(ret))
-                    break
-                else:
-                    res.append(ret)
+                res.append(ret)
             elif token.type == TT_ARRAY:
-                array = self.interpret(token.value, in_args=True)
-                if is_SLerr(array):
-                    return array
-
+                array = self.interpret(token.value)
                 res.append(array)
             elif token.type == TT_FUNC_DEF:
-                in_function = True
                 func_name = token.value
             elif token.type == TT_UNDERSCORE:
-                return SLSyntaxError(self.context, "unexpected underscore")
+                raise SLSyntaxError(self.context, "unexpected underscore")
             else:
                 res.append(token.value)
-
-        # print(f"{self.context}: {res}")
-        # print(self.environment.functions)
 
         return res

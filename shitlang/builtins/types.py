@@ -19,7 +19,7 @@ class TypeBuiltins:
         try:
             return int(value)
         except ValueError:
-            return SLValueError(
+            raise SLValueError(
                 self.context, "argument 'value' cannot be converted to int"
             )
 
@@ -27,7 +27,7 @@ class TypeBuiltins:
         try:
             return float(value)
         except ValueError:
-            return SLValueError(
+            raise SLValueError(
                 self.context, "argument 'value' cannot be converted to float"
             )
 
@@ -35,7 +35,7 @@ class TypeBuiltins:
         try:
             return bool(value)
         except ValueError:
-            return SLValueError(
+            raise SLValueError(
                 self.context, "argument 'value' cannot be converted to bool"
             )
 
