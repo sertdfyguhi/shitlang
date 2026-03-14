@@ -32,6 +32,13 @@ none            ; none
 <1, 2, 3>       ; array
 ```
 
+## Pipes
+
+```
+; would be equal to print(add(mul(2, 2), 5))
+print([2 > mul(_, 2) > add(_, 5)])
+```
+
 ## Functions (File syntax)
 
 ### main.shit
@@ -58,48 +65,34 @@ run(function("function", <"param1", "param2">), <"argument1", "argument2">)
 
 ## If
 
-### main.shit
-
 ```
-if(function("condition.shit"), function("if.shit"), function("else.shit"))
-```
-
-### condition.shit
-
-```
+~ condition ~
 return(equals(add(1, 2), 3))
-```
+~~
 
-### if.shit
-
-```
+~ if ~
 print("result of 1 + 2 is 3")
-```
+~~
 
-### else.shit
-
-```
+~ else ~
 print("result of 1 + 2 is not 3")
+~~
+
+if(function("condition"), function("if"), function("else"))
 ```
 
 ## While loop
 
-### main.shit
-
 ```
-set("i", 0)
-while(function("condition.shit"), function("loop.shit"))
-```
-
-### condition.shit
-
-```
+~ condition ~
 return(less(get("i"), 1000))
-```
+~~
 
-### loop.shit
-
-```
+~ loop ~
 print(get("i"))
 set("i", add(get("i"), 1))
+~~
+
+set("i", 0)
+while(function("condition"), function("loop.shit"))
 ```

@@ -3,6 +3,8 @@ TT_FUNC_DEF_END = "function definition end"
 
 TT_FUNC_CALL = "function call"
 
+TT_UNDERSCORE = "underscore"
+
 TT_STRING = "string"
 TT_NUMBER = "number"
 TT_ARRAY = "array"

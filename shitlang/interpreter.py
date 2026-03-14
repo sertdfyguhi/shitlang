@@ -73,6 +73,8 @@ class Interpreter:
             elif token.type == TT_FUNC_DEF:
                 in_function = True
                 func_name = token.value
+            elif token.type == TT_UNDERSCORE:
+                return SLSyntaxError(self.context, "unexpected underscore")
             else:
                 res.append(token.value)
 

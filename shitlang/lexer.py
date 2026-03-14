@@ -38,12 +38,19 @@ class Lexer:
 
         return next_char
 
-    def tokenize(self, in_args: bool = False, in_arr: bool = False):
+    def tokenize(self, mode: str = ""):
         tokens = []
         comment = None
 
-        if in_args or in_arr:
-            CLOSE_PAREN = ")" if in_args else ">"
+        terminals = {
+            "args": (")", ",", "arguments"),
+            "arr": (">", ",", "array"),
+            "pipe": ("]", ">", "pipe"),
+        }
+
+        is_termed = mode in terminals
+        if is_termed:
+            close_char, sep_char, term_name = terminals[mode]
             res = []
 
         while self.curr:
@@ -56,24 +63,50 @@ class Lexer:
                 self.next()
                 continue
 
-            if in_args or in_arr:
-                if self.curr == ",":
-                    if len(tokens) > 1:
-                        print(tokens)
+            if is_termed and (self.curr == sep_char or self.curr == close_char):
+                if len(tokens) == 0:
+                    if self.curr == sep_char:
+                        return SLSyntaxError(self.context, "unexpected comma")
+                    elif mode == "pipe":
+                        return SLSyntaxError(self.context, "empty pipe")
+                    else:
+                        break
+
+                if len(tokens) > 1:
+                    return SLSyntaxError(
+                        self.context,
+                        f"multiple tokens in {term_name}",
+                    )
+
+                if mode == "pipe" and len(res) > 0:
+                    if tokens[0].type != TT_FUNC_CALL:
                         return SLSyntaxError(
                             self.context,
-                            f"multiple tokens in {"array value" if in_arr else "argument"}",
+                            f"expected function call in pipe, found {tokens[0].type}",
                         )
-                    elif len(tokens) == 0:
-                        return SLSyntaxError(self.context, "unexpected comma")
 
+                    has_underscore = False
+                    args = tokens[0].value[1]
+
+                    for i, arg in enumerate(args):
+                        if arg.type == TT_UNDERSCORE:
+                            args[i] = res[0]
+                            has_underscore = True
+
+                    if not has_underscore:
+                        args.append(res[0])
+
+                    res[0] = tokens[0]
+                else:
                     res.append(tokens[0])
-                    tokens = []
 
+                tokens = []
+
+                if self.curr == close_char:
+                    break
+                else:
                     self.next()
                     continue
-                elif self.curr == CLOSE_PAREN:
-                    break
 
             if self.curr in " \t\r\n":
                 self.next()
@@ -89,46 +122,36 @@ class Lexer:
             elif self.curr in ascii_letters:
                 tokens.append(self.func())
             elif self.curr == "<":
-                array = self.args(in_args=False)
+                array = self.termed(mode="arr")
                 if is_SLerr(array):
                     return array
 
                 tokens.append(Token(TT_ARRAY, array))
+            elif self.curr == "[":
+                piped = self.termed(mode="pipe")
+                if is_SLerr(piped):
+                    return piped
+
+                tokens.append(piped[0])
             elif self.curr == "~":
-                if in_args:
+                if is_termed:
                     return SLSyntaxError(
-                        self.context, "cannot define function in arguments"
-                    )
-                elif in_arr:
-                    return SLSyntaxError(
-                        self.context, "cannot define function in array"
+                        self.context, f"cannot define function in {term_name}"
                     )
 
                 tokens.append(self.func_def())
+            elif mode == "args" and self.curr == "_":
+                self.next()
+                tokens.append(Token(TT_UNDERSCORE))
             else:
                 return SLInvalidCharError(
                     self.context, f"invalid character {self.curr!r}"
                 )
 
-            try:
-                if is_SLerr(tokens[-1]):
-                    return tokens[-1]
-            except IndexError:
-                # ignore if last token doesnt exist
-                continue
+            if len(tokens) > 0 and is_SLerr(tokens[-1]):
+                return tokens[-1]
 
-        if in_args or in_arr:
-            if self.curr != CLOSE_PAREN:
-                return self.EOF_ERR
-
-            if len(tokens) == 1:
-                res.append(tokens[0])
-            elif len(tokens) > 1:
-                return SLSyntaxError(self.context, "multiple tokens in array value")
-
-            return res
-        else:
-            return tokens
+        return res if is_termed else tokens
 
     def string(self):
         """tokenizes a string"""
@@ -186,28 +209,15 @@ class Lexer:
 
         return Token(TT_NUMBER, (float if is_float else int)(number))
 
-    def args(self, in_args: bool = True):
+    def termed(self, mode: str = "args"):
         """tokenizes function arguments (or arrays)"""
         self.next()
         if self.curr is None:
             return self.EOF_ERR
 
-        lexer = Lexer(self.code[self.i :], self.context)
-
-        if in_args:
-            args = lexer.tokenize(in_args=True)
-        else:
-            args = lexer.tokenize(in_arr=True)
-
-        if is_SLerr(args):
-            return args
-
-        # update lexer position
-        lexer.next()
-        self.i += lexer.i
-        self.curr = lexer.curr
-
-        return args
+        terms = self.tokenize(mode=mode)
+        self.next()
+        return terms
 
     def func(self):
         """tokenizes a function call"""
@@ -217,8 +227,8 @@ class Lexer:
             name += self.curr
             self.next()
 
-        if (value := name == "true") or name == "false":
-            return Token(TT_BOOL, value)
+        if name == "true" or name == "false":
+            return Token(TT_BOOL, name == "true")
         elif name == "none":
             return Token(TT_NONE)
 
@@ -227,7 +237,7 @@ class Lexer:
 
         # function call
         if self.curr == "(":
-            args = self.args()
+            args = self.termed(mode="args")
             if is_SLerr(args):
                 return args
 

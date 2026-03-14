@@ -32,6 +32,6 @@ if(function('condition 2'), function('if 1'), function('else 1'))
 
 set('try', 0)
 set('win', false)
-set('num', add(floor(mul(random(), 100)), 1))
+set('num', [random() > mul(_, 100) > floor() > add(_, 1)])
 while(function('condition 1'), function('while 1'))
 if(function('condition 3'), function('if 2'))
