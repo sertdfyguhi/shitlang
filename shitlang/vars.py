@@ -8,6 +8,9 @@ class Variables:
         self.vars = vardict
 
     def set(self, name, value):
+        if name == "":
+            raise SLValueError(self.context, "variable name cannot be empty")
+
         self.vars[name] = value
 
     def get(self, name):

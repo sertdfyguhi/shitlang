@@ -77,6 +77,8 @@
 - `find(array: array | string, value: any) -> array`: returns indexes of all occurences of `value` in `array`
 - `find_by(array: array, condition: function, index: bool = false) -> array`: returns values or indicies that match condition in `array`
 - `iterate(array: array | string, func: function)`: iterates through `array` and executes `func` for every element
+- `map(array: array, func: function) -> array`: runs `func` for each value in `array` and returns the array of returned values from `func`
+- `expand(array: array, var_names: array[str])`: expands `array` into variables in `var_names`
 
 ## Math Builtins
 

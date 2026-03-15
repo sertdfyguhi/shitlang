@@ -1,4 +1,4 @@
-from ..error import SLTypeError, SLIndexError
+from ..error import SLTypeError, SLIndexError, SLValueError
 from ..function import Function
 
 
@@ -93,3 +93,21 @@ class ArrayBuiltins:
 
         for value in array:
             func.run(value)
+
+    def map(self, array: list, func: Function):
+        if len(func.params) != 1:
+            raise SLTypeError(
+                self.context,
+                "argument 'func' must be a function with one parameter",
+            )
+
+        return list(map(func.run, array))
+
+    def expand(self, array: list, var_names: list[str]):
+        if len(var_names) > len(array):
+            raise SLValueError(
+                self.context, "argument 'var_names' has more values than 'array'"
+            )
+
+        for i in range(len(var_names)):
+            self.vars.set(var_names[i], array[i])

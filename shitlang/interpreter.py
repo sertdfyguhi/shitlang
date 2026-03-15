@@ -2,6 +2,7 @@ from .builtins.utils import run_builtin
 from .environment import Environment
 from .utils import ReturnedValue
 from .builtins import Builtins
+from .function import Function
 from .context import Context
 from .vars import Variables
 from .token import *
@@ -47,19 +48,27 @@ class Interpreter:
                 continue
 
             if token.type == TT_FUNC_CALL:
-                orig_name = token.value[0]
-
                 args = self.interpret(token.value[1])
 
-                if orig_name == "return":
+                if token.value[0] == "return":
                     res.append(ReturnedValue(None if len(args) == 0 else args[0]))
                     break
 
-                ret = run_builtin(orig_name, args, self.builtins)
+                ret = run_builtin(token.value[0], args, self.builtins)
                 res.append(ret)
+            elif token.type == TT_LAMBDA_DEF:
+                params = ["_" * (n + 1) for n in range(token.value[1])]
+                lambda_func = Function(
+                    token.value[0],
+                    params,
+                    self.context,
+                    self.environment,
+                    self.builtins,
+                    self.vars,
+                )
+                res.append(lambda_func)
             elif token.type == TT_ARRAY:
-                array = self.interpret(token.value)
-                res.append(array)
+                res.append(self.interpret(token.value))
             elif token.type == TT_FUNC_DEF:
                 func_name = token.value
             elif token.type == TT_UNDERSCORE:

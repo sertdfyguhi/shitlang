@@ -37,6 +37,17 @@ none            ; none
 ```
 ; would be equal to print(add(mul(2, 2), 5))
 print([2 > mul(_, 2) > add(_, 5)])
+
+; would be equal to encode_base64(repeat(ord(64), 6))
+[ord(64) > repeat(_, 6) > encode_base64()]
+```
+
+## Lambdas
+
+```
+; [> code]number of args
+; args are accessed using underscores, so _ would be the first and __ would be the second
+run([> print(_, __)]2, <1, 2>)
 ```
 
 ## Functions (File syntax)

@@ -1,5 +1,6 @@
 TT_FUNC_DEF = "function definition"
 TT_FUNC_DEF_END = "function definition end"
+TT_LAMBDA_DEF = "lambda definition"
 
 TT_FUNC_CALL = "function call"
 

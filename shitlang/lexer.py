@@ -39,21 +39,22 @@ class Lexer:
 
         return self.curr
 
-    def tokenize(self, mode: str = ""):
+    def tokenize(self, mode: str = "", in_lambda: bool = False):
         tokens = []
-        comment = None
+        comment_char = None
 
         is_termed = mode in TERMINALS
         if is_termed:
             close_char, sep_char, term_name = TERMINALS[mode]
             res = []
+            in_lambda_def = False
 
         while self.curr:
-            if comment is not None:
-                if (comment == ";" and self.curr == "\n") or (
-                    comment == "=" and self.curr == "="
+            if comment_char:
+                if (comment_char == ";" and self.curr == "\n") or (
+                    comment_char == "=" and self.curr == "="
                 ):
-                    comment = None
+                    comment_char = None
 
                 self.next()
                 continue
@@ -61,63 +62,89 @@ class Lexer:
             if is_termed and (self.curr == sep_char or self.curr == close_char):
                 if len(tokens) == 0:
                     if self.curr == sep_char:
-                        raise SLSyntaxError(self.context, "unexpected comma")
+                        if mode == "pipe":
+                            in_lambda = True
+                            in_lambda_def = True
+                            self.next(error_on_EOF=True)
+                            continue
+                        else:
+                            raise SLSyntaxError(
+                                self.context, f"unexpected {sep_char!r}"
+                            )
                     elif mode == "pipe":
                         raise SLSyntaxError(self.context, "empty pipe")
                     else:
+                        # is close char
                         break
-
-                if len(tokens) > 1:
+                elif len(tokens) > 1:
+                    raise SLSyntaxError(self.context, f"multiple tokens in {term_name}")
+                elif in_lambda_def and self.curr == sep_char:
                     raise SLSyntaxError(
-                        self.context,
-                        f"multiple tokens in {term_name}",
+                        self.context, f"unexpected {sep_char!r} in lambda function"
                     )
 
-                if mode == "pipe" and len(res) > 0:
-                    if tokens[0].type != TT_FUNC_CALL:
-                        raise SLSyntaxError(
-                            self.context,
-                            f"expected function call in pipe, found {tokens[0].type}",
-                        )
+                if not in_lambda_def:
+                    if mode == "pipe" and len(res) > 0:
+                        if tokens[0].type != TT_FUNC_CALL:
+                            raise SLSyntaxError(
+                                self.context,
+                                f"expected function call in pipe, found {tokens[0].type}",
+                            )
 
-                    has_underscore = False
-                    args = tokens[0].value[1]
+                        has_underscore = False
+                        args = tokens[0].value[1]
 
-                    for i, arg in enumerate(args):
-                        if arg.type == TT_UNDERSCORE:
-                            args[i] = res[0]
-                            has_underscore = True
+                        for i, arg in enumerate(args):
+                            if arg.type == TT_UNDERSCORE:
+                                args[i] = res[0]
+                                has_underscore = True
 
-                    if not has_underscore:
-                        args.append(res[0])
+                        if not has_underscore:
+                            args.append(res[0])
 
-                    res[0] = tokens[0]
-                else:
-                    res.append(tokens[0])
+                        res[0] = tokens[0]
+                    else:
+                        res.append(tokens[0])
 
-                tokens = []
+                    tokens = []
 
                 if self.curr == close_char:
+                    if in_lambda_def:
+                        self.next()
+                        if self.curr not in digits:
+                            raise SLSyntaxError(
+                                self.context, "expected number after lambda"
+                            )
+
+                        arg_num = self.number().value
+                        if arg_num <= 0 or type(arg_num) != int:
+                            raise SLSyntaxError(
+                                self.context,
+                                "argument number after lambda must be an integer over zero",
+                            )
+
+                        res.append(Token(TT_LAMBDA_DEF, [tokens, arg_num]))
+                    else:
+                        self.next()
+
                     break
-                else:
-                    self.next()
-                    continue
+
+                self.next(error_on_EOF=True)
+                continue
 
             if self.curr in " \t\r\n":
                 self.next()
-                continue
             elif self.curr in ";=":
-                comment = self.curr
+                comment_char = self.curr
                 self.next()
-                continue
             elif self.curr in "\"'":
                 tokens.append(self.string())
             elif self.curr in NUMBER_CHARS:
                 tokens.append(self.number())
             elif self.curr in ascii_letters:
-                tokens.append(self.func())
+                tokens.append(self.func(in_lambda=in_lambda))
             elif self.curr == "<":
-                array = self.termed(mode="arr")
+                array = self.termed(mode="arr", in_lambda=in_lambda)
                 tokens.append(Token(TT_ARRAY, array))
             elif self.curr == "[":
                 piped = self.termed(mode="pipe")
@@ -130,8 +157,20 @@ class Lexer:
 
                 tokens.append(self.func_def())
             elif mode == "args" and self.curr == "_":
-                tokens.append(Token(TT_UNDERSCORE))
+                value = "_"
+
                 self.next()
+
+                while self.curr == "_":
+                    value += "_"
+                    self.next()
+
+                if in_lambda:
+                    tokens.append(
+                        Token(TT_FUNC_CALL, ["get", [Token(TT_STRING, value)]])
+                    )
+                else:
+                    tokens.append(Token(TT_UNDERSCORE, value))
             else:
                 raise SLInvalidCharError(
                     self.context, f"invalid character {self.curr!r}"
@@ -186,15 +225,14 @@ class Lexer:
 
         return Token(TT_NUMBER, (float if is_float else int)(number))
 
-    def termed(self, mode: str = "args"):
+    def termed(self, mode: str = "args", in_lambda: bool = False):
         """tokenizes function arguments (or arrays)"""
         self.next(error_on_EOF=True)
 
-        terms = self.tokenize(mode=mode)
-        self.next()
+        terms = self.tokenize(mode=mode, in_lambda=in_lambda)
         return terms
 
-    def func(self):
+    def func(self, in_lambda: bool = False):
         """tokenizes a function call"""
         name = ""
 
@@ -212,7 +250,7 @@ class Lexer:
 
         # function call
         if self.curr == "(":
-            args = self.termed(mode="args")
+            args = self.termed(mode="args", in_lambda=in_lambda)
             return Token(TT_FUNC_CALL, [name, args])
         else:
             raise SLSyntaxError(

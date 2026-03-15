@@ -31,11 +31,7 @@ class Function:
         self.allow_use_vars = allow_use_vars
 
     def run(self, *args):
-        self.vars = (
-            Variables(self.context)
-            if not self.allow_use_vars
-            else self.orig_vars.copy(self.allow_use_vars)
-        )
+        self.vars = self.orig_vars if self.allow_use_vars else Variables(self.context)
 
         if not hasattr(self, "tokens"):
             self.tokens = Lexer(self.code, self.context).tokenize()

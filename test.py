@@ -2,7 +2,7 @@ from shitlang import Lexer, Context, Interpreter, Variables, Environment
 from functools import partial
 import timeit
 
-code = "print([random() > add(_, 1) > add(_, 20)])"
+code = "run([> print(_, __)]2, <1, 2>)"
 
 context = Context("test", is_name=True)
 environment = Environment(context)

@@ -1,4 +1,3 @@
-from ..context import Context
 from ..error import *
 
 from beartype.roar import BeartypeCallHintParamViolation
@@ -15,13 +14,11 @@ RESERVED_BUILTINS = [
 
 
 def run_builtin(name: str, args: list, builtins):
-    try:
-        builtin = getattr(
-            builtins, name + "_" if name in RESERVED_BUILTINS else name, None
-        )
-        if builtin is None:
-            raise SLBuiltinError(builtins.context, f"no builtin named '{name}'")
+    builtin = getattr(builtins, name + "_" if name in RESERVED_BUILTINS else name, None)
+    if builtin is None:
+        raise SLBuiltinError(builtins.context, f"no builtin named '{name}'")
 
+    try:
         return builtin(*args)
     except TypeError as err:
         # TODO: refactor to use inspect.signature or smth
