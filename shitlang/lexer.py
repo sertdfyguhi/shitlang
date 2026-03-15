@@ -76,7 +76,7 @@ class Lexer:
                     else:
                         # is close char
                         break
-                elif len(tokens) > 1:
+                elif not in_lambda_def and len(tokens) > 1:
                     raise SLSyntaxError(self.context, f"multiple tokens in {term_name}")
                 elif in_lambda_def and self.curr == sep_char:
                     raise SLSyntaxError(
@@ -111,17 +111,16 @@ class Lexer:
                 if self.curr == close_char:
                     if in_lambda_def:
                         self.next()
-                        if self.curr not in digits:
-                            raise SLSyntaxError(
-                                self.context, "expected number after lambda"
-                            )
 
-                        arg_num = self.number().value
-                        if arg_num <= 0 or type(arg_num) != int:
-                            raise SLSyntaxError(
-                                self.context,
-                                "argument number after lambda must be an integer over zero",
-                            )
+                        if self.curr and self.curr in digits:
+                            arg_num = self.number().value
+                            if arg_num <= 0 or type(arg_num) != int:
+                                raise SLSyntaxError(
+                                    self.context,
+                                    "argument number after lambda must be an integer over zero",
+                                )
+                        else:
+                            arg_num = 0
 
                         res.append(Token(TT_LAMBDA_DEF, [tokens, arg_num]))
                     else:

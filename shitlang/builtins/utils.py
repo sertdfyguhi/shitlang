@@ -48,5 +48,7 @@ def run_builtin(name: str, args: list, builtins):
         raise SLTypeError(builtins.context, message)
     except RecursionError:
         raise SLRecursionError(builtins.context, "maximum recursion depth exceeded")
+    except SLError as err:
+        raise err
     except Exception as err:
         raise SLError(type(err).__name__, builtins.context, str(err))
