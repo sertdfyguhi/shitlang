@@ -12,7 +12,6 @@ ESCAPES = {
     "\\": "\\",
 }
 
-NUMBER_CHARS = digits + "-."
 IDENTIFIER_CHARS = ascii_letters + digits + "_"
 
 TERMINALS = {
@@ -75,6 +74,7 @@ class Lexer:
                         raise SLSyntaxError(self.context, "empty pipe")
                     else:
                         # is close char
+                        self.next()
                         break
                 elif not in_lambda_def and len(tokens) > 1:
                     raise SLSyntaxError(self.context, f"multiple tokens in {term_name}")
@@ -138,7 +138,8 @@ class Lexer:
                 self.next()
             elif self.curr in "\"'":
                 tokens.append(self.string())
-            elif self.curr in NUMBER_CHARS:
+                self.next()
+            elif self.curr in digits + "-+.":
                 tokens.append(self.number())
             elif self.curr in ascii_letters:
                 tokens.append(self.func(in_lambda=in_lambda))
@@ -155,6 +156,7 @@ class Lexer:
                     )
 
                 tokens.append(self.func_def())
+                self.next()
             elif mode == "args" and self.curr == "_":
                 value = "_"
 
@@ -203,26 +205,29 @@ class Lexer:
 
     def number(self):
         """tokenizes a number"""
-        number = ""
+        number_start = self.i
         is_float = False
 
-        while self.curr and self.curr in NUMBER_CHARS:
-            if self.curr == "-" and len(number) > 0 and number[-1] != "-":
-                raise SLSyntaxError(self.context, "unexpected minus sign")
+        while self.curr in "-+":
+            self.next(error_on_EOF=True)
 
+        if self.curr not in digits + ".":
+            raise SLSyntaxError(self.context, "expected number")
+
+        while self.curr and self.curr in digits + ".":
             if self.curr == ".":
                 if is_float:
                     raise SLSyntaxError(self.context, "unexpected decimal point")
 
                 is_float = True
 
-            number += self.curr
             self.next()
 
-        if number == ".":
+        number_str = self.code[number_start : self.i]
+        if number_str == ".":
             raise SLSyntaxError(self.context, "unexpected decimal point")
 
-        return Token(TT_NUMBER, (float if is_float else int)(number))
+        return Token(TT_NUMBER, (float if is_float else int)(number_str))
 
     def termed(self, mode: str = "args", in_lambda: bool = False):
         """tokenizes function arguments (or arrays)"""
@@ -233,11 +238,12 @@ class Lexer:
 
     def func(self, in_lambda: bool = False):
         """tokenizes a function call"""
-        name = ""
+        name_start = self.i
 
         while self.curr and self.curr in IDENTIFIER_CHARS:
-            name += self.curr
             self.next()
+
+        name = self.code[name_start : self.i]
 
         if name == "true" or name == "false":
             return Token(TT_BOOL, name == "true")
@@ -258,14 +264,12 @@ class Lexer:
 
     def func_def(self):
         """tokenizes a function definition"""
-        name = ""
-
         self.next(error_on_EOF=True)
 
+        name_start = self.i
+
         while self.curr != "~" and self.curr != "\n":
-            name += self.curr
             self.next(error_on_EOF=True)
 
-        self.next()
-        name = name.strip()
+        name = self.code[name_start : self.i].strip()
         return Token(TT_FUNC_DEF_END) if name == "" else Token(TT_FUNC_DEF, name)

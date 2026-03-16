@@ -1,5 +1,5 @@
 run([>
     print("basketball")
     print("baseball")
-    print(__)
+    print(_)
 ]1, <"jingle bell">)
