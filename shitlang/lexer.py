@@ -200,7 +200,6 @@ class Lexer:
 
             self.next(error_on_EOF=True)
 
-        self.next()
         return Token(TT_STRING, string)
 
     def number(self):
