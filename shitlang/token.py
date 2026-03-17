@@ -14,11 +14,12 @@ TT_NONE = "none"
 
 
 class Token:
-    def __init__(self, type_, start_ln, start_col, value=None):
+    def __init__(self, type_, start_pos, end_pos, value=None):
         self.type = type_
-        self.start_ln = start_ln
-        self.start_col = start_col
         self.value = value
+
+        self.start_pos = start_pos
+        self.end_pos = end_pos
 
     def __repr__(self):
         return f"{self.type}: {repr(self.value)}"

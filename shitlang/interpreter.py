@@ -33,8 +33,8 @@ class Interpreter:
         res = []
 
         for token in tokens:
-            self.context.ln = token.start_ln
-            self.context.col = token.start_col
+            self.context.pos = token.start_pos
+            self.context.end_pos = token.end_pos
 
             if token.type == TT_FUNC_CALL:
                 args = self.interpret(token.value[1])
@@ -44,8 +44,8 @@ class Interpreter:
                     break
 
                 # reset to the start of function call after interpreting args
-                self.context.ln = token.start_ln
-                self.context.col = token.start_col
+                self.context.pos = token.start_pos
+                self.context.end_pos = token.end_pos
 
                 try:
                     ret = run_builtin(token.value[0], args, self.builtins)

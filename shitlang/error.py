@@ -12,7 +12,8 @@ class SLError(Exception):
         super().__init__(details)
 
     def __str__(self):
-        return f'{Fore.RED}{_BOLD}File "{self.context.fn}" on line {self.context.ln} at char {self.context.col}:{Style.RESET_ALL}{Fore.RED}\n{self.type}: {Style.RESET_ALL}{self.details}'
+        end_pos_detail = f" to {self.context.end_pos}" if self.context.end_pos else ""
+        return f'{Fore.RED}{_BOLD}File "{self.context.fn}" on {self.context.pos}{end_pos_detail}:{Style.RESET_ALL}{Fore.RED}\n{self.type}: {Style.RESET_ALL}{self.details}'
 
 
 class SLSyntaxError(SLError):

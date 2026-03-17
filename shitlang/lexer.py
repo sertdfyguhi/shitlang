@@ -1,7 +1,9 @@
 from string import digits, ascii_letters
-from .context import Context
+from .context import Context, Position
 from .token import *
 from .error import *
+
+from copy import copy
 
 ESCAPES = {
     "n": "\n",
@@ -23,24 +25,27 @@ TERMINALS = {
 
 class Lexer:
     def __init__(self, code: str, context: Context):
+        self.pos = Position()
+        context.pos = self.pos
         self.context = context
+
         self.code = code
-        self.i = -1
 
         self.next()
 
     def next(self, error_on_EOF: bool = False):
-        self.i += 1
-        self.curr = self.code[self.i] if self.i < len(self.code) else None
+        self.pos.i += 1
+        self.curr = self.code[self.pos.i] if self.pos.i < len(self.code) else None
 
         if error_on_EOF and self.curr is None:
+            # maybe subtract from i
             raise SLSyntaxError(self.context, "unexpected EOF")
 
         if self.curr == "\n":
-            self.context.ln += 1
-            self.context.col = 0
+            self.pos.ln += 1
+            self.pos.col = 0
         else:
-            self.context.col += 1
+            self.pos.col += 1
 
         return self.curr
 
@@ -153,14 +158,18 @@ class Lexer:
             elif self.curr in ascii_letters:
                 tokens.append(self.func(in_lambda=in_lambda))
             elif self.curr == "<":
-                start_ln, start_col = self.context.ln, self.context.col
+                start_pos = copy(self.pos)
                 array = self.termed(mode="arr", in_lambda=in_lambda)
-                tokens.append(Token(TT_ARRAY, start_ln, start_col, array))
+                end_pos = copy(self.pos)
+                tokens.append(Token(TT_ARRAY, start_pos, end_pos, array))
             elif self.curr == "[":
-                start_ln, start_col = self.context.ln, self.context.col
+                start_pos = copy(self.pos)
                 piped = self.termed(mode="pipe")
-                piped[0].start_ln = start_ln
-                piped[0].start_col = start_col
+                end_pos = copy(self.pos)
+
+                piped[0].start_pos = start_pos
+                piped[0].end_pos = end_pos
+
                 tokens.append(piped[0])
             elif self.curr == "~":
                 if is_termed:
@@ -177,6 +186,7 @@ class Lexer:
                 tokens.append(self.func_def())
                 self.next()
             elif mode == "args" and self.curr == "_":
+                start_pos = copy(self.pos)
                 value = "_"
 
                 self.next()
@@ -185,12 +195,19 @@ class Lexer:
                     value += "_"
                     self.next()
 
+                end_pos = copy(self.pos)
+
                 if in_lambda:
                     tokens.append(
-                        Token(TT_FUNC_CALL, ["get", [Token(TT_STRING, value)]])
+                        Token(
+                            TT_FUNC_CALL,
+                            start_pos,
+                            end_pos,
+                            ["get", [Token(TT_STRING, value)]],
+                        )
                     )
                 else:
-                    tokens.append(Token(TT_UNDERSCORE, value))
+                    tokens.append(Token(TT_UNDERSCORE, start_pos, end_pos, value))
             else:
                 raise SLInvalidCharError(
                     self.context, f"invalid character {self.curr!r}"
@@ -205,7 +222,7 @@ class Lexer:
 
     def string(self):
         """tokenizes a string"""
-        start_ln, start_col = self.context.ln, self.context.col
+        start_pos = copy(self.pos)
         quote = self.curr
         string = ""
 
@@ -225,12 +242,13 @@ class Lexer:
 
             self.next(error_on_EOF=True)
 
-        return Token(TT_STRING, start_ln, start_col, string)
+        end_pos = copy(self.pos)
+        return Token(TT_STRING, start_pos, end_pos, string)
 
     def number(self):
         """tokenizes a number"""
-        start_ln, start_col = self.context.ln, self.context.col
-        number_start = self.i
+        start_pos = copy(self.pos)
+        number_start = self.pos.i
         is_float = False
 
         while self.curr in "-+":
@@ -248,12 +266,13 @@ class Lexer:
 
             self.next()
 
-        number_str = self.code[number_start : self.i]
+        number_str = self.code[number_start : self.pos.i]
         if number_str == ".":
             raise SLSyntaxError(self.context, "unexpected decimal point")
 
+        end_pos = copy(self.pos)
         return Token(
-            TT_NUMBER, start_ln, start_col, (float if is_float else int)(number_str)
+            TT_NUMBER, start_pos, end_pos, (float if is_float else int)(number_str)
         )
 
     def termed(self, mode: str = "args", in_lambda: bool = False):
@@ -265,18 +284,19 @@ class Lexer:
 
     def func(self, in_lambda: bool = False):
         """tokenizes a function call"""
-        start_ln, start_col = self.context.ln, self.context.col
-        name_start = self.i
+        start_pos = copy(self.pos)
+        name_start = self.pos.i
 
         while self.curr and self.curr in IDENTIFIER_CHARS:
             self.next()
 
-        name = self.code[name_start : self.i]
+        name = self.code[name_start : self.pos.i]
+        end_pos = copy(self.pos)
 
         if name == "true" or name == "false":
-            return Token(TT_BOOL, start_ln, start_col, name == "true")
+            return Token(TT_BOOL, start_pos, end_pos, name == "true")
         elif name == "none":
-            return Token(TT_NONE, start_ln, start_col)
+            return Token(TT_NONE, start_pos, end_pos)
 
         if self.curr is None:
             raise SLSyntaxError(self.context, "unexpected EOF")
@@ -284,7 +304,8 @@ class Lexer:
         # function call
         if self.curr == "(":
             args = self.termed(mode="args", in_lambda=in_lambda)
-            return Token(TT_FUNC_CALL, start_ln, start_col, [name, args])
+            end_pos = copy(self.pos)
+            return Token(TT_FUNC_CALL, start_pos, end_pos, [name, args])
         else:
             raise SLSyntaxError(
                 self.context, f"expected function call, got {self.curr!r}"
@@ -292,8 +313,8 @@ class Lexer:
 
     def func_def(self):
         """tokenizes a function definition"""
-        start_ln, start_col = self.context.ln, self.context.col
-        name_start = self.i
+        start_pos = copy(self.pos)
+        name_start = self.pos.i
 
         while self.curr != "~":
             if self.curr == "\n":
@@ -303,7 +324,7 @@ class Lexer:
 
             self.next(error_on_EOF=True)
 
-        name = self.code[name_start : self.i].strip()
+        name = self.code[name_start : self.pos.i].strip()
         if name == "":
             raise SLSyntaxError(
                 self.context, "function name in definition cannot be empty"
@@ -312,4 +333,5 @@ class Lexer:
         self.next(error_on_EOF=True)
 
         func_tokens = self.tokenize(mode="func")
-        return Token(TT_FUNC_DEF, start_ln, start_col, [name, func_tokens])
+        end_pos = copy(self.pos)
+        return Token(TT_FUNC_DEF, start_pos, end_pos, [name, func_tokens])
