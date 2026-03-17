@@ -12,5 +12,8 @@ class Context:
             self.fn = os.path.basename(self.fp)  # file name
             self.fd = os.path.dirname(self.fp)  # file dir
 
+        self.ln = 1
+        self.col = 0
+
     def __repr__(self) -> str:
         return f"Context(fn={self.fn})"

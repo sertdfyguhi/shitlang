@@ -36,6 +36,12 @@ class Lexer:
         if error_on_EOF and self.curr is None:
             raise SLSyntaxError(self.context, "unexpected EOF")
 
+        if self.curr == "\n":
+            self.context.ln += 1
+            self.context.col = 0
+        else:
+            self.context.col += 1
+
         return self.curr
 
     def tokenize(self, mode: str = "", in_lambda: bool = False):
@@ -125,7 +131,7 @@ class Lexer:
                         else:
                             arg_num = 0
 
-                        res.append(Token(TT_LAMBDA_DEF, [tokens, arg_num]))
+                        res.append(Token(TT_LAMBDA_DEF, None, None, [tokens, arg_num]))
                     else:
                         self.next()
 
@@ -147,10 +153,14 @@ class Lexer:
             elif self.curr in ascii_letters:
                 tokens.append(self.func(in_lambda=in_lambda))
             elif self.curr == "<":
+                start_ln, start_col = self.context.ln, self.context.col
                 array = self.termed(mode="arr", in_lambda=in_lambda)
-                tokens.append(Token(TT_ARRAY, array))
+                tokens.append(Token(TT_ARRAY, start_ln, start_col, array))
             elif self.curr == "[":
+                start_ln, start_col = self.context.ln, self.context.col
                 piped = self.termed(mode="pipe")
+                piped[0].start_ln = start_ln
+                piped[0].start_col = start_col
                 tokens.append(piped[0])
             elif self.curr == "~":
                 if is_termed:
@@ -195,6 +205,7 @@ class Lexer:
 
     def string(self):
         """tokenizes a string"""
+        start_ln, start_col = self.context.ln, self.context.col
         quote = self.curr
         string = ""
 
@@ -214,10 +225,11 @@ class Lexer:
 
             self.next(error_on_EOF=True)
 
-        return Token(TT_STRING, string)
+        return Token(TT_STRING, start_ln, start_col, string)
 
     def number(self):
         """tokenizes a number"""
+        start_ln, start_col = self.context.ln, self.context.col
         number_start = self.i
         is_float = False
 
@@ -240,7 +252,9 @@ class Lexer:
         if number_str == ".":
             raise SLSyntaxError(self.context, "unexpected decimal point")
 
-        return Token(TT_NUMBER, (float if is_float else int)(number_str))
+        return Token(
+            TT_NUMBER, start_ln, start_col, (float if is_float else int)(number_str)
+        )
 
     def termed(self, mode: str = "args", in_lambda: bool = False):
         """tokenizes function arguments (or arrays)"""
@@ -251,6 +265,7 @@ class Lexer:
 
     def func(self, in_lambda: bool = False):
         """tokenizes a function call"""
+        start_ln, start_col = self.context.ln, self.context.col
         name_start = self.i
 
         while self.curr and self.curr in IDENTIFIER_CHARS:
@@ -259,17 +274,17 @@ class Lexer:
         name = self.code[name_start : self.i]
 
         if name == "true" or name == "false":
-            return Token(TT_BOOL, name == "true")
+            return Token(TT_BOOL, start_ln, start_col, name == "true")
         elif name == "none":
-            return Token(TT_NONE)
+            return Token(TT_NONE, start_ln, start_col)
 
         if self.curr is None:
-            raise self.EOF_ERR
+            raise SLSyntaxError(self.context, "unexpected EOF")
 
         # function call
         if self.curr == "(":
             args = self.termed(mode="args", in_lambda=in_lambda)
-            return Token(TT_FUNC_CALL, [name, args])
+            return Token(TT_FUNC_CALL, start_ln, start_col, [name, args])
         else:
             raise SLSyntaxError(
                 self.context, f"expected function call, got {self.curr!r}"
@@ -277,6 +292,7 @@ class Lexer:
 
     def func_def(self):
         """tokenizes a function definition"""
+        start_ln, start_col = self.context.ln, self.context.col
         name_start = self.i
 
         while self.curr != "~":
@@ -296,4 +312,4 @@ class Lexer:
         self.next(error_on_EOF=True)
 
         func_tokens = self.tokenize(mode="func")
-        return Token(TT_FUNC_DEF, [name, func_tokens])
+        return Token(TT_FUNC_DEF, start_ln, start_col, [name, func_tokens])

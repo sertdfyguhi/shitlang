@@ -9,9 +9,10 @@ class SLError(Exception):
         self.context = context
         self.details = details
 
-        super().__init__(
-            f'{Fore.RED}{_BOLD}File "{context.fn}":{Style.RESET_ALL}{Fore.RED}\n{type_}: {Style.RESET_ALL}{details}'
-        )
+        super().__init__(details)
+
+    def __str__(self):
+        return f'{Fore.RED}{_BOLD}File "{self.context.fn}" on line {self.context.ln} at char {self.context.col}:{Style.RESET_ALL}{Fore.RED}\n{self.type}: {Style.RESET_ALL}{self.details}'
 
 
 class SLSyntaxError(SLError):

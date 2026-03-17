@@ -33,6 +33,9 @@ class Interpreter:
         res = []
 
         for token in tokens:
+            self.context.ln = token.start_ln
+            self.context.col = token.start_col
+
             if token.type == TT_FUNC_CALL:
                 args = self.interpret(token.value[1])
 
@@ -40,7 +43,16 @@ class Interpreter:
                     res.append(ReturnedValue(None if len(args) == 0 else args[0]))
                     break
 
-                ret = run_builtin(token.value[0], args, self.builtins)
+                # reset to the start of function call after interpreting args
+                self.context.ln = token.start_ln
+                self.context.col = token.start_col
+
+                try:
+                    ret = run_builtin(token.value[0], args, self.builtins)
+                except SLError as err:
+                    err.details = f"{token.value[0]}() {err.details}"
+                    raise err
+
                 res.append(ret)
             elif token.type == TT_LAMBDA_DEF:
                 params = ["_" * (n + 1) for n in range(token.value[1])]
