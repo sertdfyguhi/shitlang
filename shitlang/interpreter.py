@@ -49,7 +49,7 @@ class Interpreter:
 
                 try:
                     ret = run_builtin(token.value[0], args, self.builtins)
-                except SLError as err:
+                except (SLTypeError, SLValueError) as err:
                     err.details = f"{token.value[0]}() {err.details}"
                     raise err
 

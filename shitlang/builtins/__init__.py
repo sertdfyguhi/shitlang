@@ -10,6 +10,7 @@ from .array import ArrayBuiltins
 from .types import TypeBuiltins
 from .math import MathBuiltins
 from .time import TimeBuiltins
+from .http import HTTPBuiltins
 from .io import IOBuiltins
 
 from ..environment import Environment
@@ -26,6 +27,7 @@ class Builtins(
     TypeBuiltins,
     MathBuiltins,
     TimeBuiltins,
+    HTTPBuiltins,
     IOBuiltins,
 ):
     def __init__(

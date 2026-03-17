@@ -101,3 +101,8 @@
 - `to_int(value: any) -> int`: returns `value` converted into a int
 - `to_float(value: any) -> float`: returns `value` converted into a float
 - `to_bool(value: any) -> bool`: returns `value` converted into a bool
+
+## HTTP Builtins
+
+- `http_get(url: str) -> str`: gets `url` and returns the response
+- `http_post(url: str, data: str, content_type: str = "text/plain") -> str`: posts to `url` and returns the response

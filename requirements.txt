@@ -1,2 +1,3 @@
 beartype==0.22.9
 colorama==0.4.6
+requests==2.32.5
