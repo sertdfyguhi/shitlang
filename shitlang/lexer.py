@@ -48,6 +48,9 @@ class Lexer:
             res = []
             in_lambda_def = False
 
+        if mode == "func":
+            has_func_def_end = False
+
         while self.curr:
             if comment_char:
                 if (comment_char == ";" and self.curr == "\n") or (
@@ -155,6 +158,12 @@ class Lexer:
                         self.context, f"cannot define function in {term_name}"
                     )
 
+                self.next(error_on_EOF=True)
+
+                if mode == "func" and self.curr == "~":
+                    has_func_def_end = True
+                    break
+
                 tokens.append(self.func_def())
                 self.next()
             elif mode == "args" and self.curr == "_":
@@ -176,6 +185,11 @@ class Lexer:
                 raise SLInvalidCharError(
                     self.context, f"invalid character {self.curr!r}"
                 )
+
+        if mode == "func" and not has_func_def_end:
+            raise SLSyntaxError(
+                self.context, "expected end of function definition, found end of file"
+            )
 
         return res if is_termed else tokens
 
@@ -263,12 +277,23 @@ class Lexer:
 
     def func_def(self):
         """tokenizes a function definition"""
-        self.next(error_on_EOF=True)
-
         name_start = self.i
 
-        while self.curr != "~" and self.curr != "\n":
+        while self.curr != "~":
+            if self.curr == "\n":
+                raise SLSyntaxError(
+                    self.context, "unexpected new line in function definition"
+                )
+
             self.next(error_on_EOF=True)
 
         name = self.code[name_start : self.i].strip()
-        return Token(TT_FUNC_DEF_END) if name == "" else Token(TT_FUNC_DEF, name)
+        if name == "":
+            raise SLSyntaxError(
+                self.context, "function name in definition cannot be empty"
+            )
+
+        self.next(error_on_EOF=True)
+
+        func_tokens = self.tokenize(mode="func")
+        return Token(TT_FUNC_DEF, [name, func_tokens])

@@ -1,5 +1,0 @@
-run([>
-    print("basketball")
-    print("baseball")
-    print(_)
-]1, <"jingle bell">)

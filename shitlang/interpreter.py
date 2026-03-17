@@ -32,21 +32,7 @@ class Interpreter:
     def interpret(self, tokens: list[Token]):
         res = []
 
-        func_tokens = []
-        func_name = ""
-
         for token in tokens:
-            if func_name:
-                if token.type == TT_FUNC_DEF_END:
-                    self.environment.add_func(func_name, func_tokens)
-
-                    func_tokens = []
-                    func_name = ""
-                else:
-                    func_tokens.append(token)
-
-                continue
-
             if token.type == TT_FUNC_CALL:
                 args = self.interpret(token.value[1])
 
@@ -70,7 +56,7 @@ class Interpreter:
             elif token.type == TT_ARRAY:
                 res.append(self.interpret(token.value))
             elif token.type == TT_FUNC_DEF:
-                func_name = token.value
+                self.environment.add_func(token.value[0], token.value[1])
             elif token.type == TT_UNDERSCORE:
                 raise SLSyntaxError(self.context, "unexpected underscore")
             else:
