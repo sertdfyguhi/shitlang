@@ -23,7 +23,7 @@
 - `return(value: any = none)`: used in functions to return values and stop execution
 - `run_builtin(name: str, args: array) -> any`: builtin to run a builtin and returns the result
 - `while(condition: function, loop: function)`: creates a while loop
-- `if(condition: function, func: function, else_: function = none) -> any`: runs `func` if `condition` is true else run `else_` if there is one
+- `if(condition: function, func: function, else: function = none) -> any`: runs `func` if `condition` is true else run `else_` if there is one
 - `try(func: function, catch_func: function)`: if `func` retuens an error, runs `catch_func` with error string passed in
 
 ## Variable Builtins
@@ -39,9 +39,9 @@
 - `or(a: any, b: any) -> bool`: returns true or false based on the `or` operator
 - `equals(a: any, b: any) -> bool`: returns true if `a` equals `b` if not returns false
 - `greater(a: int | float, b: int | float) -> bool`: returns true if `a` is greater than `b`
-- `greater_or_equal(a: int | float, b: int | float) -> bool`: returns true if `a` is greater than or equal `b`
+- `ge(a: int | float, b: int | float) -> bool`: returns true if `a` is greater than or equal `b`
 - `less(a: int | float, b: int | float) -> bool`: returns true if `a` is less than `b`
-- `less_or_equal(a: int | float, b: int | float) -> bool`: returns true if `a` is less than or equal `b`
+- `le(a: int | float, b: int | float) -> bool`: returns true if `a` is less than or equal `b`
 - `add(a: any, b: any, *c: any) -> any`: returns all arguments added together
 - `sub(a: int | float, b: int | float, *c: int | float) -> int | float`: returns all arguments subtracted together
 - `mul(a: int | float, b: int | float, *c: int | float) -> int | float`: returns all arguments multiplied together

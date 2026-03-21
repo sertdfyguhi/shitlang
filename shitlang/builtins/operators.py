@@ -17,13 +17,13 @@ class OperatorBuiltins:
     def greater(self, a: int | float, b: int | float):
         return a > b
 
-    def greater_or_equal(self, a: int | float, b: int | float):
+    def ge(self, a: int | float, b: int | float):
         return a >= b
 
     def less(self, a: int | float, b: int | float):
         return a < b
 
-    def less_or_equal(self, a: int | float, b: int | float):
+    def le(self, a: int | float, b: int | float):
         return a <= b
 
     def add(self, a, b, *c):
