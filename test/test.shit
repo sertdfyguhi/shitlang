@@ -1,4 +1,1 @@
-import("test2.shit", "library")
-
-print(run(function("library.calc_inv_pi")))
-print(get("library.a"))
+print(add(true))

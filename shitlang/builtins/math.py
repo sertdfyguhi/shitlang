@@ -2,27 +2,30 @@ import random
 import math
 
 
+Number = int | float
+
+
 class MathBuiltins:
-    def sqrt(self, x: int | float):
+    def sqrt(self, x: Number):
         return math.sqrt(x)
 
     # trigonometry
-    def sin(self, x: int | float):
+    def sin(self, x: Number):
         return math.sin(x)
 
-    def cos(self, x: int | float):
+    def cos(self, x: Number):
         return math.cos(x)
 
-    def tan(self, x: int | float):
+    def tan(self, x: Number):
         return math.tan(x)
 
-    def asin(self, x: int | float):
+    def asin(self, x: Number):
         return math.asin(x)
 
-    def acos(self, x: int | float):
+    def acos(self, x: Number):
         return math.acos(x)
 
-    def atan(self, x: int | float):
+    def atan(self, x: Number):
         return math.atan(x)
 
     # rounding
@@ -35,6 +38,6 @@ class MathBuiltins:
     def ceil(self, n: float):
         return math.ceil(n)
 
-    def random(self, seed: int | float | str | None = None):
+    def random(self, seed: Number | str | None = None):
         random.seed(seed)
         return random.random()

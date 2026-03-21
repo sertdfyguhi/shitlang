@@ -1,4 +1,8 @@
-from ..error import SLTypeError
+from functools import reduce
+import operator
+
+
+Number = int | float
 
 
 class OperatorBuiltins:
@@ -14,60 +18,32 @@ class OperatorBuiltins:
     def equals(self, a, b):
         return a == b
 
-    def greater(self, a: int | float, b: int | float):
+    def greater(self, a: Number, b: Number):
         return a > b
 
-    def ge(self, a: int | float, b: int | float):
+    def ge(self, a: Number, b: Number):
         return a >= b
 
-    def less(self, a: int | float, b: int | float):
+    def less(self, a: Number, b: Number):
         return a < b
 
-    def le(self, a: int | float, b: int | float):
+    def le(self, a: Number, b: Number):
         return a <= b
 
-    def add(self, a, b, *c):
-        try:
-            result = a + b
-            for value in c:
-                result += value
-        except TypeError:
-            raise SLTypeError(self.context, "arguments could not be added")
+    def add(self, a: Number | str, b: Number | str, *c: Number | str):
+        return reduce(operator.add, [a, b, *c])
 
-        return result
+    def sub(self, a: Number, b: Number, *c: Number):
+        return reduce(operator.sub, [a, b, *c])
 
-    def sub(self, a, b, *c):
-        try:
-            result = a - b
-            for value in c:
-                result -= value
-        except TypeError:
-            raise SLTypeError(self.context, "arguments could not be subtracted")
+    def mul(self, a: Number, b: Number, *c: Number):
+        return reduce(operator.mul, [a, b, *c])
 
-        return result
+    def div(self, a: Number, b: Number, *c: Number):
+        return reduce(operator.div, [a, b, *c])
 
-    def mul(self, a, b, *c):
-        try:
-            result = a * b
-            for value in c:
-                result *= value
-        except TypeError:
-            raise SLTypeError(self.context, "arguments could not be multiplied")
-
-        return result
-
-    def div(self, a, b, *c):
-        try:
-            result = a / b
-            for value in c:
-                result /= value
-        except TypeError:
-            raise SLTypeError(self.context, "arguments could not be divided")
-
-        return result
-
-    def mod(self, a: int | float, b: int | float):
+    def mod(self, a: Number, b: Number):
         return a % b
 
-    def pow(self, a: int | float, b: int | float):
+    def pow(self, a: Number, b: Number):
         return a**b

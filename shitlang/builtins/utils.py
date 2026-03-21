@@ -22,20 +22,21 @@ def run_builtin(name: str, args: list, builtins):
     try:
         return builtin(*args)
     except TypeError as err:
-        # TODO: refactor to use inspect.signature or smth
         # .__code__.co_argcount is how many parameters the function has
         # len(.__defaults__) is the amount of optional parameters
-        argcount = builtin.__code__.co_argcount - 1  # remove self
+        # wrapped with beartype
+        num_args = builtin.__wrapped__.__code__.co_argcount - 1  # remove self
+        num_required_args = num_args - len(builtin.__wrapped__.__defaults__ or [])
 
-        if len(args) > argcount:
+        if len(args) > num_args:
             raise SLTypeError(
                 builtins.context,
-                f"{name}() given {len(args) - argcount} more args than expected",
+                f"given {len(args) - num_args} more arguments than expected",
             )
-        elif len(args) < (argcount - len(builtin.__defaults__ or [])):
+        elif len(args) < num_required_args:
             raise SLTypeError(
                 builtins.context,
-                f"{name}() missing required args",
+                f"missing {num_required_args - len(args)} required arguments",
             )
         else:
             raise SLTypeError(builtins.context, str(err))
