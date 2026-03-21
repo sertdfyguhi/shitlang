@@ -10,6 +10,7 @@ RESERVED_BUILTINS = [
     "while",
     "if",
     "try",
+    "import",
 ]
 
 

@@ -19,6 +19,7 @@
 
 - `function(file: str, params: array = [], allow_use_vars: bool = false) -> function`: creates a function
 - `run(func: function, args: array = []) -> any`: runs a function
+- `import(file: str, namespace: str = "")`: imports all variables and functions from `file` to `namespace.name`
 - `return(value: any = none)`: used in functions to return values and stop execution
 - `run_builtin(name: str, args: array) -> any`: builtin to run a builtin and returns the result
 - `while(condition: function, loop: function)`: creates a while loop

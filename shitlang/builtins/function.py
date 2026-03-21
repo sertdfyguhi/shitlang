@@ -1,6 +1,9 @@
+from ..environment import Environment
 from ..function import Function
 from .utils import run_builtin
 from ..context import Context
+from ..vars import Variables
+from ..lexer import Lexer
 from ..error import *
 
 import os
@@ -55,8 +58,23 @@ class FunctionBuiltins:
 
         return func.run(*args)
 
-    # def import_(self, file: str, namespace: str):
-    #     code, context = get_shit_file(file, self.context)
+    def import_(self, file: str, namespace: str = ""):
+        code, context = get_shit_file(file, self.context)
+        tokens = Lexer(code, context).tokenize()
+
+        from ..interpreter import Interpreter
+
+        variables = Variables(context)
+        environment = Environment(context)
+        Interpreter(context, variables, environment).interpret(tokens, in_import=True)
+
+        prefix = namespace + "." if namespace else ""
+
+        for func_name, func in environment.functions.items():
+            self.environment.add_func(prefix + func_name, func)
+
+        for var_name, var in variables.vars.items():
+            self.vars.set(prefix + var_name, var)
 
     def run_builtin(self, name: str, args: list):
         return run_builtin(name, args, self)

@@ -1,1 +1,4 @@
-print(http_post("https://www.postb.in/1773767614937-3817403488792", "big boys"))
+import("test2.shit", "library")
+
+print(run(function("library.calc_inv_pi")))
+print(get("library.a"))

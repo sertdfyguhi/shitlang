@@ -3,9 +3,9 @@ from .error import *
 
 
 class Variables:
-    def __init__(self, context: Context, vardict: dict = {}) -> None:
+    def __init__(self, context: Context, vars_: dict | None = None) -> None:
         self.context = context
-        self.vars = vardict
+        self.vars = {} if vars_ is None else vars_
 
     def set(self, name, value):
         if name == "":

@@ -29,7 +29,7 @@ class Interpreter:
             else builtins
         )
 
-    def interpret(self, tokens: list[Token]):
+    def interpret(self, tokens: list[Token], in_import: bool = False):
         res = []
 
         for token in tokens:
@@ -37,7 +37,11 @@ class Interpreter:
             self.context.end_pos = token.end_pos
 
             if token.type == TT_FUNC_CALL:
-                args = self.interpret(token.value[1])
+                if in_import and token.value[0] in ("print", "bprint"):
+                    res.append(None)
+                    continue
+
+                args = self.interpret(token.value[1], in_import=in_import)
 
                 if token.value[0] == "return":
                     res.append(ReturnedValue(None if len(args) == 0 else args[0]))
