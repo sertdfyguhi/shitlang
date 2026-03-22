@@ -1,1 +1,4 @@
-print(add(true))
+set("dict", dict(<"a", "b">, <<1, 2>, "a">))
+print(get("dict"))
+print(dict_set(get("dict"), "b", 500))
+print(get("dict"))

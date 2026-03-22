@@ -11,6 +11,7 @@ RESERVED_BUILTINS = [
     "if",
     "try",
     "import",
+    "dict",
 ]
 
 

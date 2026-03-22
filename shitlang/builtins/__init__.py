@@ -11,6 +11,7 @@ from .types import TypeBuiltins
 from .math import MathBuiltins
 from .time import TimeBuiltins
 from .http import HTTPBuiltins
+from .dict import DictBuiltins
 from .io import IOBuiltins
 
 from ..environment import Environment
@@ -28,6 +29,7 @@ class Builtins(
     MathBuiltins,
     TimeBuiltins,
     HTTPBuiltins,
+    DictBuiltins,
     IOBuiltins,
 ):
     def __init__(

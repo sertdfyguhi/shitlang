@@ -1,31 +1,41 @@
 import os
 
 
-def shitlang_print(values, array=False):
-    # values can come in as tuple
-    data = values.copy() if type(values) == list else list(values)
+def print_value(value, true_string: bool = True):
+    match value:
+        case list():
+            return (
+                f"<{" ,".join([print_value(el, true_string=False) for el in value])}>"
+            )
 
-    for i in range(len(data)):
-        if type(data[i]) == list:
-            data[i] = f"<{shitlang_print(data[i], array=True)}>"
-        elif type(data[i]) == bool:
-            data[i] = "true" if data[i] else "false"
-        elif data[i] == None:
-            data[i] = "none"
-        elif array and type(data[i]) == str:
-            data[i] = repr(data[i])
-        else:
-            data[i] = str(data[i])
+        case bool():
+            return "true" if value else "false"
 
-    return (", " if array else " ").join(data)
+        case dict():
+            out = ", ".join(
+                [
+                    f"{key}: {print_value(value[key], true_string=False)}"
+                    for key in value
+                ]
+            )
+            return f"dict({out})"
+
+        case str():
+            return value if true_string else repr(value)
+
+        case None:
+            return "none"
+
+        case _:
+            return str(value)
 
 
 class IOBuiltins:
     def print(self, *data):
-        print(shitlang_print(data))
+        print(" ".join([print_value(value) for value in data]))
 
     def bprint(self, *data):
-        print(shitlang_print(data), end="")
+        print(" ".join([print_value(value) for value in data]), end="")
 
     def input(self, prompt: str):
         return input(prompt)

@@ -49,6 +49,14 @@
 - `mod(a: int | float, b: int | float) -> int | float`: returns the modulo of `a` and `b`
 - `pow(a: int | float, b: int | float) -> int | float`: returns `a` to the power of `b`
 
+## Dictionary Builtins
+
+- `dict(keys: array[str] = [], values: array = []) -> dict`: makes a dictionary
+- `dict_get(dict: dict, key: str) -> any`: returns value of `key` in `dict`
+- `dict_set(dict: dict, key: str, value) -> dict`: returns `dict` with `key` set as `value`
+- `dict_keys(dict: dict) -> array` returns an array of keys in `dict`
+- `dict_values(dict: dict) -> array` returns an array of values in `dict`
+
 ## String Builtins
 
 - `replace(replace: str, replacement: str, string: str) -> string`: replaces every instance of `replace` with `replacement` in `string` and returns it
