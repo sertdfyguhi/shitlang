@@ -92,6 +92,10 @@
 
 ## Math Builtins
 
+- `pi()`: returns pi
+- `tau()`: returns 2pi
+- `e()`: returns euler's number
+- `phi()`: returns the golden ratio
 - `sqrt(x: int | float) -> int | float`: returns the square root of `x`
 - `sin(x: int | float) -> float`: returns the sine of `x`
 - `cos(x: int | float) -> float`: returns the cosine of `x`
@@ -99,6 +103,8 @@
 - `asin(x: int | float) -> float`: returns the arcsine of `x`
 - `acos(x: int | float) -> float`: returns the arccosine of `x`
 - `atan(x: int | float) -> float`: returns the arctangent of `x`
+- `to_rad(deg: int | float) -> float`: returns `deg` in degress converted to radians
+- `to_deg(rad: int | float) -> float`: returns `rad` in radians converted to degrees
 - `round(number: float) -> int`: rounds `number`
 - `floor(number: float) -> int`: rounds `number` down to largest number that is less than `number`
 - `ceil(number: float) -> int`: rounds `number` up to next largest number
