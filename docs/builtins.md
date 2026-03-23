@@ -54,7 +54,7 @@
 - `dict(keys: array[str] = [], values: array = []) -> dict`: makes a dictionary from two seperate arrays of keys and value
 - `dict(items: array[array[str, any]]) -> dict`: makes a dictionary from an array of items
 - `dict_get(dict: dict, key: str) -> any`: returns value of `key` in `dict`
-- `dict_set(dict: dict, key: str, value) -> dict`: returns `dict` with `key` set as `value`
+- `dict_set(dict: dict, key: str, value: any, in_place: bool = True) -> dict`: returns `dict` with `key` set as `value`
 - `dict_keys(dict: dict) -> array` returns an array of keys in `dict`
 - `dict_values(dict: dict) -> array` returns an array of values in `dict`
 

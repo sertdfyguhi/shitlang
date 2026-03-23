@@ -39,11 +39,13 @@ class DictBuiltins:
     def dict_get(self, dict_: dict, key: str):
         return dict_.get(key)
 
-    def dict_set(self, dict_: dict, key: str, value):
+    def dict_set(self, dict_: dict, key: str, value, in_place: bool = True):
         if key == "":
             raise SLValueError(self.context, "argument 'key' cannot be empty")
 
-        dict_ = dict_.copy()
+        if not in_place:
+            dict_ = dict_.copy()
+
         dict_[key] = value
         return dict_
 
